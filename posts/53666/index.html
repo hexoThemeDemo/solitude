@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="zhywyt" />
+
+
+
+<meta name="description" content="前缀和算法可以计算某一个区间的累记和，但是出现修改的时候，前缀和的效率便得不到保障。于是数状数组出现了。出现原因总结——需求从单纯的区间查询变为了单点修改 + 区间查询。 树状数组本文不探讨树状数组的开发过程，这里先给出树状数组的结构：树状数组的设计非常巧妙，它让下标为\(i\)（从1开始）的位置存储原数组的部分和。比如下标为2的位置，存储了前两个数据的和，而下标为4的位置存储了前四个数据的和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第一课——树状数组">
+<meta property="og:url" content="https://hexothemedemo.github.io/posts/53666/index.html">
+<meta property="og:site_name" content="zhywyt&#39;s blog">
+<meta property="og:description" content="前缀和算法可以计算某一个区间的累记和，但是出现修改的时候，前缀和的效率便得不到保障。于是数状数组出现了。出现原因总结——需求从单纯的区间查询变为了单点修改 + 区间查询。 树状数组本文不探讨树状数组的开发过程，这里先给出树状数组的结构：树状数组的设计非常巧妙，它让下标为\(i\)（从1开始）的位置存储原数组的部分和。比如下标为2的位置，存储了前两个数据的和，而下标为4的位置存储了前四个数据的和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/undefined/img/3080748-20240315162808906-181852761_1726323720978.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/undefined/img/3080748-20240315162808906-181852761_1726323720978.jpg">
+<meta property="article:published_time" content="2024-03-15T17:17:00.000Z">
+<meta property="article:modified_time" content="2024-10-22T11:39:15.666Z">
+<meta property="article:author" content="zhywyt">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/undefined/img/3080748-20240315162808906-181852761_1726323720978.jpg">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="zhywyt&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/Yelee/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>第一课——树状数组 | zhywyt&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: 
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/Yelee/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/Yelee/"></a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/Yelee/">主页</a></li>
+                        
+                            <li><a href="/Yelee/archives/">所有文章</a></li>
+                        
+                            <li><a href="/Yelee/tags/">标签云</a></li>
+                        
+                            <li><a href="/Yelee/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/Yelee/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/encrypt/" rel="tag">encrypt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="tag">技术文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/" rel="tag">诗与散文</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/" rel="tag">错误解决</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/Yelee/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/Yelee/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/Yelee/">主页</a></li>
+                
+                    <li><a href="/Yelee/archives/">所有文章</a></li>
+                
+                    <li><a href="/Yelee/tags/">标签云</a></li>
+                
+                    <li><a href="/Yelee/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/Yelee/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-算法基础/第一课——树状数组" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Yelee/posts/53666/" class="article-date">
+      <time datetime="2024-03-15T17:17:00.000Z" itemprop="datePublished">2024-03-15</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      第一课——树状数组
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <span id="more"></span>
+
+<p><strong>前缀和算法</strong>可以计算某一个区间的累记和，但是出现修改的时候，前缀和的效率便得不到保障。于是<strong>数状数组</strong>出现了。出现原因总结——需求从<strong>单纯的区间查询</strong>变为了<strong>单点修改 + 区间查询</strong>。</p>
+<h2 id="树状数组"><a href="#树状数组" class="headerlink" title="树状数组"></a>树状数组</h2><p>本文不探讨树状数组的开发过程，这里先给出树状数组的结构：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/undefined/img/3080748-20240315162808906-181852761_1726323720978.jpg" alt="image"><br>树状数组的设计非常巧妙，它让下标为\(i\)（从1开始）的位置存储原数组的部分和。比如下标为2的位置，存储了前两个数据的和，而下标为4的位置存储了前四个数据的和。<br>但是也有些特殊的位置，比如6。你会发现，虽然它是偶数下标，但是它并没有存储前6个数据，而是只存储了5、6两个数据。下面给出树状数组的<strong>核心机制</strong>\(lowbit\)。</p>
+<h3 id="lowbit"><a href="#lowbit" class="headerlink" title="lowbit()"></a><code>lowbit()</code></h3><p>\(lowbit\)的定义是：<strong>一个二进制数的低位零的个数。</strong><br>比如，2 的二进制是 10 ，那么 \(lowbit(2)\) &#x3D; 1 。<br>而 6 的二进制是110，<strong>所以和2一样</strong> \(lowbit(6)\) &#x3D; 1。<br>于是我们可以给出树状树组下标为 \(i\) 的位置的定义：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TreeArr[i] = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt;= <span class="built_in">lowbit</span>(i) ; j++)TreeArr[i] +=data[i-j];</span><br></pre></td></tr></table></figure>
+
+<p>这里我直接写了<code>C++</code>的代码，但是阅读应该没有困难。其中<code>data</code>是原数组的数据，<code>TreeArr</code>是我们构造的树状数组。</p>
+<h4 id="lowbit-函数的实现"><a href="#lowbit-函数的实现" class="headerlink" title="lowbit()函数的实现"></a><code>lowbit()</code>函数的实现</h4><p>\(lowbit\)函数有两种实现方式，其中第一种是比较容易理解的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> i)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x - (x &amp; (x - <span class="number">1</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二种是比较抽象的，但是我个人比较喜欢，因为它更加的简洁优美。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> i)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> i &amp; -i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个有兴趣的朋友可以自己推导一下，不过也不会很复杂的。</p>
+<h3 id="update-int-i-int-data-函数"><a href="#update-int-i-int-data-函数" class="headerlink" title="update(int i,int data)函数"></a><code>update(int i,int data)</code>函数</h3><p>然后我来看一下单点更新如何在树状数组这样奇怪的数据结构上实现。<br>首先这个操作传入两个参数，一个是在原数组的位置，另一个是修改后的数值。再来看一下树状数组的结构：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/undefined/img/3080748-20240315162808906-181852761_1726323720978.jpg" alt="image"><br>假设我<strong>给<code>data[3]</code>加上一个<code>1</code></strong>，那么<strong>树状数组中</strong>受到影响的节点有<code>3</code>、<code>4</code>、<code>8</code>，不难发现，我们可以从底部的<code>3</code>出发，自下而上的找出所有被影响的点，而<code>4</code> &#x3D; <code>3 + lowbit(3)</code>、<code>8</code> &#x3D; <code>4 + lowbit(4)</code>，是不是非常的妙？前推和后推都回到了\(lowbit\)上，不然怎么数\(lowbit\)是树状数组的核心机制呢？<br>有了这个理论基础，我们就能轻松的写出\(update\)函数的代码了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">update</span><span class="params">(<span class="type">int</span> i ,<span class="type">int</span> data)</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(i &lt; n)&#123;				<span class="comment">// n 是数组的长度</span></span><br><span class="line">	TreeArr[i] += data;</span><br><span class="line">	i += <span class="built_in">lowbit</span>(i);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不难看出这是一个**O(lgN)**的更新操作。</p>
+<h3 id="Sum-int-j-函数"><a href="#Sum-int-j-函数" class="headerlink" title="Sum(int j)函数"></a><code>Sum(int j)</code>函数</h3><p><code>Sum(int j)</code>函数实现了原数组中前<code>j</code>个数据的求和。<br>前面提到过，<code>TreeArr[i]</code>包括了从<code>i</code>开始的往前数<code>lowbit(i)</code>个数据的和，那么在求前 <code>j</code>个数据的和时，我们可以利用和更新中类似的方法，每次计算当前<code>lowbit(j)</code>个数据的和，然后去到<code>j \- lowbit(j)</code>的位置继续求前面的值。代码如下，也是非常的简洁</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">Sum</span><span class="params">(<span class="type">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> rest = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(j &gt; <span class="number">0</span>)&#123;</span><br><span class="line">		rest += TreeArr[j];</span><br><span class="line">		j -= <span class="built_in">lowbit</span>(j);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> rest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不难看出这是一个**O(lgN)**的求和。</p>
+<h3 id="应用：单点更新区间查询"><a href="#应用：单点更新区间查询" class="headerlink" title="应用：单点更新区间查询"></a>应用：单点更新区间查询</h3><p><strong>P3374 【模板】树状数组 1</strong><br><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3374">https://www.luogu.com.cn/problem/P3374</a></p>
+<h3 id="区间更新-单点查询"><a href="#区间更新-单点查询" class="headerlink" title="区间更新 + 单点查询"></a>区间更新 + 单点查询</h3><p>这时，我们的需求改变了，我们不再需要区间查询了，而只要单点查询，但是需要实现区间修改。这时我们可以使用到一个数学概念——<strong>差分</strong>。使用<strong>差分</strong>作为树状数组存储的内容，可以让树状树组从<strong>单点修改 + 区间查询</strong>变为<strong>区间修改 + 单点查询</strong>。</p>
+<h4 id="差分的定义"><a href="#差分的定义" class="headerlink" title="差分的定义"></a>差分的定义</h4><p>假设<code>d[n]</code>是一个差分数组，那么：</p>
+<p>\[d[n] &#x3D; data[n] - data[n-1] \]</p>
+<p>非常好理解，如果我要修改全部的数据，比如把所有数据加 1，那么我们只需要在第一个位置加上一就好了，因为差分数组的性质，其他的位置值并不需要修改。<br>那么如果我们要进行单点的查询，比如 <code>data[n]</code>（原数据），就需要计算前<code>d</code>数组的前<code>n</code>项和。这一就完美地完成了从<strong>单点修改 + 区间查询</strong>变为<strong>区间修改 + 单点查询</strong>的过程。</p>
+<h2 id="树状数组的不足"><a href="#树状数组的不足" class="headerlink" title="树状数组的不足"></a>树状数组的不足</h2><p>当我们的问题变成<strong>区间修改 + 区间查询</strong>时，树状树组便不能完成这个工作了（一维），我们需要更好的数据结构，下节课——<strong>线段树</strong>完美解决树状数组的问题。<br><del>PS：其实并不是，树状树组的内存是(N)，而线段树需要(N&lt;&lt;2)也就是原数组四倍的内存空间。</del></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Yelee/posts/53666/">第一课——树状数组</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2024-03-15, 17:17:00</p>
+        <p><span>最后更新:</span>2024-10-22, 11:39:15</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Yelee/posts/53666/" title="第一课——树状数组">https://hexothemedemo.github.io/posts/53666/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://hexothemedemo.github.io/posts/53666/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Yelee/posts/14027/">
+                    第二课——线段树
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Yelee/posts/17428/">
+                    B-Spline
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84"><span class="toc-number">1.</span> <span class="toc-text">树状数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lowbit"><span class="toc-number">1.1.</span> <span class="toc-text">lowbit()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#lowbit-%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text">lowbit()函数的实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#update-int-i-int-data-%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">update(int i,int data)函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sum-int-j-%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">Sum(int j)函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%EF%BC%9A%E5%8D%95%E7%82%B9%E6%9B%B4%E6%96%B0%E5%8C%BA%E9%97%B4%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.4.</span> <span class="toc-text">应用：单点更新区间查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E9%97%B4%E6%9B%B4%E6%96%B0-%E5%8D%95%E7%82%B9%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.5.</span> <span class="toc-text">区间更新 + 单点查询</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%AE%E5%88%86%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.5.1.</span> <span class="toc-text">差分的定义</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%8D%E8%B6%B3"><span class="toc-number">2.</span> <span class="toc-text">树状数组的不足</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"第一课——树状数组　| zhywyt's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/Yelee/posts/14027/" title="上一篇: 第二课——线段树">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Yelee/posts/17428/" title="下一篇: B-Spline">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10907/">在Unity2D中创建角色描边的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5993/">Listary——不仅仅是搜索器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51899/">我的编辑器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0/">游戏开发/Unity/shader/在Unity2D中创建屏幕扫描线的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/64880/">anzhiyu主题搭建记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/usehttps/">使用HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61408/">实现自己的SHELL</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/29b61e029340/">不适用docker的gitea runner配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/34e784d46b0a/">如何在Ubuntu上使用Cmake编译Glut</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7880d8f2f2e/">docker 设置代理与镜像站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/58283ae7cb2d/">什么是shader？什么是Material？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b0c241b3d4cf/">hexo设置加密文章(失败)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/da74aa8e9f3b/">搭建一个多线程的MineCraft服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d863527924a0/">修复使用RigidBody2D实现击退效果时的叠加问题</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/247db5136c67/">解决Unity中的路径报错：DirectoryNotFoundException。</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/818482b58c2a/">如何创建一个朝向正确的飞行物？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0e24283556b2/">UI的位置无法正确的移动</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d8eb45be176b/">Hexo+Github搭建静态网站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/8fd9ab7c695f/">伤病遇体测有感</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4a74e5f5d3d6/">Unity2D场景交互设计</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e31df0f4a5f0/">Unity屏幕分辨率调整导致UI消失的原因</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e3e3aee8476b/">2024浙江省青少年定向锦标赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7ea97fbec36/">Unity如何设置鼠标图标？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2024g10/">2024第一届下沙十英里接力赛后记</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/f29c63b83721/">马原实践汇报</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6e1ed0060e67/">Unity如何控制场景切换后角色的位置？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/536c11d1caa5/">2024定向队新生选拔赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/337e148b3fb3/">远程连接与传输</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2c9570b00976/">NU-NeRF论文解读</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d586aba908b5/">如何绘制一张定向路线图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5790301d4de2/">2024全国乡村定向系列赛事活动（浙江海宁站）</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/96dff400cced/">waline评论系统搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c8b013b915a1/">甲壳虫跑团“耐力挑战赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bc16e0702e1d/">甲壳虫跑团“十英里接力赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/a5bf365fe3fe/">甲壳虫跑团“十英里接力赛分院杯”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bd7f49a3fa80/">Unity 如何创建不带UI的截图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c6072bab6ff0/">Unity如何优雅地管理UI图层顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/59a4f8f59f45/">Unity如何在脚本中使用本地话字符？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/823c297f1d7f/">Unity如何保存存档？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1cc3941f1b85/">如何使用ffmpeg无损压缩视频？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/54404/">Unity本地化字体选择</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d742d8349fff/">Unity瓦片地图碰撞体积与图片大小不一致</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d9709c673656/">Linux基础操作</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5c54bd2bc06c/">frp配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/df4c31f7ba80/">PVE软路由配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b4ca7a5fb5b2/">ChatGLM本地配置记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/24484/">pve 8.2.2 解决unsupported Ubuntu version '24.04'</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5953/">nerfstudio环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5181/">zerotier单向不通解决办法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1fd1cabe051b/">2024第一届甲壳虫跑团百公里接力赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49793/">KUbuntu安装CIscoPacketTracer</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4182/">PVE学生自用记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/62236/">第？课——基于矩阵快速幂的递推解法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/7287/">ubuntu无法进入桌面的一种情况</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61355/">第三课——最短路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/14027/">第二课——线段树</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/53666/">第一课——树状数组</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/17428/">B-Spline</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/16515/">花期内的花的数目</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/11458/">简单的拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6679/">games101 HomeWork7</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15892/">多线程之OMP</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/3472/">Linux批量修改文件名字</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56022/">games101 HomeWork6</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56214/">games101 HomeWork5</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6999/">games101 HomeWork4</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/55574/">games101 HomeWork3</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6886/">Ubuntu解决高分屏下Matlab工具栏字体过小</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6615/">games101 HomeWork2</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/44638/">games101 HomeWork 作业以及提高课详解</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6295/">games101 HomeWork1</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/45431/">计算机图形学笔记三——橡皮筋技术和椭圆扫描算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/30828/">计算机图形学笔记一——绘制直线的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15450/">基于Glut的俄罗斯方块开发</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10536/">Games101笔记 P11~?</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49493/">快速读入模板</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/50901/">Git 教程转载</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/27853/">c语言文件读写</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/63067/">康托展开</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/32280/">P1088 [NOIP2004 普及组] 火星人</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51449/">P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2977/">P1177 【模板】快速排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15959/">P1045 [NOIP2003 普及组] 麦森数——快速幂</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/47792/">P5461 赦免战俘</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2025 zhywyt
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/Yelee/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

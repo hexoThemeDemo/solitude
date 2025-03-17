@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="zhywyt" />
+
+
+
+<meta name="description" content="[NOIP2004 普及组] 火星人题目描述人类终于登上了火星的土地并且见到了神秘的火星人。人类和火星人都无法理解对方的语言，但是我们的科学家发明了一种用数字交流的方法。这种交流方法是这样的，首先，火星人把一个非常大的数字告诉人类科学家，科学家破解这个数字的含义后，再把一个很小的数字加到这个大数上面，把结果告诉火星人，作为人类的回答。 火星人用一种非常简单的方式来表示数字――掰手指。火星人只有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="P1088 [NOIP2004 普及组] 火星人">
+<meta property="og:url" content="https://hexothemedemo.github.io/posts/32280/index.html">
+<meta property="og:site_name" content="zhywyt&#39;s blog">
+<meta property="og:description" content="[NOIP2004 普及组] 火星人题目描述人类终于登上了火星的土地并且见到了神秘的火星人。人类和火星人都无法理解对方的语言，但是我们的科学家发明了一种用数字交流的方法。这种交流方法是这样的，首先，火星人把一个非常大的数字告诉人类科学家，科学家破解这个数字的含义后，再把一个很小的数字加到这个大数上面，把结果告诉火星人，作为人类的回答。 火星人用一种非常简单的方式来表示数字――掰手指。火星人只有">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-03T19:09:00.000Z">
+<meta property="article:modified_time" content="2024-10-22T11:39:07.720Z">
+<meta property="article:author" content="zhywyt">
+<meta name="twitter:card" content="summary">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="zhywyt&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/Yelee/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>P1088 [NOIP2004 普及组] 火星人 | zhywyt&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: 
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/Yelee/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/Yelee/"></a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/Yelee/">主页</a></li>
+                        
+                            <li><a href="/Yelee/archives/">所有文章</a></li>
+                        
+                            <li><a href="/Yelee/tags/">标签云</a></li>
+                        
+                            <li><a href="/Yelee/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/Yelee/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/encrypt/" rel="tag">encrypt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="tag">技术文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/" rel="tag">诗与散文</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/" rel="tag">错误解决</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/Yelee/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/Yelee/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/Yelee/">主页</a></li>
+                
+                    <li><a href="/Yelee/archives/">所有文章</a></li>
+                
+                    <li><a href="/Yelee/tags/">标签云</a></li>
+                
+                    <li><a href="/Yelee/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/Yelee/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-算法基础/P1088 [NOIP2004 普及组] 火星人" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Yelee/posts/32280/" class="article-date">
+      <time datetime="2023-02-03T19:09:00.000Z" itemprop="datePublished">2023-02-03</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      P1088 [NOIP2004 普及组] 火星人
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <span id="more"></span>
+
+<h1 id="NOIP2004-普及组-火星人"><a href="#NOIP2004-普及组-火星人" class="headerlink" title="[NOIP2004 普及组] 火星人"></a>[NOIP2004 普及组] 火星人</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>人类终于登上了火星的土地并且见到了神秘的火星人。人类和火星人都无法理解对方的语言，但是我们的科学家发明了一种用数字交流的方法。这种交流方法是这样的，首先，火星人把一个非常大的数字告诉人类科学家，科学家破解这个数字的含义后，再把一个很小的数字加到这个大数上面，把结果告诉火星人，作为人类的回答。</p>
+<p>火星人用一种非常简单的方式来表示数字――掰手指。火星人只有一只手，但这只手上有成千上万的手指，这些手指排成一列，分别编号为 \(1,2,3,\cdots\)。火星人的任意两根手指都能随意交换位置，他们就是通过这方法计数的。</p>
+<p>一个火星人用一个人类的手演示了如何用手指计数。如果把五根手指――拇指、食指、中指、无名指和小指分别编号为 \(1,2,3,4\) 和 \(5\)，当它们按正常顺序排列时，形成了 \(5\) 位数 \(12345\)，当你交换无名指和小指的位置时，会形成 \(5\) 位数 \(12354\)，当你把五个手指的顺序完全颠倒时，会形成 \(54321\)，在所有能够形成的 \(120\) 个 \(5\) 位数中，\(12345\) 最小，它表示 \(1\)；\(12354\) 第二小，它表示 \(2\)；\(54321\) 最大，它表示 \(120\)。下表展示了只有 \(3\) 根手指时能够形成的 \(6\) 个 \(3\) 位数和它们代表的数字：</p>
+<table>
+<thead>
+<tr>
+<th align="center">三进制数</th>
+<th align="center">代表的数字</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">\(123\)</td>
+<td align="center">\(1\)</td>
+</tr>
+<tr>
+<td align="center">\(132\)</td>
+<td align="center">\(2\)</td>
+</tr>
+<tr>
+<td align="center">\(213\)</td>
+<td align="center">\(3\)</td>
+</tr>
+<tr>
+<td align="center">\(231\)</td>
+<td align="center">\(4\)</td>
+</tr>
+<tr>
+<td align="center">\(312\)</td>
+<td align="center">\(5\)</td>
+</tr>
+<tr>
+<td align="center">\(321\)</td>
+<td align="center">\(6\)</td>
+</tr>
+</tbody></table>
+<p>现在你有幸成为了第一个和火星人交流的地球人。一个火星人会让你看他的手指，科学家会告诉你要加上去的很小的数。你的任务是，把火星人用手指表示的数与科学家告诉你的数相加，并根据相加的结果改变火星人手指的排列顺序。输入数据保证这个结果不会超出火星人手指能表示的范围。</p>
+<h2 id="输入格式"><a href="#输入格式" class="headerlink" title="输入格式"></a>输入格式</h2><p>共三行。<br>第一行一个正整数 \(N\)，表示火星人手指的数目（\(1 \le N \le 10000\)）。<br>第二行是一个正整数 \(M\)，表示要加上去的小整数（\(1 \le M \le 100\)）。<br>下一行是 \(1\) 到 \(N\) 这 \(N\) 个整数的一个排列，用空格隔开，表示火星人手指的排列顺序。</p>
+<h2 id="输出格式"><a href="#输出格式" class="headerlink" title="输出格式"></a>输出格式</h2><p>\(N\) 个整数，表示改变后的火星人手指的排列顺序。每两个相邻的数中间用一个空格分开，不能有多余的空格。</p>
+<h2 id="样例-1"><a href="#样例-1" class="headerlink" title="样例 #1"></a>样例 #1</h2><h3 id="样例输入-1"><a href="#样例输入-1" class="headerlink" title="样例输入 #1"></a>样例输入 #1</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">5</span><br><span class="line">3</span><br><span class="line">1 2 3 4 5</span><br></pre></td></tr></table></figure>
+
+<h3 id="样例输出-1"><a href="#样例输出-1" class="headerlink" title="样例输出 #1"></a>样例输出 #1</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 2 4 5 3</span><br></pre></td></tr></table></figure>
+
+<h2 id="提示"><a href="#提示" class="headerlink" title="提示"></a>提示</h2><p>对于 \(30\%\) 的数据，\(N \le 15\)。</p>
+<p>对于 \(60\%\) 的数据，\(N \le 50\)。</p>
+<p>对于 \(100\%\) 的数据，\(N \le 10000\)。</p>
+<p>noip2004 普及组第 4 题</p>
+<h2 id="这题可以用到康托展开-https-www-cnblogs-com-zhywyt-p-17090301-html-但是这里并不像展开说明康托展开-只把他当作一个理论基础来完成这个模拟题"><a href="#这题可以用到康托展开-https-www-cnblogs-com-zhywyt-p-17090301-html-但是这里并不像展开说明康托展开-只把他当作一个理论基础来完成这个模拟题" class="headerlink" title="这题可以用到康托展开-&gt;https://www.cnblogs.com/zhywyt/p/17090301.html,但是这里并不像展开说明康托展开,只把他当作一个理论基础来完成这个模拟题"></a>这题可以用到康托展开-&gt;<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhywyt/p/17090301.html">https://www.cnblogs.com/zhywyt/p/17090301.html</a>,但是这里并不像展开说明康托展开,只把他当作一个理论基础来完成这个模拟题</h2><h2 id="由康托展开我们可以知道-康托展开的实质是计算当前排列在所有由小到大全排列中的顺序，因此是可逆的。-那么我们就可以先把外星人的排列映射成一个数的序列-这个序列是可以和自然数进行加减的-所以可以很方便的完成本题的要求"><a href="#由康托展开我们可以知道-康托展开的实质是计算当前排列在所有由小到大全排列中的顺序，因此是可逆的。-那么我们就可以先把外星人的排列映射成一个数的序列-这个序列是可以和自然数进行加减的-所以可以很方便的完成本题的要求" class="headerlink" title="由康托展开我们可以知道:康托展开的实质是计算当前排列在所有由小到大全排列中的顺序，因此是可逆的。,那么我们就可以先把外星人的排列映射成一个数的序列,这个序列是可以和自然数进行加减的,所以可以很方便的完成本题的要求."></a>由康托展开我们可以知道:康托展开的实质是计算当前排列在所有由小到大全排列中的顺序，因此是可逆的。,那么我们就可以先把外星人的排列映射成一个数的序列,这个序列是可以和自然数进行加减的,所以可以很方便的完成本题的要求.</h2><h2 id="映射方法"><a href="#映射方法" class="headerlink" title="映射方法:"></a>映射方法:</h2><p><strong>对于一个序列,比如\({1, 3, 2, 4, 5}\)</strong><br><strong>第一个数\(1\),是数列{\({1, 2, 3, 4, 5}\)}中的第一个,所对应的值就是\(0\)</strong><br><strong>第二个数\(3\),是数列{\({2, 3, 4, 5}\)}中的第二个,所对应的值也就是\(1\)</strong><br><strong>第三个数\(2\),是数列{\({2, 4, 5}\)}中的第一个,所对应的值也就是\(0\)</strong><br><strong>以此类推</strong><br><strong>得到最后的映射就是{\({0,1,0,0,0}\)}</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">关于这个映射, 有一个和进制规则在里面: 从右往左, 序列的下标代表该位数字的进制, 比如这里的$1$, 就是4进制数, 所以这个序列代表的十进制数就是3.</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">序列长度 \(n&#x3D;5\)</th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">映射序列数</td>
+<td align="center">进制</td>
+<td align="center">index</td>
+</tr>
+<tr>
+<td align="center">0</td>
+<td align="center">5</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">4</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">0</td>
+<td align="center">3</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">0</td>
+<td align="center">2</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">4</td>
+</tr>
+</tbody></table>
+<p>所以代表的进制就等于\(n-index\)</p>
+<h2 id="这样我们就有了-to-方法和-back-方法了"><a href="#这样我们就有了-to-方法和-back-方法了" class="headerlink" title="这样我们就有了\(to()\)方法和\(back()\)方法了!"></a>这样我们就有了\(to()\)方法和\(back()\)方法了!</h2><h3 id="to-方法"><a href="#to-方法" class="headerlink" title="\(to()\)方法"></a>\(to()\)方法</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">to</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n<span class="number">-1</span>; i++) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = i + <span class="number">1</span>; j &lt; n; j++)</span><br><span class="line">			<span class="keyword">if</span> (str[j] &lt; str[i])</span><br><span class="line">				sum++;</span><br><span class="line">		sav[i] = sum;</span><br><span class="line">		sum = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="back-方法"><a href="#back-方法" class="headerlink" title="\(back()\)方法"></a>\(back()\)方法</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">back</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(via, <span class="number">0</span>, <span class="built_in">sizeof</span>(<span class="type">int</span>) * n);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">		<span class="type">int</span> index = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">while</span> (via[index])index++;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; sav[i]; j++) &#123;</span><br><span class="line">			<span class="keyword">do</span> &#123;</span><br><span class="line">				index++;</span><br><span class="line">			&#125; <span class="keyword">while</span> (via[index]);</span><br><span class="line">		&#125;</span><br><span class="line">		via[index] = <span class="number">1</span>;</span><br><span class="line">		str[i] = index <span class="number">+1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>中途一个进位的小函数就不再复述了,没有什么难度.</strong><br><strong>最后奉上完整代码</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"><span class="type">int</span> str[<span class="number">10010</span>],sav[<span class="number">10010</span>];</span><br><span class="line"><span class="type">int</span> via[<span class="number">10010</span>];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">to</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">back</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">		cin &gt;&gt; str[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">to</span>();</span><br><span class="line">	sav[n - <span class="number">1</span>] += m;</span><br><span class="line">	<span class="type">int</span> jin = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">		sav[n - i] += jin;</span><br><span class="line">		jin = sav[n - i] / i;</span><br><span class="line">		sav[n - i] %= i;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">back</span>();</span><br><span class="line">	cout &lt;&lt; str[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">		cout &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; str[i];</span><br><span class="line">	&#125;</span><br><span class="line">	cout &lt;&lt; endl;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">to</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n<span class="number">-1</span>; i++) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = i + <span class="number">1</span>; j &lt; n; j++)</span><br><span class="line">			<span class="keyword">if</span> (str[j] &lt; str[i])</span><br><span class="line">				sum++;</span><br><span class="line">		sav[i] = sum;</span><br><span class="line">		sum = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">back</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(via, <span class="number">0</span>, <span class="built_in">sizeof</span>(<span class="type">int</span>) * n);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">		<span class="type">int</span> index = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">while</span> (via[index])index++;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; sav[i]; j++) &#123;</span><br><span class="line">			<span class="keyword">do</span> &#123;</span><br><span class="line">				index++;</span><br><span class="line">			&#125; <span class="keyword">while</span> (via[index]);</span><br><span class="line">		&#125;</span><br><span class="line">		via[index] = <span class="number">1</span>;</span><br><span class="line">		str[i] = index <span class="number">+1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Yelee/posts/32280/">P1088 [NOIP2004 普及组] 火星人</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2023-02-03, 19:09:00</p>
+        <p><span>最后更新:</span>2024-10-22, 11:39:07</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Yelee/posts/32280/" title="P1088 [NOIP2004 普及组] 火星人">https://hexothemedemo.github.io/posts/32280/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://hexothemedemo.github.io/posts/32280/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Yelee/posts/63067/">
+                    康托展开
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Yelee/posts/51449/">
+                    P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#NOIP2004-%E6%99%AE%E5%8F%8A%E7%BB%84-%E7%81%AB%E6%98%9F%E4%BA%BA"><span class="toc-number">1.</span> <span class="toc-text">[NOIP2004 普及组] 火星人</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">输入格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">输出格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B7%E4%BE%8B-1"><span class="toc-number">1.4.</span> <span class="toc-text">样例 #1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B7%E4%BE%8B%E8%BE%93%E5%85%A5-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">样例输入 #1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B7%E4%BE%8B%E8%BE%93%E5%87%BA-1"><span class="toc-number">1.4.2.</span> <span class="toc-text">样例输出 #1</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E7%A4%BA"><span class="toc-number">1.5.</span> <span class="toc-text">提示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%99%E9%A2%98%E5%8F%AF%E4%BB%A5%E7%94%A8%E5%88%B0%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80-https-www-cnblogs-com-zhywyt-p-17090301-html-%E4%BD%86%E6%98%AF%E8%BF%99%E9%87%8C%E5%B9%B6%E4%B8%8D%E5%83%8F%E5%B1%95%E5%BC%80%E8%AF%B4%E6%98%8E%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80-%E5%8F%AA%E6%8A%8A%E4%BB%96%E5%BD%93%E4%BD%9C%E4%B8%80%E4%B8%AA%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%E6%9D%A5%E5%AE%8C%E6%88%90%E8%BF%99%E4%B8%AA%E6%A8%A1%E6%8B%9F%E9%A2%98"><span class="toc-number">1.6.</span> <span class="toc-text">这题可以用到康托展开-&gt;https:&#x2F;&#x2F;www.cnblogs.com&#x2F;zhywyt&#x2F;p&#x2F;17090301.html,但是这里并不像展开说明康托展开,只把他当作一个理论基础来完成这个模拟题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B1%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E7%9F%A5%E9%81%93-%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E7%9A%84%E5%AE%9E%E8%B4%A8%E6%98%AF%E8%AE%A1%E7%AE%97%E5%BD%93%E5%89%8D%E6%8E%92%E5%88%97%E5%9C%A8%E6%89%80%E6%9C%89%E7%94%B1%E5%B0%8F%E5%88%B0%E5%A4%A7%E5%85%A8%E6%8E%92%E5%88%97%E4%B8%AD%E7%9A%84%E9%A1%BA%E5%BA%8F%EF%BC%8C%E5%9B%A0%E6%AD%A4%E6%98%AF%E5%8F%AF%E9%80%86%E7%9A%84%E3%80%82-%E9%82%A3%E4%B9%88%E6%88%91%E4%BB%AC%E5%B0%B1%E5%8F%AF%E4%BB%A5%E5%85%88%E6%8A%8A%E5%A4%96%E6%98%9F%E4%BA%BA%E7%9A%84%E6%8E%92%E5%88%97%E6%98%A0%E5%B0%84%E6%88%90%E4%B8%80%E4%B8%AA%E6%95%B0%E7%9A%84%E5%BA%8F%E5%88%97-%E8%BF%99%E4%B8%AA%E5%BA%8F%E5%88%97%E6%98%AF%E5%8F%AF%E4%BB%A5%E5%92%8C%E8%87%AA%E7%84%B6%E6%95%B0%E8%BF%9B%E8%A1%8C%E5%8A%A0%E5%87%8F%E7%9A%84-%E6%89%80%E4%BB%A5%E5%8F%AF%E4%BB%A5%E5%BE%88%E6%96%B9%E4%BE%BF%E7%9A%84%E5%AE%8C%E6%88%90%E6%9C%AC%E9%A2%98%E7%9A%84%E8%A6%81%E6%B1%82"><span class="toc-number">1.7.</span> <span class="toc-text">由康托展开我们可以知道:康托展开的实质是计算当前排列在所有由小到大全排列中的顺序，因此是可逆的。,那么我们就可以先把外星人的排列映射成一个数的序列,这个序列是可以和自然数进行加减的,所以可以很方便的完成本题的要求.</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%98%A0%E5%B0%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.8.</span> <span class="toc-text">映射方法:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%99%E6%A0%B7%E6%88%91%E4%BB%AC%E5%B0%B1%E6%9C%89%E4%BA%86-to-%E6%96%B9%E6%B3%95%E5%92%8C-back-%E6%96%B9%E6%B3%95%E4%BA%86"><span class="toc-number">1.9.</span> <span class="toc-text">这样我们就有了\(to()\)方法和\(back()\)方法了!</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#to-%E6%96%B9%E6%B3%95"><span class="toc-number">1.9.1.</span> <span class="toc-text">\(to()\)方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#back-%E6%96%B9%E6%B3%95"><span class="toc-number">1.9.2.</span> <span class="toc-text">\(back()\)方法</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"P1088 [NOIP2004 普及组] 火星人　| zhywyt's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/Yelee/posts/63067/" title="上一篇: 康托展开">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Yelee/posts/51449/" title="下一篇: P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10907/">在Unity2D中创建角色描边的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5993/">Listary——不仅仅是搜索器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51899/">我的编辑器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0/">游戏开发/Unity/shader/在Unity2D中创建屏幕扫描线的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/64880/">anzhiyu主题搭建记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/usehttps/">使用HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61408/">实现自己的SHELL</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/29b61e029340/">不适用docker的gitea runner配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/34e784d46b0a/">如何在Ubuntu上使用Cmake编译Glut</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7880d8f2f2e/">docker 设置代理与镜像站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/58283ae7cb2d/">什么是shader？什么是Material？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b0c241b3d4cf/">hexo设置加密文章(失败)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/da74aa8e9f3b/">搭建一个多线程的MineCraft服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d863527924a0/">修复使用RigidBody2D实现击退效果时的叠加问题</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/247db5136c67/">解决Unity中的路径报错：DirectoryNotFoundException。</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/818482b58c2a/">如何创建一个朝向正确的飞行物？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0e24283556b2/">UI的位置无法正确的移动</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d8eb45be176b/">Hexo+Github搭建静态网站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/8fd9ab7c695f/">伤病遇体测有感</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4a74e5f5d3d6/">Unity2D场景交互设计</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e31df0f4a5f0/">Unity屏幕分辨率调整导致UI消失的原因</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e3e3aee8476b/">2024浙江省青少年定向锦标赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7ea97fbec36/">Unity如何设置鼠标图标？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2024g10/">2024第一届下沙十英里接力赛后记</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/f29c63b83721/">马原实践汇报</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6e1ed0060e67/">Unity如何控制场景切换后角色的位置？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/536c11d1caa5/">2024定向队新生选拔赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/337e148b3fb3/">远程连接与传输</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2c9570b00976/">NU-NeRF论文解读</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d586aba908b5/">如何绘制一张定向路线图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5790301d4de2/">2024全国乡村定向系列赛事活动（浙江海宁站）</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/96dff400cced/">waline评论系统搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c8b013b915a1/">甲壳虫跑团“耐力挑战赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bc16e0702e1d/">甲壳虫跑团“十英里接力赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/a5bf365fe3fe/">甲壳虫跑团“十英里接力赛分院杯”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bd7f49a3fa80/">Unity 如何创建不带UI的截图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c6072bab6ff0/">Unity如何优雅地管理UI图层顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/59a4f8f59f45/">Unity如何在脚本中使用本地话字符？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/823c297f1d7f/">Unity如何保存存档？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1cc3941f1b85/">如何使用ffmpeg无损压缩视频？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/54404/">Unity本地化字体选择</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d742d8349fff/">Unity瓦片地图碰撞体积与图片大小不一致</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d9709c673656/">Linux基础操作</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5c54bd2bc06c/">frp配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/df4c31f7ba80/">PVE软路由配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b4ca7a5fb5b2/">ChatGLM本地配置记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/24484/">pve 8.2.2 解决unsupported Ubuntu version '24.04'</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5953/">nerfstudio环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5181/">zerotier单向不通解决办法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1fd1cabe051b/">2024第一届甲壳虫跑团百公里接力赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49793/">KUbuntu安装CIscoPacketTracer</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4182/">PVE学生自用记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/62236/">第？课——基于矩阵快速幂的递推解法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/7287/">ubuntu无法进入桌面的一种情况</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61355/">第三课——最短路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/14027/">第二课——线段树</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/53666/">第一课——树状数组</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/17428/">B-Spline</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/16515/">花期内的花的数目</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/11458/">简单的拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6679/">games101 HomeWork7</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15892/">多线程之OMP</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/3472/">Linux批量修改文件名字</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56022/">games101 HomeWork6</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56214/">games101 HomeWork5</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6999/">games101 HomeWork4</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/55574/">games101 HomeWork3</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6886/">Ubuntu解决高分屏下Matlab工具栏字体过小</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6615/">games101 HomeWork2</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/44638/">games101 HomeWork 作业以及提高课详解</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6295/">games101 HomeWork1</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/45431/">计算机图形学笔记三——橡皮筋技术和椭圆扫描算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/30828/">计算机图形学笔记一——绘制直线的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15450/">基于Glut的俄罗斯方块开发</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10536/">Games101笔记 P11~?</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49493/">快速读入模板</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/50901/">Git 教程转载</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/27853/">c语言文件读写</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/63067/">康托展开</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/32280/">P1088 [NOIP2004 普及组] 火星人</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51449/">P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2977/">P1177 【模板】快速排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15959/">P1045 [NOIP2003 普及组] 麦森数——快速幂</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/47792/">P5461 赦免战俘</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2025 zhywyt
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/Yelee/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
