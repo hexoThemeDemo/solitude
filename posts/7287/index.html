@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="zhywyt" />
+
+
+
+<meta name="description" content="问题描述系统环境：  无法进入桌面 可以进入锁屏 输入密码后黑屏，并返回锁屏 tty能进入startx startx中部分软件无法打开无法进入桌面最直接的错误，非常严重不可原谅。用户登陆输入密码，黑屏，然后回到用户登陆。  误导我的一个报错：起初我认为是xdroid-server出毛病了，但是后来发现它无法启动，于是尝试使用startx来寻找错误。 tty如何进入在锁屏页面使用Ctrl+Alt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ubuntu无法进入桌面的一种情况">
+<meta property="og:url" content="http://hexo.zhywyt.me/posts/7287/index.html">
+<meta property="og:site_name" content="zhywyt&#39;s blog">
+<meta property="og:description" content="问题描述系统环境：  无法进入桌面 可以进入锁屏 输入密码后黑屏，并返回锁屏 tty能进入startx startx中部分软件无法打开无法进入桌面最直接的错误，非常严重不可原谅。用户登陆输入密码，黑屏，然后回到用户登陆。  误导我的一个报错：起初我认为是xdroid-server出毛病了，但是后来发现它无法启动，于是尝试使用startx来寻找错误。 tty如何进入在锁屏页面使用Ctrl+Alt">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423163225383-1782844975_1726323663548.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423162206763-1640149187_1726323663548.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161316305-2104047575_1726323663548.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161326206-1860745500_1726323663548.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161343885-1891381834_1726323663548.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161351037-1625310902_1726323679699.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161357706-1589883165_1726323679699.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161402829-1386755668_1726323679699.png">
+<meta property="article:published_time" content="2024-04-23T16:21:00.000Z">
+<meta property="article:modified_time" content="2024-10-22T11:39:07.626Z">
+<meta property="article:author" content="zhywyt">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423163225383-1782844975_1726323663548.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="zhywyt&#39;s blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>ubuntu无法进入桌面的一种情况 | zhywyt&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: 
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/"></a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/encrypt/" rel="tag">encrypt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="tag">技术文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/" rel="tag">诗与散文</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/" rel="tag">错误解决</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Linux/ubuntu/ubuntu无法进入桌面的一种情况" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/posts/7287/" class="article-date">
+      <time datetime="2024-04-23T16:21:00.000Z" itemprop="datePublished">2024-04-23</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ubuntu无法进入桌面的一种情况
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a><a class="article-category-link" href="/categories/Linux/Ubuntu/">Ubuntu</a>
+    </div>
+
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <span id="more"></span>
+
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>系统环境：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423163225383-1782844975_1726323663548.png" alt="image"></p>
+<ul>
+<li>无法进入桌面</li>
+<li>可以进入锁屏</li>
+<li>输入密码后黑屏，并返回锁屏</li>
+<li>tty能进入<code>startx</code></li>
+<li><code>startx</code>中部分软件无法打开<br>无法进入桌面最直接的错误，非常严重不可原谅。用户登陆输入密码，黑屏，然后回到用户登陆。</li>
+</ul>
+<h2 id="误导我的一个报错："><a href="#误导我的一个报错：" class="headerlink" title="误导我的一个报错："></a>误导我的一个报错：</h2><p><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423162206763-1640149187_1726323663548.png" alt="image"><br>起初我认为是xdroid-server出毛病了，但是后来发现它无法启动，于是尝试使用<code>startx</code>来寻找错误。</p>
+<h2 id="tty如何进入"><a href="#tty如何进入" class="headerlink" title="tty如何进入"></a>tty如何进入</h2><p>在锁屏页面使用<code>Ctrl+Alt+F4</code>，即可进入<code>tty</code>。<br>进入后输入用户名和用户密码。</p>
+<h2 id="进入startx进行debug"><a href="#进入startx进行debug" class="headerlink" title="进入startx进行debug"></a>进入startx进行debug</h2><p>登陆好后使用<code>startx</code>进入。<br>后续操作使用<code>tty</code>执行<code>startx</code>展现。</p>
+<h2 id="大量的-desktop无法打开"><a href="#大量的-desktop无法打开" class="headerlink" title="大量的.desktop无法打开"></a>大量的.desktop无法打开</h2><p>执行<code>code</code>竟然出现<code>Node.js</code>的报错</p>
+<p><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161316305-2104047575_1726323663548.png" alt="image"></p>
+<p>打开<code>code</code>可以看到顶部的解释器选择，如果直接指定解释器，发现能够打开VSCode，说明不是可执行文件的错误。</p>
+<p><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161326206-1860745500_1726323663548.png" alt="image"></p>
+<p>指定解释器：</p>
+<p><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161343885-1891381834_1726323663548.png" alt="image"></p>
+<p>如果去掉<code>code</code>中的指定解释器行：</p>
+<p><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161351037-1625310902_1726323679699.png" alt="image"></p>
+<p>成功打开：</p>
+<p><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161357706-1589883165_1726323679699.png" alt="image"></p>
+<h2 id="发现了Node-js"><a href="#发现了Node-js" class="headerlink" title="发现了Node.js"></a>发现了Node.js</h2><p>观察到VScode的解释器是&#x2F;usr&#x2F;bin&#x2F;env sh</p>
+<p>为什么不是&#x2F;bin&#x2F;sh或者&#x2F;usr&#x2F;bin&#x2F;sh呢？</p>
+<p>于是我尝试运行了&#x2F;usr&#x2F;bin&#x2F;env发现！：</p>
+<p><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240423161402829-1386755668_1726323679699.png" alt="image"></p>
+<p>我天呢？这是什么道理？</p>
+<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>综上所述，我认为是&#x2F;bin&#x2F;env和&#x2F;usr&#x2F;bin&#x2F;env被NodeJs覆写了，于是我决定删除&#x2F;bin&#x2F;env，然后重装<code>coreutils</code>问题解决：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">rm</span> /bin/env</span><br><span class="line"><span class="built_in">sudo</span> apt reinstall coreutils</span><br></pre></td></tr></table></figure>
+
+<p>另外因为安装了<code>gnome-tweaks</code>和原来的某些东西有冲突，卸载后恢复原状：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt remove gnome-tweaks </span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是一个非常奇怪的问题，因为我的<code>/bin/env</code>被<code>Node.js</code>覆写了，导致大量依赖于<code>/bin/env</code>寻找环境的批处理无法运行，这才导致了桌面无法打开。<br>debug期间我干了：</p>
+<h3 id="重装显卡驱动"><a href="#重装显卡驱动" class="headerlink" title="重装显卡驱动"></a>重装显卡驱动</h3><h3 id="卸载nodejs"><a href="#卸载nodejs" class="headerlink" title="卸载nodejs"></a>卸载nodejs</h3><h3 id="删除所有与nodejs有关的文件"><a href="#删除所有与nodejs有关的文件" class="headerlink" title="删除所有与nodejs有关的文件"></a>删除所有与nodejs有关的文件</h3><h3 id="重装gnome"><a href="#重装gnome" class="headerlink" title="重装gnome"></a>重装gnome</h3><h3 id="切换内核"><a href="#切换内核" class="headerlink" title="切换内核"></a>切换内核</h3><h3 id="修改用户权限"><a href="#修改用户权限" class="headerlink" title="修改用户权限"></a>修改用户权限</h3><h3 id="修改profile、-bashrc、-etc-environment……"><a href="#修改profile、-bashrc、-etc-environment……" class="headerlink" title="修改profile、~&#x2F;.bashrc、&#x2F;etc&#x2F;environment……"></a>修改profile、~&#x2F;.bashrc、&#x2F;etc&#x2F;environment……</h3>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/posts/7287/">ubuntu无法进入桌面的一种情况</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2024-04-23, 16:21:00</p>
+        <p><span>最后更新:</span>2024-10-22, 11:39:07</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/posts/7287/" title="ubuntu无法进入桌面的一种情况">http://hexo.zhywyt.me/posts/7287/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://hexo.zhywyt.me/posts/7287/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/posts/62236/">
+                    第？课——基于矩阵快速幂的递推解法
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/posts/61355/">
+                    第三课——最短路
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AF%E5%AF%BC%E6%88%91%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8A%A5%E9%94%99%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">误导我的一个报错：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tty%E5%A6%82%E4%BD%95%E8%BF%9B%E5%85%A5"><span class="toc-number">3.</span> <span class="toc-text">tty如何进入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5startx%E8%BF%9B%E8%A1%8Cdebug"><span class="toc-number">4.</span> <span class="toc-text">进入startx进行debug</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E9%87%8F%E7%9A%84-desktop%E6%97%A0%E6%B3%95%E6%89%93%E5%BC%80"><span class="toc-number">5.</span> <span class="toc-text">大量的.desktop无法打开</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E7%8E%B0%E4%BA%86Node-js"><span class="toc-number">6.</span> <span class="toc-text">发现了Node.js</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="toc-number">7.</span> <span class="toc-text">问题解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A3%85%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8"><span class="toc-number">8.1.</span> <span class="toc-text">重装显卡驱动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BDnodejs"><span class="toc-number">8.2.</span> <span class="toc-text">卸载nodejs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%89%80%E6%9C%89%E4%B8%8Enodejs%E6%9C%89%E5%85%B3%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-number">8.3.</span> <span class="toc-text">删除所有与nodejs有关的文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A3%85gnome"><span class="toc-number">8.4.</span> <span class="toc-text">重装gnome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E6%8D%A2%E5%86%85%E6%A0%B8"><span class="toc-number">8.5.</span> <span class="toc-text">切换内核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90"><span class="toc-number">8.6.</span> <span class="toc-text">修改用户权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9profile%E3%80%81-bashrc%E3%80%81-etc-environment%E2%80%A6%E2%80%A6"><span class="toc-number">8.7.</span> <span class="toc-text">修改profile、~&#x2F;.bashrc、&#x2F;etc&#x2F;environment……</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"ubuntu无法进入桌面的一种情况　| zhywyt's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/posts/62236/" title="上一篇: 第？课——基于矩阵快速幂的递推解法">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/posts/61355/" title="下一篇: 第三课——最短路">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/posts/10907/">在Unity2D中创建角色描边的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5993/">Listary——不仅仅是搜索器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/51899/">我的编辑器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/0/">游戏开发/Unity/shader/在Unity2D中创建屏幕扫描线的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/64880/">anzhiyu主题搭建记录</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/usehttps/">使用HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/61408/">实现自己的SHELL</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/29b61e029340/">不适用docker的gitea runner配置</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/34e784d46b0a/">如何在Ubuntu上使用Cmake编译Glut</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d7880d8f2f2e/">docker 设置代理与镜像站</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/58283ae7cb2d/">什么是shader？什么是Material？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b0c241b3d4cf/">hexo设置加密文章(失败)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/da74aa8e9f3b/">搭建一个多线程的MineCraft服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d863527924a0/">修复使用RigidBody2D实现击退效果时的叠加问题</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/247db5136c67/">解决Unity中的路径报错：DirectoryNotFoundException。</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/818482b58c2a/">如何创建一个朝向正确的飞行物？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/0e24283556b2/">UI的位置无法正确的移动</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d8eb45be176b/">Hexo+Github搭建静态网站</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8fd9ab7c695f/">伤病遇体测有感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4a74e5f5d3d6/">Unity2D场景交互设计</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e31df0f4a5f0/">Unity屏幕分辨率调整导致UI消失的原因</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e3e3aee8476b/">2024浙江省青少年定向锦标赛</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d7ea97fbec36/">Unity如何设置鼠标图标？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2024g10/">2024第一届下沙十英里接力赛后记</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f29c63b83721/">马原实践汇报</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6e1ed0060e67/">Unity如何控制场景切换后角色的位置？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/536c11d1caa5/">2024定向队新生选拔赛</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/337e148b3fb3/">远程连接与传输</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2c9570b00976/">NU-NeRF论文解读</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d586aba908b5/">如何绘制一张定向路线图？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5790301d4de2/">2024全国乡村定向系列赛事活动（浙江海宁站）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/96dff400cced/">waline评论系统搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8b013b915a1/">甲壳虫跑团“耐力挑战赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/bc16e0702e1d/">甲壳虫跑团“十英里接力赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a5bf365fe3fe/">甲壳虫跑团“十英里接力赛分院杯”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/bd7f49a3fa80/">Unity 如何创建不带UI的截图？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c6072bab6ff0/">Unity如何优雅地管理UI图层顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59a4f8f59f45/">Unity如何在脚本中使用本地话字符？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/823c297f1d7f/">Unity如何保存存档？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1cc3941f1b85/">如何使用ffmpeg无损压缩视频？</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/54404/">Unity本地化字体选择</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d742d8349fff/">Unity瓦片地图碰撞体积与图片大小不一致</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d9709c673656/">Linux基础操作</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5c54bd2bc06c/">frp配置</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/df4c31f7ba80/">PVE软路由配置</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b4ca7a5fb5b2/">ChatGLM本地配置记录</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24484/">pve 8.2.2 解决unsupported Ubuntu version '24.04'</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5953/">nerfstudio环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5181/">zerotier单向不通解决办法</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1fd1cabe051b/">2024第一届甲壳虫跑团百公里接力赛</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/49793/">KUbuntu安装CIscoPacketTracer</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4182/">PVE学生自用记录</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/62236/">第？课——基于矩阵快速幂的递推解法</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7287/">ubuntu无法进入桌面的一种情况</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/61355/">第三课——最短路</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/14027/">第二课——线段树</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53666/">第一课——树状数组</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/17428/">B-Spline</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/16515/">花期内的花的数目</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/11458/">简单的拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6679/">games101 HomeWork7</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/15892/">多线程之OMP</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3472/">Linux批量修改文件名字</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/56022/">games101 HomeWork6</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/56214/">games101 HomeWork5</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6999/">games101 HomeWork4</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/55574/">games101 HomeWork3</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6886/">Ubuntu解决高分屏下Matlab工具栏字体过小</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6615/">games101 HomeWork2</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/44638/">games101 HomeWork 作业以及提高课详解</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6295/">games101 HomeWork1</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/45431/">计算机图形学笔记三——橡皮筋技术和椭圆扫描算法</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/30828/">计算机图形学笔记一——绘制直线的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/15450/">基于Glut的俄罗斯方块开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/10536/">Games101笔记 P11~?</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/49493/">快速读入模板</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50901/">Git 教程转载</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/27853/">c语言文件读写</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63067/">康托展开</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/32280/">P1088 [NOIP2004 普及组] 火星人</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/51449/">P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2977/">P1177 【模板】快速排序</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/15959/">P1045 [NOIP2003 普及组] 麦森数——快速幂</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/47792/">P5461 赦免战俘</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2025 zhywyt
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
