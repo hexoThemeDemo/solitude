@@ -1,334 +1,310 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="Hexo Theme Redefine">
-    
-    <meta name="author" content="zhywyt">
-    <!-- preconnect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    
-    <!--- Seo Part-->
-    
-    <link rel="canonical" href="https://hexothemedemo.github.io/redefine/posts/823c297f1d7f/"/>
-    <meta name="robots" content="index,follow">
-    <meta name="googlebot" content="index,follow">
-    <meta name="revisit-after" content="1 days">
-    
-    
-    
-        
-        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="zhywyt" />
+
+
+
+<meta name="description" content="这部分内容消耗了我大量的时间和精力，在这里稍微总结一下吧。首先我和策划达成一个共识：当前所有的数据都要保存在角色身上，所以我们创建一个saveData类在我们的hero中。这里我们可以加入任何我们需要保存的数据。 但是我们需要实现多个存档，而PlayerPref只能存储单个存档，并且类型十分有限，只能存储整形、浮点、字符串。于是我们只能结束json的序列化字符串的功能来实现我们的想法。但是这还是不">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unity如何保存存档？">
-<meta property="og:url" content="https://hexothemedemo.github.io/redefine/posts/823c297f1d7f/index.html">
+<meta property="og:url" content="https://hexothemedemo.github.io/Yelee/posts/823c297f1d7f/index.html">
 <meta property="og:site_name" content="zhywyt&#39;s blog">
-<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:description" content="这部分内容消耗了我大量的时间和精力，在这里稍微总结一下吧。首先我和策划达成一个共识：当前所有的数据都要保存在角色身上，所以我们创建一个saveData类在我们的hero中。这里我们可以加入任何我们需要保存的数据。 但是我们需要实现多个存档，而PlayerPref只能存储单个存档，并且类型十分有限，只能存储整形、浮点、字符串。于是我们只能结束json的序列化字符串的功能来实现我们的想法。但是这还是不">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hexothemedemo.github.io/images/redefine-og.webp">
 <meta property="article:published_time" content="2024-10-03T19:29:00.000Z">
 <meta property="article:modified_time" content="2024-10-06T05:25:04.358Z">
 <meta property="article:author" content="zhywyt">
 <meta property="article:tag" content="技术文档">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hexothemedemo.github.io/images/redefine-og.webp">
-    
-    
-    <!--- Icon Part-->
-    <link rel="icon" type="image/png" href="/redefine/images/redefine-favicon.svg" sizes="192x192">
-    <link rel="apple-touch-icon" sizes="180x180" href="/redefine/images/redefine-favicon.svg">
-    <meta name="theme-color" content="#A31F34">
-    <link rel="shortcut icon" href="/redefine/images/redefine-favicon.svg">
-    <!--- Page Info-->
-    
-    <title>
-        
-            Unity如何保存存档？ | Theme Redefine[demo site]
-        
-    </title>
 
-    
-<link rel="stylesheet" href="/redefine/fonts/Chillax/chillax.css">
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
 
-    <!--- Inject Part-->
-    
-
-    
-<link rel="stylesheet" href="/redefine/css/style.css">
+    <link rel="alternate" href="/atom.xml" title="zhywyt&#39;s blog" type="application/atom+xml">
 
 
-    
-        
-<link rel="stylesheet" href="/redefine/css/build/tailwind.css">
 
-    
+    <link rel="shortcut icon" href="/favicon.png">
 
-    
-<link rel="stylesheet" href="/redefine/fonts/GeistMono/geist-mono.css">
 
-    
-<link rel="stylesheet" href="/redefine/fonts/Geist/geist.css">
 
-    <!--- Font Part-->
-    
-    
-    
-    
-    
-    
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
 
-    <script id="hexo-configurations">
-    window.config = {"hostname":"hexothemedemo.github.io","root":"/redefine/","language":"zh-CN"};
-    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Theme Redefine","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.2","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
-    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
-    window.data = {"masonry":false};
-  </script>
-    
-    <!--- Fontawesome Part-->
-    
-<link rel="stylesheet" href="/redefine/fontawesome/fontawesome.min.css">
 
-    
-<link rel="stylesheet" href="/redefine/fontawesome/brands.min.css">
 
-    
-<link rel="stylesheet" href="/redefine/fontawesome/solid.min.css">
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
 
-    
-<link rel="stylesheet" href="/redefine/fontawesome/regular.min.css">
 
-    
-    
-    
-    
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/Yelee/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Unity如何保存存档？ | zhywyt&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: 
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
 <meta name="generator" content="Hexo 7.3.0"></head>
-
-
-
 <body>
-	<div class="progress-bar-container">
-	
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/Yelee/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/Yelee/"></a></h1>
+        </hgroup>
 
-	
-	<span class="pjax-progress-bar"></span>
-	<!--        <span class="swup-progress-icon">-->
-	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
-	<!--        </span>-->
-	
-</div>
+        
 
-<main class="page-container" id="swup">
+        
 
-	
 
-	<div class="main-content-container flex flex-col justify-between min-h-dvh">
-		<div class="main-content-header">
-			<header class="navbar-container px-6 md:px-12">
-    <div class="navbar-content transition-navbar ">
-        <div class="left">
-            
-            <a class="logo-title" href="/redefine/">
-                
-                Theme Redefine[demo site]
-                
-            </a>
-        </div>
-
-        <div class="right">
-            <!-- PC -->
-            <div class="desktop">
-                <ul class="navbar-list">
-                    
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
                         
-                            
-
-                            <li class="navbar-item">
-                                <!-- Menu -->
-                                <a class=""
-                                   href="/redefine/"
-                                        >
-                                    <i class="fa-regular fa-house fa-fw"></i>
-                                    首页
-                                    
-                                </a>
-
-                                <!-- Submenu -->
-                                
-                            </li>
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
                     
-                    
-                </ul>
-            </div>
-            <!-- Mobile -->
-            <div class="mobile">
-                
-                <div class="icon-item navbar-bar">
-                    <div class="navbar-bar-middle"></div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
                 </div>
             </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/Yelee/">主页</a></li>
+                        
+                            <li><a href="/Yelee/archives/">所有文章</a></li>
+                        
+                            <li><a href="/Yelee/tags/">标签云</a></li>
+                        
+                            <li><a href="/Yelee/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/Yelee/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/encrypt/" rel="tag">encrypt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="tag">技术文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/" rel="tag">诗与散文</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/" rel="tag">错误解决</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
         </div>
-    </div>
-
-    <!-- Mobile sheet -->
-    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
-        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
-            
-                
-                    
-
-                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
-                        
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
-                           href="/redefine/"
-                        >
-                            <span>
-                                首页
-                            </span>
-                            
-                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
-                            
-                        </a>
-                        
-
-                        
-                    </li>
-            
-
-            
-            
-        </ul>
-
-        <div class="statistics flex justify-around my-2.5">
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/redefine/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">5</div>
-        <div class="label text-third-text-color text-sm">标签</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/redefine/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">33</div>
-        <div class="label text-third-text-color text-sm">分类</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/redefine/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">84</div>
-        <div class="label text-third-text-color text-sm">文章</div>
-    </a>
+    </header>                
 </div>
     </div>
-
-    <div class="window-mask"></div>
-
-</header>
-
-
-		</div>
-
-		<div class="main-content-body transition-fade-up">
-			
-
-			<div class="main-content">
-				<div class="post-page-container flex relative justify-between box-border w-full h-full">
-	<div class="article-content-container">
-
-		<div class="article-title relative w-full">
-			
-			<div class="w-full flex items-center pt-6 justify-start">
-				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">Unity如何保存存档？</h1>
-			</div>
-			
-		</div>
-
-		
-		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
-			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
-				<img src="/redefine/images/redefine-avatar.svg">
-			</div>
-			<div class="info flex flex-col justify-between">
-				<div class="author flex items-center">
-					<span class="name text-default-text-color text-lg font-semibold">zhywyt</span>
-					
-					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
-					
-				</div>
-				<div class="meta-info">
-					<div class="article-meta-info">
-    <span class="article-date article-meta-item">
-        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2024-10-03 19:29</span>
-        <span class="mobile">2024-10-03 19:29</span>
-        <span class="hover-info">创建</span>
-    </span>
-    
-        <span class="article-date article-meta-item">
-            <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-10-06 05:25:04</span>
-            <span class="mobile">2024-10-06 05:25:04</span>
-            <span class="hover-info">更新</span>
-        </span>
-    
-
-    
-        <span class="article-categories article-meta-item">
-            <i class="fa-regular fa-folders"></i>&nbsp;
-            <ul>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/Yelee/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/Yelee/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
                 
+                    <li><a href="/Yelee/">主页</a></li>
                 
-                    
-                        
-                        <li>
-                            <a href="/redefine/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/">游戏开发</a>&nbsp;
-                        </li>
-                    
-                    
+                    <li><a href="/Yelee/archives/">所有文章</a></li>
                 
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/redefine/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/">Unity</a>&nbsp;
-                        </li>
-                    
-                    
+                    <li><a href="/Yelee/tags/">标签云</a></li>
                 
-            </ul>
-        </span>
-    
-    
-        <span class="article-tags article-meta-item">
-            <i class="fa-regular fa-tags"></i>&nbsp;
-            <ul>
+                    <li><a href="/Yelee/about/">关于我</a></li>
                 
-                    <li>
-                        <a href="/redefine/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/">技术文档</a>&nbsp;
-                    </li>
-                
-            </ul>
-        </span>
-    
-
-    
-    
-    
-    
-        <span class="article-pv article-meta-item">
-            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
-        </span>
-    
-</div>
-
-				</div>
-			</div>
-		</div>
-		
-
-		
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/Yelee/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-游戏开发/Unity/存档系统/Unity如何保存存档？" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Yelee/posts/823c297f1d7f/" class="article-date">
+      <time datetime="2024-10-03T19:29:00.000Z" itemprop="datePublished">2024-10-03</time>
+</a>
 
 
-		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-			<p>这部分内容消耗了我大量的时间和精力，在这里稍微总结一下吧。首先我和策划达成一个共识：<strong>当前所有的数据都要保存在角色身上</strong>，所以我们创建一个<code>saveData</code>类在我们的<code>hero</code>中。这里我们可以加入任何我们需要保存的数据。</p>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Unity如何保存存档？
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/Yelee/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/">游戏开发</a><a class="article-category-link" href="/Yelee/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/">Unity</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/Yelee/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="tag">技术文档</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>这部分内容消耗了我大量的时间和精力，在这里稍微总结一下吧。首先我和策划达成一个共识：<strong>当前所有的数据都要保存在角色身上</strong>，所以我们创建一个<code>saveData</code>类在我们的<code>hero</code>中。这里我们可以加入任何我们需要保存的数据。</p>
 <p>但是我们需要实现多个存档，而PlayerPref只能存储单个存档，并且类型十分有限，只能存储<strong>整形</strong>、<strong>浮点</strong>、<strong>字符串</strong>。于是我们只能结束<code>json</code>的序列化字符串的功能来实现我们的想法。但是这还是不能解决多存档的问题。我在b站上看到一个思路：<font color='red'>使用PlayerPref保存存档信息，使用文件保存存档。</font>这个想法让我眼前一亮，直接开始了结构的整理。</p>
 <h1 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h1><p>我们有两个地方需要用到存档UI，一个是开始界面，玩家直接读档，一个是设置页面，玩家保存和读档。特殊的我们还需要实现自动存档来实现开始页面的继续游戏选项。我们总共设置八个存档，所以需要八个档位对象，挂载在存档表下。裆位对象需要实现外部展示、档位路由、按钮回调实现。存档表需要实现档位对象的管理。</p>
 <table>
@@ -368,9 +344,9 @@
 <p>这里的<code>UIManager</code>类和<code>RecordData</code>类再分清楚一点，<code>RecordData</code>类实际上没有保存任何与游戏相关的内容，而是把所有的存档的文件路径保存在了PlayerPref中，因为PlayerPref默认使用注册表保存，所以不宜保存大量数据，并且只需要保存一份数据就可以了。而<code>UIManager</code>类将所有的游戏数据保存在本地文件中，需要保存多个文件，接受<code>RecordData</code>管理。这里能理解那么这个存档系统就十分的清晰了。</p>
 <h1 id="类的实现"><a href="#类的实现" class="headerlink" title="类的实现"></a>类的实现</h1><h2 id="save"><a href="#save" class="headerlink" title="save"></a>save</h2><p>这个类主要用于展示我们的存档信息，每个对象只需要管理自己的一个存档就可以了。这份脚本需要挂载在所有的存档精灵上，所以它需要标识自己的存档序号，这个序号我选择手动标记。</p>
 <h3 id="数据部分"><a href="#数据部分" class="headerlink" title="数据部分"></a>数据部分</h3><p>数据部分主要包括三块：<code>控件</code>、<code>info</code>、<code>本地化</code>。</p>
-<p>由于只需要静态本地化字符，所以不需要很复杂的设计，只需要将需要的字符全部本地化就好了。本地化设置可以参考：<a class="link"   target="_blank" rel="noopener" href="http://hexo.zhywyt.me/posts/59a4f8f59f45" >Unity如何在脚本中使用本地话字符？<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p>由于只需要静态本地化字符，所以不需要很复杂的设计，只需要将需要的字符全部本地化就好了。本地化设置可以参考：<a target="_blank" rel="noopener" href="http://hexo.zhywyt.me/posts/59a4f8f59f45">Unity如何在脚本中使用本地话字符？</a></p>
 <p><strong>控件</strong>部分我们需要控制档位精灵下面的所有精灵，包括文字、按钮、图像等。<br><strong>info</strong>部分我设计为一个存档的决定因素，包括ID、图片路径、状态等。<br>这两部分代码如下：</p>
-<div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">region</span> 控件</span></span><br><span class="line"><span class="keyword">public</span> GameObject infoScence;</span><br><span class="line"><span class="keyword">public</span> GameObject infoGameTime;</span><br><span class="line"><span class="keyword">public</span> GameObject infoSaveTime;</span><br><span class="line"><span class="keyword">public</span> GameObject infoLabel;</span><br><span class="line"><span class="keyword">public</span> Image image;</span><br><span class="line"><span class="keyword">public</span> Button m_button;</span><br><span class="line"><span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">region</span> info</span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">int</span> ID;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">string</span> ImagePath;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">bool</span> isSave, isLoad;</span><br><span class="line"><span class="meta">#<span class="keyword">endregion</span></span></span><br></pre></td></tr></table></figure></div>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">region</span> 控件</span></span><br><span class="line"><span class="keyword">public</span> GameObject infoScence;</span><br><span class="line"><span class="keyword">public</span> GameObject infoGameTime;</span><br><span class="line"><span class="keyword">public</span> GameObject infoSaveTime;</span><br><span class="line"><span class="keyword">public</span> GameObject infoLabel;</span><br><span class="line"><span class="keyword">public</span> Image image;</span><br><span class="line"><span class="keyword">public</span> Button m_button;</span><br><span class="line"><span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">region</span> info</span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">int</span> ID;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">string</span> ImagePath;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">bool</span> isSave, isLoad;</span><br><span class="line"><span class="meta">#<span class="keyword">endregion</span></span></span><br></pre></td></tr></table></figure>
 
 <h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>方法一览：</p>
 <table>
@@ -417,13 +393,13 @@
 <td>删档函数，需要同步删除存档引用的截图</td>
 </tr>
 </tbody></table>
-<h3 id="代码汇总"><a href="#代码汇总" class="headerlink" title="代码汇总"></a>代码汇总</h3><div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><figcaption><span>fold | file:save.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> TMPro;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.Localization.Settings;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.Localization.Tables;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.Localization;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">save</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> 控件</span></span><br><span class="line">    <span class="keyword">public</span> GameObject infoScence;</span><br><span class="line">    <span class="keyword">public</span> GameObject infoGameTime;</span><br><span class="line">    <span class="keyword">public</span> GameObject infoSaveTime;</span><br><span class="line">    <span class="keyword">public</span> GameObject infoLabel;</span><br><span class="line">    <span class="keyword">public</span> Image image;</span><br><span class="line">    <span class="keyword">public</span> Button m_button;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> info</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> ID;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ImagePath;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span> isSave, isLoad;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> 本地化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span> lsCurScence, lsGameTime, lsSaveTime, lsAutoSave, lsSave;</span><br><span class="line">    <span class="keyword">public</span> LocalizedStringTable stringTable = <span class="keyword">new</span> LocalizedStringTable &#123; TableReference = <span class="string">&quot;UI&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnEnable</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        stringTable.TableChanged += LoadLocalizationString;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDisable</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        stringTable.TableChanged -= LoadLocalizationString;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">LoadLocalizationString</span>(<span class="params">StringTable table</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        lsCurScence = GetLocalizedString(table, <span class="string">&quot;CurrentScence&quot;</span>);</span><br><span class="line">        lsGameTime = GetLocalizedString(table, <span class="string">&quot;GameTime&quot;</span>);</span><br><span class="line">        lsSaveTime = GetLocalizedString(table, <span class="string">&quot;SaveTime&quot;</span>);</span><br><span class="line">        lsAutoSave = GetLocalizedString(table, <span class="string">&quot;AutoSave&quot;</span>);</span><br><span class="line">        lsSave = GetLocalizedString(table, <span class="string">&quot;Save&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="built_in">string</span> <span class="title">GetLocalizedString</span>(<span class="params">StringTable table, <span class="built_in">string</span> key</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(table == <span class="literal">null</span> || key == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;[LocalLization LOG] Table OR Key is null!&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> entry = table.GetEntry(key);</span><br><span class="line">        <span class="keyword">if</span> (entry == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;[LocalLization LOG] There is not key: &quot;</span> + key);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> entry.GetLocalizedString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> with include:</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> using UnityEngine.Localization;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        infoScence = gameObject.transform.Find(<span class="string">&quot;InfoScence&quot;</span>).gameObject;</span><br><span class="line">        infoGameTime = gameObject.transform.Find(<span class="string">&quot;InfoGameTime&quot;</span>).gameObject;</span><br><span class="line">        infoSaveTime = gameObject.transform.Find(<span class="string">&quot;InfoSaveTime&quot;</span>).gameObject;</span><br><span class="line">        infoLabel = gameObject.transform.Find(<span class="string">&quot;id&quot;</span>).gameObject;</span><br><span class="line">        image = GetComponent&lt;Image&gt;();</span><br><span class="line">        m_button = GetComponent&lt;Button&gt;();</span><br><span class="line">        isSave = isLoad = <span class="literal">false</span>;</span><br><span class="line">        m_button.onClick.AddListener(OnClick);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// TODO : load the screeenshot</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetInfo</span>(<span class="params"><span class="built_in">string</span> scence, <span class="built_in">string</span>  gameTime, <span class="built_in">string</span> saveTime, <span class="built_in">string</span> imagePath=<span class="string">&quot;&quot;</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 本地化</span></span><br><span class="line">        infoScence.GetComponent&lt;TextMeshProUGUI&gt;().text = (scence == <span class="literal">null</span> ? <span class="string">&quot;&quot;</span> : lsCurScence + <span class="string">&quot;：&quot;</span> + scence);</span><br><span class="line">        infoGameTime.GetComponent&lt;TextMeshProUGUI&gt;().text = (gameTime == <span class="literal">null</span> ? <span class="string">&quot;&quot;</span> : lsGameTime + <span class="string">&quot;：&quot;</span> + gameTime);</span><br><span class="line">        infoSaveTime.GetComponent&lt;TextMeshProUGUI&gt;().text = (saveTime == <span class="literal">null</span> ? <span class="string">&quot;&quot;</span> : lsSaveTime + <span class="string">&quot;：&quot;</span> + saveTime);</span><br><span class="line">        <span class="keyword">if</span> (imagePath != <span class="string">&quot;&quot;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">byte</span>[] bytes = System.IO.File.ReadAllBytes(imagePath);</span><br><span class="line">            Texture2D texture = <span class="keyword">new</span> Texture2D(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">            texture.LoadImage(bytes);</span><br><span class="line">            image.sprite = Sprite.Create(texture, <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, texture.width, texture.height), <span class="keyword">new</span> Vector2(<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">            ImagePath = imagePath;</span><br><span class="line">            Debug.Log(<span class="string">&quot;Succe Load The Image&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">getID</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> ID;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnClick</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (isSave)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 提示此操作不可逆</span></span><br><span class="line">            hero.Instance.Save(getID());</span><br><span class="line">            RecordData.instance.Load();</span><br><span class="line">            Debug.Log(<span class="string">&quot;Save the game&quot;</span> );</span><br><span class="line">            <span class="comment">// save</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (isLoad)</span><br><span class="line">        &#123;</span><br><span class="line">            hero.Instance.Load(getID());</span><br><span class="line">            Debug.Log(<span class="string">&quot;Load the game&quot;</span>);</span><br><span class="line">            <span class="comment">//load</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LoadSelf</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// load the id from json</span></span><br><span class="line">        <span class="comment">// 本地化</span></span><br><span class="line">        <span class="keyword">if</span> (ID == <span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// localization</span></span><br><span class="line">            infoLabel.GetComponent&lt;TextMeshProUGUI&gt;().text = lsAutoSave;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            infoLabel.GetComponent&lt;TextMeshProUGUI&gt;().text = lsSave + ID;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> saveData = SaveSystem.LoadFromJson&lt;hero.SaveData&gt;(RecordData.instance.getRecordName(getID()));</span><br><span class="line">        <span class="keyword">if</span> (saveData != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// format the time to hh mm ss</span></span><br><span class="line">            TimeSpan ts = <span class="keyword">new</span> TimeSpan(<span class="number">0</span>, <span class="number">0</span>, ((<span class="built_in">int</span>)saveData.GameTime));</span><br><span class="line">            <span class="keyword">var</span> gameTime = <span class="built_in">string</span>.Format(<span class="string">&quot;&#123;0:D2&#125;:&#123;1:D2&#125;:&#123;2:D2&#125;&quot;</span>, ts.Hours, ts.Minutes, ts.Seconds);</span><br><span class="line">            SetInfo(saveData.currentScene, gameTime, saveData.saveTime ,saveData.imagePath);</span><br><span class="line">            Debug.Log(<span class="string">&quot;Load the save: &quot;</span> + getID());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            Debug.Log(<span class="string">&quot;Save is empty :&quot;</span> + getID());</span><br><span class="line">        <span class="comment">// 空存档不处理</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetStatus</span>(<span class="params"><span class="built_in">bool</span> save, <span class="built_in">bool</span> load</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        isSave = save;</span><br><span class="line">        isLoad = load;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">DeleteSelf</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 确保删除的和存档列表相同</span></span><br><span class="line">        LoadSelf();</span><br><span class="line">        <span class="comment">// imagePath存在则删除</span></span><br><span class="line">        SaveSystem.FileDelete(ImagePath);</span><br><span class="line">        SaveSystem.FileDelete(RecordData.instance.getRecordName(getID()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<h3 id="代码汇总"><a href="#代码汇总" class="headerlink" title="代码汇总"></a>代码汇总</h3><figure class="highlight csharp"><figcaption><span>fold | file:save.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> TMPro;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.Localization.Settings;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.Localization.Tables;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.Localization;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">save</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> 控件</span></span><br><span class="line">    <span class="keyword">public</span> GameObject infoScence;</span><br><span class="line">    <span class="keyword">public</span> GameObject infoGameTime;</span><br><span class="line">    <span class="keyword">public</span> GameObject infoSaveTime;</span><br><span class="line">    <span class="keyword">public</span> GameObject infoLabel;</span><br><span class="line">    <span class="keyword">public</span> Image image;</span><br><span class="line">    <span class="keyword">public</span> Button m_button;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> info</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> ID;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ImagePath;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span> isSave, isLoad;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> 本地化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span> lsCurScence, lsGameTime, lsSaveTime, lsAutoSave, lsSave;</span><br><span class="line">    <span class="keyword">public</span> LocalizedStringTable stringTable = <span class="keyword">new</span> LocalizedStringTable &#123; TableReference = <span class="string">&quot;UI&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnEnable</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        stringTable.TableChanged += LoadLocalizationString;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDisable</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        stringTable.TableChanged -= LoadLocalizationString;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">LoadLocalizationString</span>(<span class="params">StringTable table</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        lsCurScence = GetLocalizedString(table, <span class="string">&quot;CurrentScence&quot;</span>);</span><br><span class="line">        lsGameTime = GetLocalizedString(table, <span class="string">&quot;GameTime&quot;</span>);</span><br><span class="line">        lsSaveTime = GetLocalizedString(table, <span class="string">&quot;SaveTime&quot;</span>);</span><br><span class="line">        lsAutoSave = GetLocalizedString(table, <span class="string">&quot;AutoSave&quot;</span>);</span><br><span class="line">        lsSave = GetLocalizedString(table, <span class="string">&quot;Save&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="built_in">string</span> <span class="title">GetLocalizedString</span>(<span class="params">StringTable table, <span class="built_in">string</span> key</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(table == <span class="literal">null</span> || key == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;[LocalLization LOG] Table OR Key is null!&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> entry = table.GetEntry(key);</span><br><span class="line">        <span class="keyword">if</span> (entry == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;[LocalLization LOG] There is not key: &quot;</span> + key);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> entry.GetLocalizedString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> with include:</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> using UnityEngine.Localization;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        infoScence = gameObject.transform.Find(<span class="string">&quot;InfoScence&quot;</span>).gameObject;</span><br><span class="line">        infoGameTime = gameObject.transform.Find(<span class="string">&quot;InfoGameTime&quot;</span>).gameObject;</span><br><span class="line">        infoSaveTime = gameObject.transform.Find(<span class="string">&quot;InfoSaveTime&quot;</span>).gameObject;</span><br><span class="line">        infoLabel = gameObject.transform.Find(<span class="string">&quot;id&quot;</span>).gameObject;</span><br><span class="line">        image = GetComponent&lt;Image&gt;();</span><br><span class="line">        m_button = GetComponent&lt;Button&gt;();</span><br><span class="line">        isSave = isLoad = <span class="literal">false</span>;</span><br><span class="line">        m_button.onClick.AddListener(OnClick);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// TODO : load the screeenshot</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetInfo</span>(<span class="params"><span class="built_in">string</span> scence, <span class="built_in">string</span>  gameTime, <span class="built_in">string</span> saveTime, <span class="built_in">string</span> imagePath=<span class="string">&quot;&quot;</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 本地化</span></span><br><span class="line">        infoScence.GetComponent&lt;TextMeshProUGUI&gt;().text = (scence == <span class="literal">null</span> ? <span class="string">&quot;&quot;</span> : lsCurScence + <span class="string">&quot;：&quot;</span> + scence);</span><br><span class="line">        infoGameTime.GetComponent&lt;TextMeshProUGUI&gt;().text = (gameTime == <span class="literal">null</span> ? <span class="string">&quot;&quot;</span> : lsGameTime + <span class="string">&quot;：&quot;</span> + gameTime);</span><br><span class="line">        infoSaveTime.GetComponent&lt;TextMeshProUGUI&gt;().text = (saveTime == <span class="literal">null</span> ? <span class="string">&quot;&quot;</span> : lsSaveTime + <span class="string">&quot;：&quot;</span> + saveTime);</span><br><span class="line">        <span class="keyword">if</span> (imagePath != <span class="string">&quot;&quot;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">byte</span>[] bytes = System.IO.File.ReadAllBytes(imagePath);</span><br><span class="line">            Texture2D texture = <span class="keyword">new</span> Texture2D(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">            texture.LoadImage(bytes);</span><br><span class="line">            image.sprite = Sprite.Create(texture, <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, texture.width, texture.height), <span class="keyword">new</span> Vector2(<span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">            ImagePath = imagePath;</span><br><span class="line">            Debug.Log(<span class="string">&quot;Succe Load The Image&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">getID</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> ID;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnClick</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (isSave)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 提示此操作不可逆</span></span><br><span class="line">            hero.Instance.Save(getID());</span><br><span class="line">            RecordData.instance.Load();</span><br><span class="line">            Debug.Log(<span class="string">&quot;Save the game&quot;</span> );</span><br><span class="line">            <span class="comment">// save</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (isLoad)</span><br><span class="line">        &#123;</span><br><span class="line">            hero.Instance.Load(getID());</span><br><span class="line">            Debug.Log(<span class="string">&quot;Load the game&quot;</span>);</span><br><span class="line">            <span class="comment">//load</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LoadSelf</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// load the id from json</span></span><br><span class="line">        <span class="comment">// 本地化</span></span><br><span class="line">        <span class="keyword">if</span> (ID == <span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// localization</span></span><br><span class="line">            infoLabel.GetComponent&lt;TextMeshProUGUI&gt;().text = lsAutoSave;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            infoLabel.GetComponent&lt;TextMeshProUGUI&gt;().text = lsSave + ID;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> saveData = SaveSystem.LoadFromJson&lt;hero.SaveData&gt;(RecordData.instance.getRecordName(getID()));</span><br><span class="line">        <span class="keyword">if</span> (saveData != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// format the time to hh mm ss</span></span><br><span class="line">            TimeSpan ts = <span class="keyword">new</span> TimeSpan(<span class="number">0</span>, <span class="number">0</span>, ((<span class="built_in">int</span>)saveData.GameTime));</span><br><span class="line">            <span class="keyword">var</span> gameTime = <span class="built_in">string</span>.Format(<span class="string">&quot;&#123;0:D2&#125;:&#123;1:D2&#125;:&#123;2:D2&#125;&quot;</span>, ts.Hours, ts.Minutes, ts.Seconds);</span><br><span class="line">            SetInfo(saveData.currentScene, gameTime, saveData.saveTime ,saveData.imagePath);</span><br><span class="line">            Debug.Log(<span class="string">&quot;Load the save: &quot;</span> + getID());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            Debug.Log(<span class="string">&quot;Save is empty :&quot;</span> + getID());</span><br><span class="line">        <span class="comment">// 空存档不处理</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetStatus</span>(<span class="params"><span class="built_in">bool</span> save, <span class="built_in">bool</span> load</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        isSave = save;</span><br><span class="line">        isLoad = load;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">DeleteSelf</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 确保删除的和存档列表相同</span></span><br><span class="line">        LoadSelf();</span><br><span class="line">        <span class="comment">// imagePath存在则删除</span></span><br><span class="line">        SaveSystem.FileDelete(ImagePath);</span><br><span class="line">        SaveSystem.FileDelete(RecordData.instance.getRecordName(getID()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>非常不错，我们来看下一个类的实现。</p>
 <h2 id="UIManager"><a href="#UIManager" class="headerlink" title="UIManager"></a>UIManager</h2><p>这是一个非常庞大的类，我写它的目的是用于管理所有的UI控件，并为他们设置回调函数，事实上，目前为止，除了存档这样逻辑复杂的控件以外其他的控件我都是使用该类简单地进行回调的。在一个类中处理所有的UI逻辑会显得很简单，但是今天不是来讲UI逻辑的，我们只将其中管理存档的部分代码，你可以参照这个设计理念设计一个简单的存档管理类，而不是UI管理。<br>首先我们需要获取当前存档结构的所有精灵：</p>
-<div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><figcaption><span>file:UIManager.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> GameObject AllSave;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">string</span> preAllSaveButtonName;</span><br><span class="line"><span class="keyword">public</span> List&lt;<span class="built_in">string</span>&gt; AllSaveButtonName = <span class="keyword">new</span> List&lt;<span class="built_in">string</span>&gt; &#123; <span class="string">&quot;Save1&quot;</span>, <span class="string">&quot;Save2&quot;</span>, <span class="string">&quot;Save3&quot;</span>, <span class="string">&quot;Save4&quot;</span>, <span class="string">&quot;Save5&quot;</span>, <span class="string">&quot;Save6&quot;</span>, <span class="string">&quot;Save7&quot;</span>, <span class="string">&quot;Save8&quot;</span> &#125;;</span><br><span class="line"><span class="keyword">public</span> Dictionary&lt;<span class="built_in">string</span>, GameObject&gt; AllSaveButton = <span class="keyword">new</span> Dictionary&lt;<span class="built_in">string</span>, GameObject&gt;();</span><br><span class="line"><span class="keyword">public</span> GameObject AllSaveCloseButton;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">bool</span> isSave;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">bool</span> isLoad;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span>&#123;</span><br><span class="line">	<span class="comment">// something others</span></span><br><span class="line"></span><br><span class="line">	preAllSaveButtonName = <span class="string">&quot;Viewport/Content/&quot;</span>;</span><br><span class="line">	isSave = isLoad = <span class="literal">false</span>;</span><br><span class="line">	AllSaveButtonName = <span class="keyword">new</span> List&lt;<span class="built_in">string</span>&gt; &#123; <span class="string">&quot;Save1&quot;</span>, <span class="string">&quot;Save2&quot;</span>, <span class="string">&quot;Save3&quot;</span>, <span class="string">&quot;Save4&quot;</span>, <span class="string">&quot;Save5&quot;</span>, <span class="string">&quot;Save6&quot;</span>, <span class="string">&quot;Save7&quot;</span>, <span class="string">&quot;Save8&quot;</span> &#125;;</span><br><span class="line">	AllSave = SettingScreen.transform.Find(<span class="string">&quot;AllSave&quot;</span>).gameObject;</span><br><span class="line">	AllSaveCloseButton = AllSave.transform.Find(<span class="string">&quot;close&quot;</span>).gameObject;</span><br><span class="line">	<span class="keyword">for</span> (<span class="built_in">int</span> i=<span class="number">0</span>;i &lt; AllSaveButtonName.Count; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">var</span> button = AllSave.transform.Find(preAllSaveButtonName+AllSaveButtonName[i]);</span><br><span class="line">		<span class="keyword">if</span> (button != <span class="literal">null</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			AllSaveButton.Add(AllSaveButtonName[i],button.gameObject);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			Debug.LogError(<span class="string">&quot;Can&#x27;t find button: &quot;</span> + AllSaveButtonName[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Start</span>()</span>&#123;</span><br><span class="line">	<span class="comment">// something</span></span><br><span class="line">	<span class="keyword">if</span>(AllSaveCloseButton.GetComponent&lt;Button&gt;() != <span class="literal">null</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		AllSaveCloseButton.GetComponent&lt;Button&gt;().onClick.AddListener(() =&gt;</span><br><span class="line">		&#123;</span><br><span class="line">			Debug.Log(<span class="string">&quot;Close activate!&quot;</span>);</span><br><span class="line">			disableCanvas(AllSave);</span><br><span class="line">			isLoad = isSave = <span class="literal">false</span>;</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight csharp"><figcaption><span>file:UIManager.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> GameObject AllSave;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">string</span> preAllSaveButtonName;</span><br><span class="line"><span class="keyword">public</span> List&lt;<span class="built_in">string</span>&gt; AllSaveButtonName = <span class="keyword">new</span> List&lt;<span class="built_in">string</span>&gt; &#123; <span class="string">&quot;Save1&quot;</span>, <span class="string">&quot;Save2&quot;</span>, <span class="string">&quot;Save3&quot;</span>, <span class="string">&quot;Save4&quot;</span>, <span class="string">&quot;Save5&quot;</span>, <span class="string">&quot;Save6&quot;</span>, <span class="string">&quot;Save7&quot;</span>, <span class="string">&quot;Save8&quot;</span> &#125;;</span><br><span class="line"><span class="keyword">public</span> Dictionary&lt;<span class="built_in">string</span>, GameObject&gt; AllSaveButton = <span class="keyword">new</span> Dictionary&lt;<span class="built_in">string</span>, GameObject&gt;();</span><br><span class="line"><span class="keyword">public</span> GameObject AllSaveCloseButton;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">bool</span> isSave;</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">bool</span> isLoad;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span>&#123;</span><br><span class="line">	<span class="comment">// something others</span></span><br><span class="line"></span><br><span class="line">	preAllSaveButtonName = <span class="string">&quot;Viewport/Content/&quot;</span>;</span><br><span class="line">	isSave = isLoad = <span class="literal">false</span>;</span><br><span class="line">	AllSaveButtonName = <span class="keyword">new</span> List&lt;<span class="built_in">string</span>&gt; &#123; <span class="string">&quot;Save1&quot;</span>, <span class="string">&quot;Save2&quot;</span>, <span class="string">&quot;Save3&quot;</span>, <span class="string">&quot;Save4&quot;</span>, <span class="string">&quot;Save5&quot;</span>, <span class="string">&quot;Save6&quot;</span>, <span class="string">&quot;Save7&quot;</span>, <span class="string">&quot;Save8&quot;</span> &#125;;</span><br><span class="line">	AllSave = SettingScreen.transform.Find(<span class="string">&quot;AllSave&quot;</span>).gameObject;</span><br><span class="line">	AllSaveCloseButton = AllSave.transform.Find(<span class="string">&quot;close&quot;</span>).gameObject;</span><br><span class="line">	<span class="keyword">for</span> (<span class="built_in">int</span> i=<span class="number">0</span>;i &lt; AllSaveButtonName.Count; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">var</span> button = AllSave.transform.Find(preAllSaveButtonName+AllSaveButtonName[i]);</span><br><span class="line">		<span class="keyword">if</span> (button != <span class="literal">null</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			AllSaveButton.Add(AllSaveButtonName[i],button.gameObject);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			Debug.LogError(<span class="string">&quot;Can&#x27;t find button: &quot;</span> + AllSaveButtonName[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Start</span>()</span>&#123;</span><br><span class="line">	<span class="comment">// something</span></span><br><span class="line">	<span class="keyword">if</span>(AllSaveCloseButton.GetComponent&lt;Button&gt;() != <span class="literal">null</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		AllSaveCloseButton.GetComponent&lt;Button&gt;().onClick.AddListener(() =&gt;</span><br><span class="line">		&#123;</span><br><span class="line">			Debug.Log(<span class="string">&quot;Close activate!&quot;</span>);</span><br><span class="line">			disableCanvas(AllSave);</span><br><span class="line">			isLoad = isSave = <span class="literal">false</span>;</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>然后我们设置打开存档的回调函数：</p>
-<div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OnOpenSave</span>()</span>&#123;</span><br><span class="line">	isSave = <span class="literal">true</span>;</span><br><span class="line">	UpdateAllSave();</span><br><span class="line">	enableCanvas(AllSave);</span><br><span class="line">	Debug.Log(<span class="string">&quot;Save is avaliable&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UpdateAllSave</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// to update the save from disk to UI</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; AllSaveButtonName.Count; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">var</span> asave = AllSaveButton[AllSaveButtonName[i]].GetComponent&lt;save&gt;();</span><br><span class="line">		asave.LoadSelf();</span><br><span class="line">		asave.SetStatus(isSave,isLoad);</span><br><span class="line">	&#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OnOpenSave</span>()</span>&#123;</span><br><span class="line">	isSave = <span class="literal">true</span>;</span><br><span class="line">	UpdateAllSave();</span><br><span class="line">	enableCanvas(AllSave);</span><br><span class="line">	Debug.Log(<span class="string">&quot;Save is avaliable&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UpdateAllSave</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// to update the save from disk to UI</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; AllSaveButtonName.Count; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">var</span> asave = AllSaveButton[AllSaveButtonName[i]].GetComponent&lt;save&gt;();</span><br><span class="line">		asave.LoadSelf();</span><br><span class="line">		asave.SetStatus(isSave,isLoad);</span><br><span class="line">	&#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>由于这只是部分的代码，我不能确定是否能直接运行（大概率不行），你需要自己编写属于你的管理类，这里只做参考。因为这个类也不是最重要的类，只是一个中间层而已。我们的存档思想主要体现在<code>RecordData</code>类中：</p>
 <h2 id="RecordData"><a href="#RecordData" class="headerlink" title="RecordData"></a>RecordData</h2><p>我们需要在这个类中记录我们存档在计算机上的保存信息，并对应在内存（代码）中的映射关系。这个类近乎是一个模板，因为它和保存的数据结构没有任何关系，只需要接口对应就能完成它的工作。同样的，我把它设计为一个单例，这样保证我们不会有更多的存档。</p>
 <h3 id="数据部分-1"><a href="#数据部分-1" class="headerlink" title="数据部分"></a>数据部分</h3><p>在数据部分，我们需要设定我们的最大存档的数量、以及在注册表中的键名（因为我们的这些信息是使用<code>PlaerPref</code>保存在注册表中的）、一个记录存档的数据类（目前里面只需要保存存档的文件路径就好了）。</p>
@@ -488,7 +464,7 @@
 <td>接口函数，用于返回存档数</td>
 </tr>
 </tbody></table>
-<h3 id="代码汇总-1"><a href="#代码汇总-1" class="headerlink" title="代码汇总"></a>代码汇总</h3><div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><figcaption><span>fold | file:RecordData.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> Unity.VisualScripting;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RecordData</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> 单例</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> RecordData instance;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            DontDestroyOnLoad(gameObject);</span><br><span class="line">            instance = <span class="keyword">this</span>;</span><br><span class="line">            <span class="comment">// 创建全空数组</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; recordNum; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                recordName[i] = <span class="string">&quot;&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            Load();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (instance != <span class="keyword">this</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Destroy(gameObject);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">const</span> <span class="built_in">int</span> recordNum = <span class="number">8</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">const</span> <span class="built_in">string</span> NAME = <span class="string">&quot;Saves&quot;</span>;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span>[] recordName = <span class="keyword">new</span> <span class="built_in">string</span>[recordNum];</span><br><span class="line">    <span class="comment">//public int lastID;</span></span><br><span class="line">    <span class="keyword">class</span> <span class="title">SaveData</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">string</span>[] recordName = <span class="keyword">new</span> <span class="built_in">string</span>[recordNum];</span><br><span class="line">        <span class="comment">//public int lastID;</span></span><br><span class="line">    &#125;</span><br><span class="line">     <span class="function">SaveData <span class="title">ForSave</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> saveData = <span class="keyword">new</span> SaveData();</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; recordNum; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            saveData.recordName[i] = recordName[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//saveData.lastID = lastID;</span></span><br><span class="line">        <span class="keyword">return</span> saveData;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">ForLoad</span>(<span class="params">SaveData saveData</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//lastID = saveData.lastID;</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; recordNum; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            recordName[i] = saveData.recordName[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Save</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        SaveSystem.SaveByPlayerPrefs(NAME, ForSave());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Load</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (PlayerPrefs.HasKey(NAME))</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;Log the record SUCCE!!&quot;</span>);</span><br><span class="line">            <span class="keyword">var</span> saveData = SaveSystem.LoadFromPlayerPrefs&lt;SaveData&gt;(NAME);</span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; recordNum; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 文件不存在则删除该记录</span></span><br><span class="line">                <span class="keyword">if</span> (saveData.recordName[i] != <span class="string">&quot;&quot;</span> &amp;&amp; !File.Exists(saveData.recordName[i]))</span><br><span class="line">                &#123;</span><br><span class="line">                    saveData.recordName[i] = <span class="string">&quot;&quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        ForLoad(saveData);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">getRecordName</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> name = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">if</span> (id &gt;= <span class="number">0</span> &amp;&amp; id &lt; recordNum)</span><br><span class="line">            name = recordName[id];</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">genRecordName</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(id &gt;= <span class="number">0</span> &amp;&amp; id &lt; recordNum)</span><br><span class="line">        &#123;</span><br><span class="line">            recordName[id] = Path.Combine(Application.persistentDataPath, NAME, System.DateTime.Now.ToString(<span class="string">&quot;yyyy-MM-dd_HH-mm-ss&quot;</span>) + <span class="string">&quot;.json&quot;</span>);</span><br><span class="line">            Save();</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> UNITY_EDITOR</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="built_in">int</span> i=<span class="number">0</span>;i&lt;recordNum; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                Debug.Log(<span class="string">&quot;RecordData: &quot;</span> + i + <span class="string">&quot; :&quot;</span> + recordName[i]);</span><br><span class="line">            &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">            <span class="keyword">return</span> recordName[id];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">getNum</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> recordNum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<h3 id="代码汇总-1"><a href="#代码汇总-1" class="headerlink" title="代码汇总"></a>代码汇总</h3><figure class="highlight csharp"><figcaption><span>fold | file:RecordData.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> Unity.VisualScripting;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RecordData</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> 单例</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> RecordData instance;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            DontDestroyOnLoad(gameObject);</span><br><span class="line">            instance = <span class="keyword">this</span>;</span><br><span class="line">            <span class="comment">// 创建全空数组</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; recordNum; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                recordName[i] = <span class="string">&quot;&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            Load();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (instance != <span class="keyword">this</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Destroy(gameObject);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">const</span> <span class="built_in">int</span> recordNum = <span class="number">8</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">const</span> <span class="built_in">string</span> NAME = <span class="string">&quot;Saves&quot;</span>;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span>[] recordName = <span class="keyword">new</span> <span class="built_in">string</span>[recordNum];</span><br><span class="line">    <span class="comment">//public int lastID;</span></span><br><span class="line">    <span class="keyword">class</span> <span class="title">SaveData</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">string</span>[] recordName = <span class="keyword">new</span> <span class="built_in">string</span>[recordNum];</span><br><span class="line">        <span class="comment">//public int lastID;</span></span><br><span class="line">    &#125;</span><br><span class="line">     <span class="function">SaveData <span class="title">ForSave</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> saveData = <span class="keyword">new</span> SaveData();</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; recordNum; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            saveData.recordName[i] = recordName[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//saveData.lastID = lastID;</span></span><br><span class="line">        <span class="keyword">return</span> saveData;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">ForLoad</span>(<span class="params">SaveData saveData</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//lastID = saveData.lastID;</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; recordNum; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            recordName[i] = saveData.recordName[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Save</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        SaveSystem.SaveByPlayerPrefs(NAME, ForSave());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Load</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (PlayerPrefs.HasKey(NAME))</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;Log the record SUCCE!!&quot;</span>);</span><br><span class="line">            <span class="keyword">var</span> saveData = SaveSystem.LoadFromPlayerPrefs&lt;SaveData&gt;(NAME);</span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; recordNum; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 文件不存在则删除该记录</span></span><br><span class="line">                <span class="keyword">if</span> (saveData.recordName[i] != <span class="string">&quot;&quot;</span> &amp;&amp; !File.Exists(saveData.recordName[i]))</span><br><span class="line">                &#123;</span><br><span class="line">                    saveData.recordName[i] = <span class="string">&quot;&quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        ForLoad(saveData);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">getRecordName</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> name = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">if</span> (id &gt;= <span class="number">0</span> &amp;&amp; id &lt; recordNum)</span><br><span class="line">            name = recordName[id];</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">genRecordName</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(id &gt;= <span class="number">0</span> &amp;&amp; id &lt; recordNum)</span><br><span class="line">        &#123;</span><br><span class="line">            recordName[id] = Path.Combine(Application.persistentDataPath, NAME, System.DateTime.Now.ToString(<span class="string">&quot;yyyy-MM-dd_HH-mm-ss&quot;</span>) + <span class="string">&quot;.json&quot;</span>);</span><br><span class="line">            Save();</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> UNITY_EDITOR</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="built_in">int</span> i=<span class="number">0</span>;i&lt;recordNum; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                Debug.Log(<span class="string">&quot;RecordData: &quot;</span> + i + <span class="string">&quot; :&quot;</span> + recordName[i]);</span><br><span class="line">            &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">            <span class="keyword">return</span> recordName[id];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">getNum</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> recordNum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 <h3 id="讲解"><a href="#讲解" class="headerlink" title="讲解"></a>讲解</h3><p>这个类的实现思路很有意思，它只调用了两个与文件操作的接口，也就是后面要实现的<code>SaveSystem</code>类。自由度极高，它使用时间戳来给需要保存的存档命名，每次初始化检查存档文件是否存在，不存在则删除注册表中的记录。这样可以让用户删除存档文件的时候出现错误。如果你希望，还可以加一个反向添加的功能，这样就能让玩家自己添加存档了。这里我就不实现了。</p>
@@ -534,12 +510,12 @@
 <td>接口函数，删除指定文件</td>
 </tr>
 </tbody></table>
-<h3 id="代码汇总-2"><a href="#代码汇总-2" class="headerlink" title="代码汇总"></a>代码汇总</h3><div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><figcaption><span>fold | file:SaveSystem.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">using</span> Unity.VisualScripting;</span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SaveSystem</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> 单例</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> SaveSystem instance;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            DontDestroyOnLoad(gameObject);</span><br><span class="line">            instance = <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (instance != <span class="keyword">this</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Destroy(gameObject);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> prefs</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SaveByPlayerPrefs</span>(<span class="params"><span class="built_in">string</span> key, <span class="built_in">object</span> obj</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> json = JsonUtility.ToJson(obj);</span><br><span class="line">        PlayerPrefs.SetString(key, json);</span><br><span class="line">        PlayerPrefs.Save();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> T <span class="title">LoadFromPlayerPrefs</span>&lt;<span class="title">T</span>&gt;(<span class="params"><span class="built_in">string</span> key</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> json = PlayerPrefs.GetString(key,<span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">if</span> (json!=<span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> JsonUtility.FromJson&lt;T&gt;(json);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">default</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> JOSN</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="built_in">string</span> <span class="title">GetPath</span>(<span class="params"><span class="built_in">string</span> filename</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> Path.Combine(Application.persistentDataPath, filename);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SaveByJson</span>(<span class="params"><span class="built_in">string</span> path, <span class="built_in">object</span> obj</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> json = JsonUtility.ToJson(obj);</span><br><span class="line">        Debug.Log(json);</span><br><span class="line">        <span class="comment">// path dir not exist</span></span><br><span class="line">        <span class="keyword">if</span> (!Directory.Exists(Path.GetDirectoryName(path)))</span><br><span class="line">        &#123;</span><br><span class="line">            Directory.CreateDirectory(Path.GetDirectoryName(path));</span><br><span class="line">        &#125;</span><br><span class="line">        System.IO.File.WriteAllText(path, json);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> T <span class="title">LoadFromJson</span>&lt;<span class="title">T</span>&gt;(<span class="params"><span class="built_in">string</span> fileName</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (fileName == <span class="string">&quot;&quot;</span>||fileName==<span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;File name is empty&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">default</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">string</span> path = GetPath(fileName);</span><br><span class="line">        <span class="keyword">if</span>(File.Exists(path))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">string</span> json = File.ReadAllText(path);</span><br><span class="line">            Debug.Log(<span class="string">$&quot;Loaded from <span class="subst">&#123;path&#125;</span>&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> JsonUtility.FromJson&lt;T&gt;(json);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;File not found in &quot;</span> + path);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">default</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">FileDelete</span>(<span class="params"><span class="built_in">string</span> path</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// path存在</span></span><br><span class="line">        <span class="keyword">if</span> (File.Exists(GetPath(path)))</span><br><span class="line">        &#123;</span><br><span class="line">            File.Delete(GetPath(path));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br></pre></td></tr></table></figure></div>
+<h3 id="代码汇总-2"><a href="#代码汇总-2" class="headerlink" title="代码汇总"></a>代码汇总</h3><figure class="highlight csharp"><figcaption><span>fold | file:SaveSystem.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">using</span> Unity.VisualScripting;</span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SaveSystem</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> 单例</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> SaveSystem instance;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            DontDestroyOnLoad(gameObject);</span><br><span class="line">            instance = <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (instance != <span class="keyword">this</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Destroy(gameObject);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> prefs</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SaveByPlayerPrefs</span>(<span class="params"><span class="built_in">string</span> key, <span class="built_in">object</span> obj</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> json = JsonUtility.ToJson(obj);</span><br><span class="line">        PlayerPrefs.SetString(key, json);</span><br><span class="line">        PlayerPrefs.Save();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> T <span class="title">LoadFromPlayerPrefs</span>&lt;<span class="title">T</span>&gt;(<span class="params"><span class="built_in">string</span> key</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> json = PlayerPrefs.GetString(key,<span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">if</span> (json!=<span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> JsonUtility.FromJson&lt;T&gt;(json);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">default</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> JOSN</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="built_in">string</span> <span class="title">GetPath</span>(<span class="params"><span class="built_in">string</span> filename</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> Path.Combine(Application.persistentDataPath, filename);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SaveByJson</span>(<span class="params"><span class="built_in">string</span> path, <span class="built_in">object</span> obj</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> json = JsonUtility.ToJson(obj);</span><br><span class="line">        Debug.Log(json);</span><br><span class="line">        <span class="comment">// path dir not exist</span></span><br><span class="line">        <span class="keyword">if</span> (!Directory.Exists(Path.GetDirectoryName(path)))</span><br><span class="line">        &#123;</span><br><span class="line">            Directory.CreateDirectory(Path.GetDirectoryName(path));</span><br><span class="line">        &#125;</span><br><span class="line">        System.IO.File.WriteAllText(path, json);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> T <span class="title">LoadFromJson</span>&lt;<span class="title">T</span>&gt;(<span class="params"><span class="built_in">string</span> fileName</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (fileName == <span class="string">&quot;&quot;</span>||fileName==<span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;File name is empty&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">default</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">string</span> path = GetPath(fileName);</span><br><span class="line">        <span class="keyword">if</span>(File.Exists(path))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">string</span> json = File.ReadAllText(path);</span><br><span class="line">            Debug.Log(<span class="string">$&quot;Loaded from <span class="subst">&#123;path&#125;</span>&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> JsonUtility.FromJson&lt;T&gt;(json);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;File not found in &quot;</span> + path);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">default</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">FileDelete</span>(<span class="params"><span class="built_in">string</span> path</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// path存在</span></span><br><span class="line">        <span class="keyword">if</span> (File.Exists(GetPath(path)))</span><br><span class="line">        &#123;</span><br><span class="line">            File.Delete(GetPath(path));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br></pre></td></tr></table></figure>
 <h2 id="hero"><a href="#hero" class="headerlink" title="hero"></a>hero</h2><p>最后就是我们的主要数据控制部分了，在<code>hero</code>类或者你自己的<code>Player</code>类中，我们需要定义需要保存的数据结构，以及调用接口进行保存和读取操作。如果你看的仔细的话，在<code>save.cs</code>类中已经存在了对<code>hero</code>单例的函数调用，因为当前的所有数据都保存在<code>hero</code>中，我们需要它来具体读入和保存。</p>
 <h3 id="数据部分-3"><a href="#数据部分-3" class="headerlink" title="数据部分"></a>数据部分</h3><p>首先我们要定义一个需要保存的数据结构，并声明为可序列化类：</p>
-<div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">System.Serializable</span>]<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SaveData</span>&#123;</span><br><span class="line">	<span class="comment">// your data</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">System.Serializable</span>]<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SaveData</span>&#123;</span><br><span class="line">	<span class="comment">// your data</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这里可以保存任何你想保存的数据，包括基础类型、列表、字典等一切可序列化的数据。<br>如果你想实现自动保存的话，你还需要一个自动保存计时器。并定义自动保存挡位ID和它的自动保存时间：</p>
-<div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="built_in">float</span> SinceLastSaveTime;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> AUTO_SAVE_ID = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> AUTO_SAVE_TIME = <span class="number">10</span>;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="built_in">float</span> SinceLastSaveTime;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> AUTO_SAVE_ID = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> AUTO_SAVE_TIME = <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
 
 <p>然后你还需要在<code>Start</code>函数中初始化他们，并在<code>Update</code>函数中更新计时器。<br>这部分我不细讲了。你可以自己实现，或者借助GPT的力量。</p>
 <h3 id="方法-3"><a href="#方法-3" class="headerlink" title="方法"></a>方法</h3><table>
@@ -575,416 +551,222 @@
 </tr>
 </tbody></table>
 <p>代码我给出存档部分的，具体的数据请自己实现：</p>
-<div class="code-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><figcaption><span>fold | file:hero.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">    <span class="meta">#<span class="keyword">region</span> JSON存档</span></span><br><span class="line">    <span class="function">SaveData <span class="title">ForSave</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> saveData = <span class="keyword">new</span> SaveData();</span><br><span class="line">		<span class="comment">// copy your data</span></span><br><span class="line">        <span class="keyword">return</span> saveData;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">ForLoad</span>(<span class="params">SaveData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">		<span class="comment">// copy your data</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Save</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> RecordName = RecordData.instance.genRecordName(id);</span><br><span class="line">        <span class="keyword">if</span>(RecordName == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.LogError(<span class="string">&quot;RecordName is null&quot;</span>);</span><br><span class="line">            Debug.LogError(<span class="string">&quot;ID: &quot;</span>+id.ToString());</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Save to :&quot;</span>+RecordName);</span><br><span class="line">        SaveSystem.SaveByJson(RecordName, ForSave());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Load</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> saveData = SaveSystem.LoadFromJson&lt;SaveData&gt;(RecordData.instance.getRecordName(id));</span><br><span class="line">        <span class="keyword">if</span> (saveData != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ForLoad(saveData);</span><br><span class="line">            Debug.Log(<span class="string">&quot;Load the data from &quot;</span> + id.ToString() + <span class="string">&quot; : &quot;</span> + saveData);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            Debug.Log(id.ToString() + <span class="string">&quot;空存档&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> UNITY_EDITOR</span></span><br><span class="line">    [<span class="meta">UnityEditor.MenuItem(<span class="string">&quot;Jobs/Delete All PlayerPrefs&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">DeleteAllSave</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Deleting all save!&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> i=<span class="number">0</span>;i&lt;RecordData.instance.getNum(); i++)</span><br><span class="line">        &#123;</span><br><span class="line">            DeleteSave(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (PlayerPrefs.HasKey(RecordData.NAME))</span><br><span class="line">        &#123;</span><br><span class="line">            PlayerPrefs.DeleteKey(RecordData.NAME);</span><br><span class="line">        &#125;</span><br><span class="line">        Debug.Log(<span class="string">&quot;All save deleted!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">DeleteSave</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        UIManager.instance.DeleteSave(id);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AutoSave</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// in update save with 5 mins</span></span><br><span class="line">        Save(AUTO_SAVE_ID);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<figure class="highlight csharp"><figcaption><span>fold | file:hero.cs</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">    <span class="meta">#<span class="keyword">region</span> JSON存档</span></span><br><span class="line">    <span class="function">SaveData <span class="title">ForSave</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> saveData = <span class="keyword">new</span> SaveData();</span><br><span class="line">		<span class="comment">// copy your data</span></span><br><span class="line">        <span class="keyword">return</span> saveData;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">ForLoad</span>(<span class="params">SaveData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">		<span class="comment">// copy your data</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Save</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">string</span> RecordName = RecordData.instance.genRecordName(id);</span><br><span class="line">        <span class="keyword">if</span>(RecordName == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.LogError(<span class="string">&quot;RecordName is null&quot;</span>);</span><br><span class="line">            Debug.LogError(<span class="string">&quot;ID: &quot;</span>+id.ToString());</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Save to :&quot;</span>+RecordName);</span><br><span class="line">        SaveSystem.SaveByJson(RecordName, ForSave());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Load</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> saveData = SaveSystem.LoadFromJson&lt;SaveData&gt;(RecordData.instance.getRecordName(id));</span><br><span class="line">        <span class="keyword">if</span> (saveData != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ForLoad(saveData);</span><br><span class="line">            Debug.Log(<span class="string">&quot;Load the data from &quot;</span> + id.ToString() + <span class="string">&quot; : &quot;</span> + saveData);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            Debug.Log(id.ToString() + <span class="string">&quot;空存档&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> UNITY_EDITOR</span></span><br><span class="line">    [<span class="meta">UnityEditor.MenuItem(<span class="string">&quot;Jobs/Delete All PlayerPrefs&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">DeleteAllSave</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Deleting all save!&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> i=<span class="number">0</span>;i&lt;RecordData.instance.getNum(); i++)</span><br><span class="line">        &#123;</span><br><span class="line">            DeleteSave(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (PlayerPrefs.HasKey(RecordData.NAME))</span><br><span class="line">        &#123;</span><br><span class="line">            PlayerPrefs.DeleteKey(RecordData.NAME);</span><br><span class="line">        &#125;</span><br><span class="line">        Debug.Log(<span class="string">&quot;All save deleted!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">DeleteSave</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        UIManager.instance.DeleteSave(id);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AutoSave</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// in update save with 5 mins</span></span><br><span class="line">        Save(AUTO_SAVE_ID);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
 <h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>存档部分就到这里啦，其实要完成一个存档，不仅仅需要代码的支持，还要和组件一起合作实现，需要完成两边协作才行！希望这篇文章对你有帮助，而不是代码对你有帮助，这种实现方法，这种理念我认为是很好的。谢谢阅读~</p>
 
-		</div>
-
-		
-		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
-			<div class="article-copyright-info-container">
-    <ul>
-        <li><strong>标题:</strong> Unity如何保存存档？</li>
-        <li><strong>作者:</strong> zhywyt</li>
-        <li><strong>创建于
-                :</strong> 2024-10-03 19:29:00</li>
-        
-            <li>
-                <strong>更新于
-                    :</strong> 2024-10-06 05:25:04
-            </li>
-        
-        <li>
-            <strong>链接:</strong> https://hexothemedemo.github.io/redefine/posts/823c297f1d7f/
-        </li>
-        <li>
-            <strong>
-                版权声明:
-            </strong>
-            
-
-            
-                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
-            
-        </li>
-    </ul>
-</div>
-
-		</div>
-		
-
-		
-		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
-			
-			<li class="tag-item mx-0.5">
-				<a href="/redefine/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/">#技术文档</a>&nbsp;
-			</li>
-			
-		</ul>
-		
-
-		
-
-		
-		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
-			
-			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="prev" rel="prev" href="/redefine/posts/59a4f8f59f45/">
-					<span class="left arrow-icon flex justify-center items-center">
-						<i class="fa-solid fa-chevron-left"></i>
-					</span>
-					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item">Unity如何在脚本中使用本地话字符？</span>
-						<span class="post-nav-item">上一篇</span>
-					</span>
-				</a>
-			</div>
-			
-			
-			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="next" rel="next" href="/redefine/posts/1cc3941f1b85/">
-					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item">如何使用ffmpeg无损压缩视频？</span>
-						<span class="post-nav-item">下一篇</span>
-					</span>
-					<span class="right arrow-icon flex justify-center items-center">
-						<i class="fa-solid fa-chevron-right"></i>
-					</span>
-				</a>
-			</div>
-			
-		</div>
-		
-
-
-		
-		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
-			<div class="comments-container mt-10 w-full ">
-    <div id="comment-anchor" class="w-full h-2.5"></div>
-    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
-        评论
+      
     </div>
     
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Yelee/posts/823c297f1d7f/">Unity如何保存存档？</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2024-10-03, 19:29:00</p>
+        <p><span>最后更新:</span>2024-10-06, 05:25:04</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Yelee/posts/823c297f1d7f/" title="Unity如何保存存档？">https://hexothemedemo.github.io/Yelee/posts/823c297f1d7f/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://hexothemedemo.github.io/Yelee/posts/823c297f1d7f/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
 
+
+
+    <nav id="article-nav">
         
-            
-    <div id="waline"></div>
-    <script type="module" data-swup-reload-script>
-      import { init } from '/redefine/js/libs/waline.mjs';
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Yelee/posts/59a4f8f59f45/">
+                    Unity如何在脚本中使用本地话字符？
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Yelee/posts/1cc3941f1b85/">
+                    如何使用ffmpeg无损压缩视频？
+                </a>
+            </div>
+        
+    </nav>
 
-      function loadWaline() {
-        init({
-          el: '#waline',
-          serverURL: 'https://example.example.com',
-          lang: 'zh-CN',
-          dark: 'body[class~="dark-mode"]',
-          reaction: false,
-          requiredMeta: ['nick', 'mail'],
-          emoji: [],
-          
-          
-        });
-      }
+  
+</article>
 
-      if (typeof swup !== 'undefined') {
-        loadWaline();
-      } else {
-        window.addEventListener('DOMContentLoaded', loadWaline);
-      }
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">类的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#save"><span class="toc-number">2.1.</span> <span class="toc-text">save</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86"><span class="toc-number">2.1.1.</span> <span class="toc-text">数据部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.2.</span> <span class="toc-text">方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB"><span class="toc-number">2.1.3.</span> <span class="toc-text">代码汇总</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UIManager"><span class="toc-number">2.2.</span> <span class="toc-text">UIManager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RecordData"><span class="toc-number">2.3.</span> <span class="toc-text">RecordData</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86-1"><span class="toc-number">2.3.1.</span> <span class="toc-text">数据部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-1"><span class="toc-number">2.3.2.</span> <span class="toc-text">方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB-1"><span class="toc-number">2.3.3.</span> <span class="toc-text">代码汇总</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%B2%E8%A7%A3"><span class="toc-number">2.3.4.</span> <span class="toc-text">讲解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SaveSystem"><span class="toc-number">2.4.</span> <span class="toc-text">SaveSystem</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86-2"><span class="toc-number">2.4.1.</span> <span class="toc-text">数据部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-2"><span class="toc-number">2.4.2.</span> <span class="toc-text">方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#PlayerPref"><span class="toc-number">2.4.2.1.</span> <span class="toc-text">PlayerPref</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JSON"><span class="toc-number">2.4.2.2.</span> <span class="toc-text">JSON</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB-2"><span class="toc-number">2.4.3.</span> <span class="toc-text">代码汇总</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hero"><span class="toc-number">2.5.</span> <span class="toc-text">hero</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86-3"><span class="toc-number">2.5.1.</span> <span class="toc-text">数据部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-3"><span class="toc-number">2.5.2.</span> <span class="toc-text">方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%8E%E8%AE%B0"><span class="toc-number">3.</span> <span class="toc-text">后记</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
     </script>
 
 
 
-        
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Unity如何保存存档？　| zhywyt's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
     
 </div>
 
-		</div>
-		
-	</div>
 
-	
-	<div class="toc-content-container">
-		<div class="post-toc-wrap">
-	<div class="post-toc">
-		<div class="toc-title">目录</div>
-		<div class="page-title">Unity如何保存存档？</div>
-		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84"><span class="nav-text">架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">类的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#save"><span class="nav-text">save</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86"><span class="nav-text">数据部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB"><span class="nav-text">代码汇总</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIManager"><span class="nav-text">UIManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RecordData"><span class="nav-text">RecordData</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86-1"><span class="nav-text">数据部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB-1"><span class="nav-text">代码汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B2%E8%A7%A3"><span class="nav-text">讲解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SaveSystem"><span class="nav-text">SaveSystem</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86-2"><span class="nav-text">数据部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-2"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB-2"><span class="nav-text">代码汇总</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hero"><span class="nav-text">hero</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86-3"><span class="nav-text">数据部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-3"><span class="nav-text">方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-text">后记</span></a></li></ol>
 
-	</div>
-</div>
-	</div>
-	
-</div>
-			</div>
 
-			
-		</div>
 
-		<div class="main-content-footer">
-			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
-    <div class="info-container py-3 text-center">
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
         
-        <div class="text-center">
-            &copy;
-            
-              <span>2022</span>
-              -
-            
-            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/redefine/">zhywyt</a>
-            
-                
-                <p class="post-count space-x-0.5">
-                    <span>
-                        共撰写了 84 篇文章
-                    </span>
-                    
-                </p>
-            
+            <a href="/Yelee/posts/59a4f8f59f45/" title="上一篇: Unity如何在脚本中使用本地话字符？">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Yelee/posts/1cc3941f1b85/" title="下一篇: 如何使用ffmpeg无损压缩视频？">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10907/">在Unity2D中创建角色描边的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5993/">Listary——不仅仅是搜索器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51899/">我的编辑器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0/">游戏开发/Unity/shader/在Unity2D中创建屏幕扫描线的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/64880/">anzhiyu主题搭建记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/usehttps/">使用HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61408/">实现自己的SHELL</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/29b61e029340/">不适用docker的gitea runner配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/34e784d46b0a/">如何在Ubuntu上使用Cmake编译Glut</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7880d8f2f2e/">docker 设置代理与镜像站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/58283ae7cb2d/">什么是shader？什么是Material？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b0c241b3d4cf/">hexo设置加密文章(失败)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/da74aa8e9f3b/">搭建一个多线程的MineCraft服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d863527924a0/">修复使用RigidBody2D实现击退效果时的叠加问题</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/247db5136c67/">解决Unity中的路径报错：DirectoryNotFoundException。</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/818482b58c2a/">如何创建一个朝向正确的飞行物？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0e24283556b2/">UI的位置无法正确的移动</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d8eb45be176b/">Hexo+Github搭建静态网站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/8fd9ab7c695f/">伤病遇体测有感</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4a74e5f5d3d6/">Unity2D场景交互设计</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e31df0f4a5f0/">Unity屏幕分辨率调整导致UI消失的原因</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e3e3aee8476b/">2024浙江省青少年定向锦标赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7ea97fbec36/">Unity如何设置鼠标图标？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2024g10/">2024第一届下沙十英里接力赛后记</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/f29c63b83721/">马原实践汇报</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6e1ed0060e67/">Unity如何控制场景切换后角色的位置？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/536c11d1caa5/">2024定向队新生选拔赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/337e148b3fb3/">远程连接与传输</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2c9570b00976/">NU-NeRF论文解读</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d586aba908b5/">如何绘制一张定向路线图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5790301d4de2/">2024全国乡村定向系列赛事活动（浙江海宁站）</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/96dff400cced/">waline评论系统搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c8b013b915a1/">甲壳虫跑团“耐力挑战赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bc16e0702e1d/">甲壳虫跑团“十英里接力赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/a5bf365fe3fe/">甲壳虫跑团“十英里接力赛分院杯”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bd7f49a3fa80/">Unity 如何创建不带UI的截图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c6072bab6ff0/">Unity如何优雅地管理UI图层顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/59a4f8f59f45/">Unity如何在脚本中使用本地话字符？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/823c297f1d7f/">Unity如何保存存档？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1cc3941f1b85/">如何使用ffmpeg无损压缩视频？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/54404/">Unity本地化字体选择</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d742d8349fff/">Unity瓦片地图碰撞体积与图片大小不一致</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d9709c673656/">Linux基础操作</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5c54bd2bc06c/">frp配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/df4c31f7ba80/">PVE软路由配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b4ca7a5fb5b2/">ChatGLM本地配置记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/24484/">pve 8.2.2 解决unsupported Ubuntu version '24.04'</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5953/">nerfstudio环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5181/">zerotier单向不通解决办法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1fd1cabe051b/">2024第一届甲壳虫跑团百公里接力赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49793/">KUbuntu安装CIscoPacketTracer</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4182/">PVE学生自用记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/62236/">第？课——基于矩阵快速幂的递推解法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/7287/">ubuntu无法进入桌面的一种情况</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61355/">第三课——最短路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/14027/">第二课——线段树</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/53666/">第一课——树状数组</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/17428/">B-Spline</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/16515/">花期内的花的数目</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/11458/">简单的拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6679/">games101 HomeWork7</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15892/">多线程之OMP</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/3472/">Linux批量修改文件名字</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56022/">games101 HomeWork6</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56214/">games101 HomeWork5</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6999/">games101 HomeWork4</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/55574/">games101 HomeWork3</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6886/">Ubuntu解决高分屏下Matlab工具栏字体过小</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6615/">games101 HomeWork2</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/44638/">games101 HomeWork 作业以及提高课详解</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6295/">games101 HomeWork1</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/45431/">计算机图形学笔记三——橡皮筋技术和椭圆扫描算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/30828/">计算机图形学笔记一——绘制直线的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15450/">基于Glut的俄罗斯方块开发</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10536/">Games101笔记 P11~?</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49493/">快速读入模板</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/50901/">Git 教程转载</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/27853/">c语言文件读写</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/63067/">康托展开</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/32280/">P1088 [NOIP2004 普及组] 火星人</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51449/">P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2977/">P1177 【模板】快速排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15959/">P1045 [NOIP2003 普及组] 麦森数——快速幂</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/47792/">P5461 赦免战俘</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2025 zhywyt
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
         </div>
         
-            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
-            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+            <div class="visit">
                 
-                    <span id="busuanzi_container_site_uv" class="lg:!block">
-                        <span class="text-sm">访问人数</span>
-                        <span id="busuanzi_value_site_uv"></span>
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
                     </span>
                 
                 
-                    <span id="busuanzi_container_site_pv" class="lg:!block">
-                        <span class="text-sm">总访问量</span>
-                        <span id="busuanzi_value_site_pv"></span>
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
                     </span>
                 
             </div>
         
-        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
-            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
-            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
-        </div>
-        
-        
-            <div>
-                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
-            </div>
-        
-        
-            <script data-swup-reload-script>
-                try {
-                    function odometer_init() {
-                    const elements = document.querySelectorAll('.odometer');
-                    elements.forEach(el => {
-                        new Odometer({
-                            el,
-                            format: '( ddd).dd',
-                            duration: 200
-                        });
-                    });
-                    }
-                    odometer_init();
-                } catch (error) {}
-            </script>
-        
-        
-        
-    </div>  
+    </div>
 </footer>
-		</div>
-	</div>
+    </div>
+    
+<script data-main="/Yelee/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
 
-	
-	<div class="post-tools">
-		<div class="post-tools-container">
-	<ul class="article-tools-list">
-		<!-- TOC aside toggle -->
-		
-		<li class="right-bottom-tools page-aside-toggle">
-			<i class="fa-regular fa-outdent"></i>
-		</li>
-		
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
 
-		<!-- go comment -->
-		
-		<li class="go-comment">
-			<i class="fa-regular fa-comments"></i>
-		</li>
-		
-	</ul>
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
 </div>
-	</div>
-	
-
-	<div class="right-side-tools-container">
-		<div class="side-tools-container">
-	<ul class="hidden-tools-list">
-		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-plus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-minus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
-			<i class="fa-regular fa-moon"></i>
-		</li>
-
-		<!-- rss -->
-		
-
-		
-
-		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
-			<i class="fa-regular fa-arrow-down"></i>
-		</li>
-	</ul>
-
-	<ul class="visible-tools-list">
-		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
-			<i class="fa-regular fa-cog fa-spin"></i>
-		</li>
-		
-		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
-			<i class="arrow-up fas fa-arrow-up"></i>
-			<span class="percent"></span>
-		</li>
-		
-		
-	</ul>
-</div>
-	</div>
-
-	<div class="image-viewer-container">
-	<img src="">
-</div>
-
-	
-
-</main>
-
-
-
-<script src="/redefine/js/build/libs/Swup.min.js"></script>
-
-<script src="/redefine/js/build/libs/SwupSlideTheme.min.js"></script>
-
-<script src="/redefine/js/build/libs/SwupScriptsPlugin.min.js"></script>
-
-<script src="/redefine/js/build/libs/SwupProgressPlugin.min.js"></script>
-
-<script src="/redefine/js/build/libs/SwupScrollPlugin.min.js"></script>
-
-<script src="/redefine/js/build/libs/SwupPreloadPlugin.min.js"></script>
-
 <script>
-    const swup = new Swup({
-        plugins: [
-            new SwupScriptsPlugin({
-                optin: true,
-            }),
-            new SwupProgressPlugin(),
-            new SwupScrollPlugin({
-                offset: 80,
-            }),
-            new SwupSlideTheme({
-                mainElement: ".main-content-body",
-            }),
-            new SwupPreloadPlugin(),
-        ],
-        containers: ["#swup"],
-    });
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
 </script>
 
-
-
-
-	
-<script src="/redefine/js/build/tools/imageViewer.js" type="module"></script>
-
-<script src="/redefine/js/build/utils.js" type="module"></script>
-
-<script src="/redefine/js/build/main.js" type="module"></script>
-
-<script src="/redefine/js/build/layouts/navbarShrink.js" type="module"></script>
-
-<script src="/redefine/js/build/tools/scrollTopBottom.js" type="module"></script>
-
-<script src="/redefine/js/build/tools/lightDarkSwitch.js" type="module"></script>
-
-<script src="/redefine/js/build/layouts/categoryList.js" type="module"></script>
-
-
-
-
-
-    
-<script src="/redefine/js/build/tools/codeBlock.js" type="module"></script>
-
-
-
-
-    
-<script src="/redefine/js/build/layouts/lazyload.js" type="module"></script>
-
-
-
-
-    
-<script src="/redefine/js/build/tools/runtime.js"></script>
-
-    
-<script src="/redefine/js/build/libs/odometer.min.js"></script>
-
-    
-<link rel="stylesheet" href="/redefine/assets/odometer-theme-minimal.css">
-
-
-
-
-  
-<script src="/redefine/js/build/libs/Typed.min.js"></script>
-
-  
-<script src="/redefine/js/build/plugins/typed.js" type="module"></script>
-
-
-
-
-
-
-
-
-    
-<script src="/redefine/js/build/libs/anime.min.js"></script>
-
-
-
-
-
-    
-<script src="/redefine/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/redefine/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/redefine/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-<script src="/redefine/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
-
-
-<script src="/redefine/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-
-	
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
 </body>
-
 </html>
