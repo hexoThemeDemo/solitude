@@ -1,40 +1,609 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>计算机图形学笔记一——绘制直线的算法 | zhywyt's blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/solitude/img/pwa/favicon.png"><!-- index.css--><link rel="stylesheet" href="/solitude/css/index.css?v=3.0.15"><!-- inject head--><link rel="canonical" href="https://hexothemedemo.github.io/solitude/posts/30828/index.html"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="绘制直线的算法下一篇-&amp;gt;圆形的绘制 数值微分法数值微分法（digital differential analyzer DDA）使用直线的增量方程来计算直线的下一个迭代点像素的方法。直线的微分方程：$$\frac{dy}{dx}&amp;#x3D;\frac{\Delta y}{\Delta x}&amp;amp;"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="zhywyt's blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/solitude/img/pwa/favicon.png"><link rel="apple-touch-icon" href="/solitude/img/pwa/favicon.png" sizes="180x180"><script>console.log(' %c Solitude %c ' + '3.0.15' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
 
-block content
-    main.layout#content-inner
-        #post
-            if page.not_cover
-                include includes/widgets/post/postInfo
-            article.post-content.article-container
-                if page.ai_text && theme.post.ai.enable
-                    include includes/widgets/post/ai
-                != page.content
-            include includes/widgets/post/copyright
-            .post-tools-right
-                .tag_share
-                    .post-meta__tag-list
-                        each data in page.tags.data || []
-                            a(href=url_for(data.path)).post-meta__tags
-                                span.tags-punctuation
-                                    i.solitude.fas.fa-hashtag
-                                    =data.name
-                                    span.tagsPageCount=data.length
-            if theme.google_adsense.enable && !theme.google_adsense.auto_ads && theme.google_adsense.post_content
-                div.google-ads-warp
-                    ins.adsbygoogle(style="display:block; text-align:center; height:284px", data-ad-layout="in-article", data-ad-format="fluid", hide-unfilled="true", data-ad-client=theme.google_adsense.client, data-ad-slot=theme.google_adsense.slot)
-                    script.
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-            if site.posts.length > 1
-                include includes/widgets/post/postNav
-            if theme.related_post.enable
-                != related_posts(page, site.posts)
-            if page.comment
-                - var comment_js = true
-                include includes/widgets/third-party/comments/comment
-        if page.aside
-            include includes/widgets/aside/aside
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/solitude/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        state: {
+            morning: "✨ 早上好，新的一天开始了",
+            noon: "🍲 午餐时间",
+            afternoon: "🌞 下午好",
+            night: "早点休息",
+            goodnight: "晚安 😴",
+        },
+        witty_words: [],
+        witty_comment: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    right_menu: false,
+    translate: {"translateDelay":0,"defaultEncoding":2},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false,
+    color: false,
+}</script></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/archives/"><div class="headline">文章</div><div class="length-num">84</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fas fa-circle-half-stroke"></i><span>显示模式</span></span></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="card-tag-cloud"><a href="/solitude/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/">技术文档<sup>18</sup></a><a href="/solitude/tags/encrypt/">encrypt<sup>1</sup></a><a href="/solitude/tags/%E5%8D%9A%E5%AE%A2/">博客<sup>1</sup></a><a href="/solitude/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/">诗与散文<sup>1</sup></a><a href="/solitude/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/">错误解决<sup>5</sup></a></div></div></div></div><!-- keyboard--><!-- righhtside--><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/solitude/" title="返回博客主页"><span class="title">Solitude</span><i class="solitude fas fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">计算机图形学笔记一——绘制直线的算法</a></div></div><div id="menus"></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fas fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fas fa-bars"></i></a></div></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/solitude/categories/CG/">CG</a></span><div class="tag_share"><div class="post-meta__tag-list"></div></div></div></div><h1 class="post-title">计算机图形学笔记一——绘制直线的算法</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><div id="post-info-bottom"></div><article class="post-content article-container"><span id="more"></span>
+
+<h1 id="绘制直线的算法"><a href="#绘制直线的算法" class="headerlink" title="绘制直线的算法"></a>绘制直线的算法</h1><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhywyt/articles/17341756.html">下一篇-&gt;圆形的绘制</a></p>
+<h2 id="数值微分法"><a href="#数值微分法" class="headerlink" title="数值微分法"></a>数值微分法</h2><p><strong>数值微分法（digital differential analyzer DDA）使用直线的增量方程来计算直线的下一个迭代点像素的方法。直线的微分方程：</strong><br>$$<br>\frac{dy}{dx}&#x3D;\frac{\Delta y}{\Delta x}&#x3D;\frac{y_1-y_0}{x_1-x_0}&#x3D;k<br>$$<br><strong>得到迭代公式：</strong><br>$$<br>x_{i+1}&#x3D;x_i+\beta \Delta x<br>$$<br>$$<br>y_{i+1}&#x3D;y_i +\beta \Delta y<br>$$<br><strong>其中$\beta&#x3D;\frac{1}{max(|\Delta x|,|\Delta y|)}$</strong><br><strong>也就是说，当斜率的绝对值大于1的时候，取y的步长为1，当斜率的绝对值小于1时，取x的步长为1。然后对非步长点进行近似，得到这样的代码</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">double</span> x, y;</span><br><span class="line"><span class="type">double</span> k;			<span class="comment">//斜率</span></span><br><span class="line">k = (<span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(endy - starty) / <span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(endx - startx));</span><br><span class="line">x = (<span class="type">double</span>)startx, y = (<span class="type">double</span>)starty;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">abs</span>(k) &lt; <span class="number">1.0</span>) &#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">abs</span>(endx - startx); i++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (endx &gt; startx) &#123;</span><br><span class="line">			x += <span class="number">1</span>;</span><br><span class="line">			y += k;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			x -= <span class="number">1</span>;</span><br><span class="line">			y -= k;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">glVertex2d</span>(<span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(x), <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(y + <span class="number">0.5</span>));		<span class="comment">//y四舍五入</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">abs</span>(k) &gt; <span class="number">1.0</span>) &#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">abs</span>(endy - starty); i++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (endy &gt; starty) &#123;</span><br><span class="line">			y += <span class="number">1</span>;</span><br><span class="line">			x += <span class="number">1.0</span> / k;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			y -= <span class="number">1</span>;</span><br><span class="line">			x -= <span class="number">1.0</span> / k;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">glVertex2d</span>(<span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(x + <span class="number">0.5</span>), <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(y));		<span class="comment">//x四舍五入</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>再考虑斜率为0和斜率不存在的情况（垂直x轴和平行x轴），我们可以写出这样的代码，这便是DAA方法的实现。</strong></p>
+<p>DAA完整代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">DDA_Line</span><span class="params">(<span class="type">int</span> startx, <span class="type">int</span> starty, <span class="type">int</span> endx, <span class="type">int</span> endy)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line">	<span class="keyword">if</span> (startx != endx &amp;&amp; starty != endy)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">double</span> x, y;</span><br><span class="line">		<span class="type">double</span> k;			<span class="comment">//斜率</span></span><br><span class="line">		k = (<span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(endy - starty) /<span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(endx - startx));</span><br><span class="line">		x = (<span class="type">double</span>)startx, y = (<span class="type">double</span>)starty;</span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">abs</span>(k)&lt;<span class="number">1.0</span>) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">abs</span>(endx - startx); i++) &#123;</span><br><span class="line">				<span class="keyword">if</span> (endx &gt; startx) &#123;</span><br><span class="line">					x += <span class="number">1</span>;</span><br><span class="line">					y += k;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					x -= <span class="number">1</span>;</span><br><span class="line">					y -= k;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="built_in">glVertex2d</span>(<span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(x), <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(y<span class="number">+0.5</span>));		<span class="comment">//y四舍五入</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">abs</span>(k) &gt; <span class="number">1.0</span>) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">abs</span>(endy - starty); i++) &#123;</span><br><span class="line">				<span class="keyword">if</span> (endy &gt; starty) &#123;</span><br><span class="line">					y += <span class="number">1</span>;</span><br><span class="line">					x += <span class="number">1.0</span>/k;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					y -= <span class="number">1</span>;</span><br><span class="line">					x -= <span class="number">1.0</span>/k;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="built_in">glVertex2d</span>(<span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(x + <span class="number">0.5</span>), <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(y));		<span class="comment">//x四舍五入</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (startx == endx) &#123;<span class="comment">//垂直画线</span></span><br><span class="line">		<span class="keyword">if</span> (starty &lt; endy) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = starty; i &lt; endy; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2d</span>(startx, i);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (starty &gt; endy) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = endy; i &lt; starty; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2d</span>(startx, i);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (starty == endy) &#123;<span class="comment">//水平画线</span></span><br><span class="line">		<span class="keyword">if</span> (startx &lt; endx) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = startx; i &lt; endx; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2d</span>(i, starty);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (startx &gt; endx) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = endx; i &lt; startx; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2d</span>(i, starty);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">glFlush</span>();</span><br><span class="line">	<span class="built_in">glEnd</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="中点画线算法"><a href="#中点画线算法" class="headerlink" title="中点画线算法"></a>中点画线算法</h2><p><strong>不进行除法运算，减少计算量，使用一种近似的思想进行取样。下面两幅图中说明了这种算法的实施方法：</strong><br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20230421191128590-513372133_1726324554561.jpg" alt="image"><br><strong>当曲线在一格的中间偏上时，使用上面的点作为采样点，当在中间偏下时，使用下面的一格。如此计算，便能绕靠斜率的除法运算。</strong><br><strong>实际实现方法：从左边的点开始，每次往右移动一格，计算这个点的中点处y与函数值的差，如果大于零，则y不变；反之y向上（下）移动一格。</strong><br><strong>那么有两个要求：<br>一、计算y移动的方向是上还是下<br>二、开始的点必须在左边</strong><br><strong>分析一下这个差值的计算：</strong><br>$$<br>F(x,y)&#x3D;ax+by+c&#x3D;0 </p>
+<p>a&#x3D;y_0-y_1 </p>
+<p>b&#x3D;x_1-x_0 </p>
+<p>c&#x3D;x_0y_1-x_1y_0 </p>
+<p>d&#x3D;F(x_i+1,y_i+0.5)<br>$$<br><strong>其中d也就是中点和直线的竖直距离，我们可以通过判断d的正负来进行采样。进一步分析</strong><br><strong>当d&gt;&#x3D;0时，下一个构造点为F$x_i+2,y_i$，那么</strong></p>
+<p>$$<br>d_1&#x3D;a(x_i+1+1)+b(y_i+0.5)+c&#x3D;d+a<br>$$<br><strong>同理，当$d&lt;0$时d$_1&#x3D;F(x_i+2,y_i+1.5)$，即：</strong></p>
+<p>$d&#x3D;a(x_i+2)+b(y_i+1.5)+c&#x3D;d+a+b$ </p>
+<p><strong>这样我们就得到了迭代方程，我们可以写出这样的代码：</strong></p>
+<blockquote>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (startx != endx &amp;&amp; starty != endy)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">bool</span> kFlag = <span class="number">0</span>;		<span class="comment">//斜率是否大于1</span></span><br><span class="line">	<span class="type">int</span> sFlag = <span class="number">1</span>;			<span class="comment">//斜率的正负</span></span><br><span class="line">	<span class="keyword">if</span> (startx &gt; endx) &#123;		<span class="comment">//因为算法是x递增的，所以要保持起点x在终点左边</span></span><br><span class="line">		<span class="type">int</span> tempx = startx, tempy = starty;</span><br><span class="line">		startx = endx, starty = endy;</span><br><span class="line">		endx = tempx, endy = tempy;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">abs</span>(starty - endy) &gt; <span class="built_in">abs</span>(startx - endx)) &#123;</span><br><span class="line">		kFlag = <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (starty &gt; endy) &#123;		<span class="comment">//标记斜率小于零</span></span><br><span class="line">		sFlag = <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> a, b, TA, TAB, d, x, y;</span><br><span class="line">	<span class="keyword">if</span> (sFlag == <span class="number">-1</span>)</span><br><span class="line">		endy = starty + (starty - endy);</span><br><span class="line"></span><br><span class="line">	a = starty - endy;</span><br><span class="line">	b = endx - startx;</span><br><span class="line">	TA = <span class="number">2</span> * a;					<span class="comment">//twoA</span></span><br><span class="line">	TAB = <span class="number">2</span> * (a + b);		<span class="comment">//twoAB</span></span><br><span class="line">	d = <span class="number">2</span> * a + b;</span><br><span class="line">	x = startx, y = starty;</span><br><span class="line">	<span class="keyword">if</span> (!kFlag) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; (endx - startx); i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (d &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(++x, y);</span><br><span class="line">				d += TA;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(++x, y += sFlag);</span><br><span class="line">				d += TAB;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (kFlag) &#123;</span><br><span class="line">		<span class="keyword">if</span> (kFlag == <span class="number">1</span>) &#123;</span><br><span class="line">			TA = <span class="number">2</span> * b;</span><br><span class="line">			d = <span class="number">2</span> * b + a;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">abs</span>(endy - starty); i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (d &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(++x, y += sFlag);</span><br><span class="line">				d += TAB;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(x, y += sFlag);</span><br><span class="line">				d += TA;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>你可以在这里找到所有代码</strong></p>
+<p>TMP算法完整代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TMP_Line</span><span class="params">(<span class="type">int</span> startx, <span class="type">int</span> starty, <span class="type">int</span> endx, <span class="type">int</span> endy)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line">	<span class="keyword">if</span> (startx != endx &amp;&amp; starty != endy)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">bool</span> kFlag = <span class="number">0</span>;		<span class="comment">//斜率是否大于1</span></span><br><span class="line">		<span class="type">int</span> sFlag = <span class="number">1</span>;			<span class="comment">//斜率的正负</span></span><br><span class="line">		<span class="keyword">if</span> (startx &gt; endx) &#123;		<span class="comment">//因为算法是x递增的，所以要保持起点x在终点左边</span></span><br><span class="line">			<span class="type">int</span> tempx = startx, tempy = starty;</span><br><span class="line">			startx = endx, starty = endy;</span><br><span class="line">			endx = tempx, endy = tempy;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">abs</span>(starty - endy) &gt; <span class="built_in">abs</span>(startx - endx)) &#123;</span><br><span class="line">			kFlag = <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (starty &gt; endy) &#123;		<span class="comment">//标记斜率小于零</span></span><br><span class="line">			sFlag = <span class="number">-1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">int</span> a, b, TA, TAB, d, x, y;</span><br><span class="line">		<span class="keyword">if</span> (sFlag == <span class="number">-1</span>)</span><br><span class="line">			endy = starty + (starty - endy);</span><br><span class="line"></span><br><span class="line">		a = starty - endy;</span><br><span class="line">		b = endx - startx;</span><br><span class="line">		TA = <span class="number">2</span> * a;					<span class="comment">//twoA</span></span><br><span class="line">		TAB = <span class="number">2</span> * (a + b);		<span class="comment">//twoAB</span></span><br><span class="line">		d = <span class="number">2</span> * a + b;</span><br><span class="line">		x = startx, y = starty;</span><br><span class="line">		<span class="keyword">if</span> (!kFlag) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; (endx - startx); i++) &#123;</span><br><span class="line">				<span class="keyword">if</span> (d &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">					<span class="built_in">glVertex2i</span>(++x, y);</span><br><span class="line">					d += TA;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="built_in">glVertex2i</span>(++x , y +=sFlag);</span><br><span class="line">					d += TAB;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (kFlag) &#123;</span><br><span class="line">			<span class="keyword">if</span> (kFlag == <span class="number">1</span>) &#123;</span><br><span class="line">				TA = <span class="number">2</span> * b;</span><br><span class="line">				d = <span class="number">2</span> * b + a;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">abs</span>(endy - starty); i++) &#123;</span><br><span class="line">				<span class="keyword">if</span> (d &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">					<span class="built_in">glVertex2i</span>(++x , y +=sFlag);</span><br><span class="line">					d += TAB;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="built_in">glVertex2i</span>(x, y+=sFlag);</span><br><span class="line">					d += TA;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (startx == endx) &#123;<span class="comment">//垂直画线</span></span><br><span class="line">		<span class="keyword">if</span> (starty &lt; endy) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = starty; i &lt; endy; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(startx, i);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (starty &gt; endy) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = endy; i &lt; starty; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(startx, i);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (starty == endy) &#123;<span class="comment">//水平画线</span></span><br><span class="line">		<span class="keyword">if</span> (startx &lt; endx) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = startx; i &lt; endx; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(i, starty);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (startx &gt; endx) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = endx; i &lt; startx; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(i, starty);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">glFlush</span>();</span><br><span class="line">	<span class="built_in">glEnd</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Bresenham画线算法"><a href="#Bresenham画线算法" class="headerlink" title="Bresenham画线算法"></a>Bresenham画线算法</h2><p><strong>这是目前计算机图形学使用的最多的直线生成算法。在计算最佳逼近中使用的全部都是整数运算，可以大幅度的提升计算速度。</strong><br><strong>与TMP不同的一点就是，TMP是计算中点与直线上的点，而Bresenham是计算上下格子与直线竖直距离的差。也就是下面图像中的d2-d1</strong><br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20230421195628347-1007206271_1726324554561.jpg" alt="image"><br><strong>推导过程如下：</strong><br><strong>直线方程可以表示为（不管两种特殊情况）</strong></p>
+<p>$$<br>y&#x3D;kx+b </p>
+<p>k&#x3D;\frac{y_1-y_0}{x_1-x_0}&#x3D;\frac{dy}{dx},b&#x3D;y_0-kx_0<br>$$</p>
+<p><strong>当 $ 0&lt;k&lt;1$时直线向正方向前进一个像素,对应的最佳逼近的 $x_{i+1}&#x3D;x_i+1$, $y_{i+1}&#x3D;y_i+1$or $y_i$</strong></p>
+<p>$$<br>y&#x3D;k(x_i+1)+b </p>
+<p>d_1&#x3D;y-y_i </p>
+<p>d_2&#x3D;y_i+1-y<br>$$</p>
+<p><strong>令</strong></p>
+<p>$$<br>d_1-d_2&#x3D;2y-2y_i-1&#x3D;2(k(x_i+1)+b)-2y_i-1<br>$$</p>
+<p><strong>当 $d_1-d_2&gt;0$时</strong></p>
+<p>$y_{i+1}&#x3D;y_i+1$</p>
+<p><strong>当 $d_1-d_2&lt;&#x3D;0$时</strong></p>
+<p>$y_{i+1}&#x3D;y_i$ </p>
+<p><strong>魔法:当dx&gt;0时,把 $d_10d_2$乘上$dx$,不影响整个式子的正负得到:</strong></p>
+<p>$$<br>p_i&#x3D;dx(d_1-d_2)<br>$$</p>
+<p><strong>又</strong></p>
+<p>$$<br>k&#x3D;\frac{dy}{dx}<br>$$</p>
+<p><strong>所以</strong></p>
+<p>$$<br>p_i&#x3D;2x_0dy-2y_idx+2dy+(2b-1)dx<br>$$</p>
+<p><strong>当i&#x3D;0时,得到迭代起点:</strong></p>
+<p>$$<br>p_0&#x3D;2dy-dx<br>$$</p>
+<p><strong>当 $p_i&gt;0时$</strong></p>
+<p>$$<br>p_{i+1}&#x3D;pi+2dy-2dx<br>$$</p>
+<p><strong>当 $p_i&lt;&#x3D;0时$</strong></p>
+<p>$$<br>p_{i+1}&#x3D;p_i+2dy<br>$$</p>
+<p><strong>推导到此结束,下面是实现,这个实现和TMP十分相似,但是计算量比TMP稍微小一点。</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (startx != endx &amp;&amp; starty != endy) &#123;</span><br><span class="line">	<span class="type">bool</span> kFlag = <span class="number">0</span>;		<span class="comment">//斜率是否大于1</span></span><br><span class="line">	<span class="type">int</span> sFlag = <span class="number">1</span>;			<span class="comment">//斜率的正负</span></span><br><span class="line">	<span class="keyword">if</span> (startx &gt; endx) &#123;		<span class="comment">//因为算法是x递增的，所以要保持起点x在终点左边</span></span><br><span class="line">		<span class="type">int</span> tempx = startx, tempy = starty;</span><br><span class="line">		startx = endx, starty = endy;</span><br><span class="line">		endx = tempx, endy = tempy;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">abs</span>(starty - endy) &gt; <span class="built_in">abs</span>(startx - endx)) &#123;</span><br><span class="line">		kFlag = <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (starty &gt; endy) &#123;		<span class="comment">//标记斜率小于零</span></span><br><span class="line">		sFlag = <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> x, y;</span><br><span class="line">	<span class="type">int</span> dx, dy, p;</span><br><span class="line">	<span class="keyword">if</span> (sFlag == <span class="number">-1</span>)</span><br><span class="line">		endy = starty + (starty - endy);</span><br><span class="line">	dx = endx - startx;</span><br><span class="line">	dy = endy - starty;</span><br><span class="line">	x = startx, y = starty;</span><br><span class="line">	<span class="keyword">if</span> (!kFlag) &#123;</span><br><span class="line">		p = <span class="number">2</span> * dy - dx;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; (endx - startx); i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (p &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(++x, y);</span><br><span class="line">				p += <span class="number">2</span> * dy;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(++x, y += sFlag);</span><br><span class="line">				p += <span class="number">2</span> * dy - <span class="number">2</span> * dx;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		p = <span class="number">2</span> * dx - dy;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; (endy - starty); i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (p &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(x, y += sFlag);</span><br><span class="line">				p += <span class="number">2</span> * dx;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(++x, y += sFlag);</span><br><span class="line">				p += <span class="number">2</span> * dx - <span class="number">2</span> * dy;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>同样的，你可以在这里找到完整代码：</strong></p>
+<p>BRESENHAM算法完整代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">BRESENHAM_Line</span><span class="params">(<span class="type">int</span> startx, <span class="type">int</span> starty, <span class="type">int</span> endx, <span class="type">int</span> endy)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line">	<span class="keyword">if</span> (startx != endx &amp;&amp; starty != endy) &#123;</span><br><span class="line">		<span class="type">bool</span> kFlag = <span class="number">0</span>;		<span class="comment">//斜率是否大于1</span></span><br><span class="line">		<span class="type">int</span> sFlag = <span class="number">1</span>;			<span class="comment">//斜率的正负</span></span><br><span class="line">		<span class="keyword">if</span> (startx &gt; endx) &#123;		<span class="comment">//因为算法是x递增的，所以要保持起点x在终点左边</span></span><br><span class="line">			<span class="type">int</span> tempx = startx, tempy = starty;</span><br><span class="line">			startx = endx, starty = endy;</span><br><span class="line">			endx = tempx, endy = tempy;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">abs</span>(starty - endy) &gt; <span class="built_in">abs</span>(startx - endx)) &#123;</span><br><span class="line">			kFlag = <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (starty &gt; endy) &#123;		<span class="comment">//标记斜率小于零</span></span><br><span class="line">			sFlag = <span class="number">-1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">int</span> x, y;</span><br><span class="line">		<span class="type">int</span> dx, dy, p;</span><br><span class="line">		<span class="keyword">if</span> (sFlag == <span class="number">-1</span>)</span><br><span class="line">			endy = starty + (starty - endy);</span><br><span class="line">		dx = endx - startx;</span><br><span class="line">		dy = endy - starty;</span><br><span class="line">		x = startx, y = starty;</span><br><span class="line">		<span class="keyword">if</span> (!kFlag) &#123;</span><br><span class="line">			p = <span class="number">2</span> * dy - dx;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; (endx - startx); i++) &#123;</span><br><span class="line">				<span class="keyword">if</span> (p &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">					<span class="built_in">glVertex2i</span>(++x, y);</span><br><span class="line">					p += <span class="number">2</span> * dy;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="built_in">glVertex2i</span>(++x, y += sFlag);</span><br><span class="line">					p += <span class="number">2</span> * dy - <span class="number">2</span> * dx;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			p = <span class="number">2</span> * dx - dy;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>;i &lt; (endy - starty); i++) &#123;</span><br><span class="line">				<span class="keyword">if</span> (p &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">					<span class="built_in">glVertex2i</span>(x, y += sFlag);</span><br><span class="line">					p += <span class="number">2</span> * dx;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="built_in">glVertex2i</span>(++x, y += sFlag);</span><br><span class="line">					p += <span class="number">2</span> * dx - <span class="number">2</span> * dy;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (startx == endx) &#123;<span class="comment">//垂直画线</span></span><br><span class="line">		<span class="keyword">if</span> (starty &lt; endy) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = starty; i &lt; endy; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(startx, i);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (starty &gt; endy) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = endy; i &lt; starty; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(startx, i);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (starty == endy) &#123;<span class="comment">//水平画线</span></span><br><span class="line">		<span class="keyword">if</span> (startx &lt; endx) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = startx; i &lt; endx; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(i, starty);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (startx &gt; endx) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = endx; i &lt; startx; i++) &#123;</span><br><span class="line">				<span class="built_in">glVertex2i</span>(i, starty);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">glFlush</span>();</span><br><span class="line">	<span class="built_in">glEnd</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="代码汇总"><a href="#代码汇总" class="headerlink" title="代码汇总"></a>代码汇总</h2><p>DrawLine.hpp代码</p>
+<pre><code class="language-cpp">//DrawLine.hpp
+#pragma once
+#include &lt;cmath&gt;
+#include &lt;gl/glut.h&gt;
+
+/*
+数值微分算法实现
+*/
+/// &lt;summary&gt;
+/// digitial differential analyzer 
+/// called DAA
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;startx&quot;&gt;起始位置x&lt;/param&gt;
+/// &lt;param name=&quot;starty&quot;&gt;&lt;/param&gt;
+/// &lt;param name=&quot;endx&quot;&gt;终止位置x&lt;/param&gt;
+/// &lt;param name=&quot;endy&quot;&gt;&lt;/param&gt;
+void DDA_Line(int startx, int starty, int endx, int endy) &#123;
+	glBegin(GL_POINTS);
+	if (startx != endx &amp;&amp; starty != endy)
+	&#123;
+		double x, y;
+		double k;			//斜率
+		k = (static_cast&lt;float&gt;(endy - starty) /static_cast&lt;float&gt;(endx - startx));
+		x = (double)startx, y = (double)starty;
+		if (abs(k)&lt;1.0) &#123;
+			for (int i = 0; i &lt; abs(endx - startx); i++) &#123;
+				if (endx &gt; startx) &#123;
+					x += 1;
+					y += k;
+				&#125;
+				else &#123;
+					x -= 1;
+					y -= k;
+				&#125;
+				glVertex2i(static_cast&lt;int&gt;(x), static_cast&lt;int&gt;(y+0.5));		//y四舍五入
+			&#125;
+		&#125;
+		else if (abs(k) &gt; 1.0) &#123;
+			for (int i = 0; i &lt; abs(endy - starty); i++) &#123;
+				if (endy &gt; starty) &#123;
+					y += 1;
+					x += 1.0/k;
+				&#125;
+				else &#123;
+					y -= 1;
+					x -= 1.0/k;
+				&#125;
+				glVertex2i(static_cast&lt;int&gt;(x + 0.5), static_cast&lt;int&gt;(y));		//x四舍五入
+			&#125;
+		&#125;
+	&#125;
+	else if (startx == endx) &#123;//垂直画线
+		if (starty &lt; endy) &#123;
+			for (int i = starty; i &lt; endy; i++) &#123;
+				glVertex2i(startx, i);
+			&#125;
+		&#125;
+		else if (starty &gt; endy) &#123;
+			for (int i = endy; i &lt; starty; i++) &#123;
+				glVertex2i(startx, i);
+			&#125;
+		&#125;
+	&#125;
+	else if (starty == endy) &#123;//水平画线
+		if (startx &lt; endx) &#123;
+			for (int i = startx; i &lt; endx; i++) &#123;
+				glVertex2i(i, starty);
+			&#125;
+		&#125;
+		else if (startx &gt; endx) &#123;
+			for (int i = endx; i &lt; startx; i++) &#123;
+				glVertex2i(i, starty);
+			&#125;
+		&#125;
+	&#125;
+	glFlush();
+	glEnd();
+&#125;
+
+/*
+中点画线算法实现
+*/
+/// &lt;summary&gt;
+/// The Middle Point
+/// Called TMP
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;startx&quot;&gt;起始位置x&lt;/param&gt;
+/// &lt;param name=&quot;starty&quot;&gt;&lt;/param&gt;
+/// &lt;param name=&quot;endx&quot;&gt;终止位置x&lt;/param&gt;
+/// &lt;param name=&quot;endy&quot;&gt;&lt;/param&gt;
+void TMP_Line(int startx, int starty, int endx, int endy) &#123;
+	glBegin(GL_POINTS);
+	if (startx != endx &amp;&amp; starty != endy)
+	&#123;
+		bool kFlag = 0;		//斜率是否大于1
+		int sFlag = 1;			//斜率的正负
+		if (startx &gt; endx) &#123;		//因为算法是x递增的，所以要保持起点x在终点左边
+			int tempx = startx, tempy = starty;
+			startx = endx, starty = endy;
+			endx = tempx, endy = tempy;
+		&#125;
+		if (abs(starty - endy) &gt; abs(startx - endx)) &#123;
+			kFlag = true;
+		&#125;
+		if (starty &gt; endy) &#123;		//标记斜率小于零
+			sFlag = -1;
+		&#125;
+		int a, b, TA, TAB, d, x, y;
+		if (sFlag == -1)
+			endy = starty + (starty - endy);
+
+		a = starty - endy;
+		b = endx - startx;
+		TA = 2 * a;					//twoA
+		TAB = 2 * (a + b);		//twoAB
+		d = 2 * a + b;
+		x = startx, y = starty;
+		if (!kFlag) &#123;
+			for (int i = 0; i &lt; (endx - startx); i++) &#123;
+				if (d &gt;= 0) &#123;
+					glVertex2i(++x, y);
+					d += TA;
+				&#125;
+				else &#123;
+					glVertex2i(++x , y +=sFlag);
+					d += TAB;
+				&#125;
+			&#125;
+		&#125;
+		else if (kFlag) &#123;
+			if (kFlag == 1) &#123;
+				TA = 2 * b;
+				d = 2 * b + a;
+			&#125;
+			for (int i = 0; i &lt; abs(endy - starty); i++) &#123;
+				if (d &gt;= 0) &#123;
+					glVertex2i(++x , y +=sFlag);
+					d += TAB;
+				&#125;
+				else &#123;
+					glVertex2i(x, y+=sFlag);
+					d += TA;
+				&#125;
+			&#125;
+		&#125;
+	&#125;
+	else if (startx == endx) &#123;//垂直画线
+		if (starty &lt; endy) &#123;
+			for (int i = starty; i &lt; endy; i++) &#123;
+				glVertex2i(startx, i);
+			&#125;
+		&#125;
+		else if (starty &gt; endy) &#123;
+			for (int i = endy; i &lt; starty; i++) &#123;
+				glVertex2i(startx, i);
+			&#125;
+		&#125;
+	&#125;
+	else if (starty == endy) &#123;//水平画线
+		if (startx &lt; endx) &#123;
+			for (int i = startx; i &lt; endx; i++) &#123;
+				glVertex2i(i, starty);
+			&#125;
+		&#125;
+		else if (startx &gt; endx) &#123;
+			for (int i = endx; i &lt; startx; i++) &#123;
+				glVertex2i(i, starty);
+			&#125;
+		&#125;
+	&#125;
+	glFlush();
+	glEnd();
+&#125;
+
+/*
+Bresenham算法
+这是图形学中用的最多的直线生成算法，全部是整数计算，加快了计算的速度
+*/
+/// &lt;summary&gt;
+/// Bresenham
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;startx&quot;&gt;&lt;/param&gt;
+/// &lt;param name=&quot;starty&quot;&gt;&lt;/param&gt;
+/// &lt;param name=&quot;endx&quot;&gt;&lt;/param&gt;
+/// &lt;param name=&quot;endy&quot;&gt;&lt;/param&gt;
+void BRESENHAM_Line(int startx, int starty, int endx, int endy) &#123;
+	glBegin(GL_POINTS);
+	if (startx != endx &amp;&amp; starty != endy) &#123;
+		bool kFlag = 0;		//斜率是否大于1
+		int sFlag = 1;			//斜率的正负
+		if (startx &gt; endx) &#123;		//因为算法是x递增的，所以要保持起点x在终点左边
+			int tempx = startx, tempy = starty;
+			startx = endx, starty = endy;
+			endx = tempx, endy = tempy;
+		&#125;
+		if (abs(starty - endy) &gt; abs(startx - endx)) &#123;
+			kFlag = true;
+		&#125;
+		if (starty &gt; endy) &#123;		//标记斜率小于零
+			sFlag = -1;
+		&#125;
+		int x, y;
+		int dx, dy, p;
+		if (sFlag == -1)
+			endy = starty + (starty - endy);
+		dx = endx - startx;
+		dy = endy - starty;
+		x = startx, y = starty;
+		if (!kFlag) &#123;
+			p = 2 * dy - dx;
+			for (int i = 0; i &lt; (endx - startx); i++) &#123;
+				if (p &lt;= 0) &#123;
+					glVertex2i(++x, y);
+					p += 2 * dy;
+				&#125;
+				else &#123;
+					glVertex2i(++x, y += sFlag);
+					p += 2 * dy - 2 * dx;
+				&#125;
+			&#125;
+		&#125;
+		else &#123;
+			p = 2 * dx - dy;
+			for (int i = 0;i &lt; (endy - starty); i++) &#123;
+				if (p &lt;= 0) &#123;
+					glVertex2i(x, y += sFlag);
+					p += 2 * dx;
+				&#125;
+				else &#123;
+					glVertex2i(++x, y += sFlag);
+					p += 2 * dx - 2 * dy;
+				&#125;
+			&#125;
+		&#125;
+	&#125;
+	else if (startx == endx) &#123;//垂直画线
+		if (starty &lt; endy) &#123;
+			for (int i = starty; i &lt; endy; i++) &#123;
+				glVertex2i(startx, i);
+			&#125;
+		&#125;
+		else if (starty &gt; endy) &#123;
+			for (int i = endy; i &lt; starty; i++) &#123;
+				glVertex2i(startx, i);
+			&#125;
+		&#125;
+	&#125;
+	else if (starty == endy) &#123;//水平画线
+		if (startx &lt; endx) &#123;
+			for (int i = startx; i &lt; endx; i++) &#123;
+				glVertex2i(i, starty);
+			&#125;
+		&#125;
+		else if (startx &gt; endx) &#123;
+			for (int i = endx; i &lt; startx; i++) &#123;
+				glVertex2i(i, starty);
+			&#125;
+		&#125;
+	&#125;
+	glFlush();
+	glEnd();
+&#125;
+``` 用于测试的一个主函数
+
+```cpp
+/*
+你可以使用左键绘制顶点
+你可以使用右键删除顶点
+直线的绘制沿着顶点顺序
+*/
+#include &lt;gl/glut.h&gt;
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &quot;DrawLine.hpp&quot;
+using namespace std;
+#define m_POINT_SIZE 10
+#define m_LINE_SIZE 2
+list&lt;pair&lt;int, int &gt;&gt;Vertex;
+void onDisplay();
+void onReshape(int w, int h);
+void onMouse(int button, int state, int x, int y);
+void onReshape(int w, int h)
+&#123;
+	// 设置视口大小
+	glViewport(0, 0, w, h);
+	// 切换矩阵模式为投影矩阵
+	glMatrixMode(GL_PROJECTION);
+	// 载入单位矩阵
+	glLoadIdentity();
+	// 进行二维平行投影
+	gluOrtho2D(0, w, h, 0);
+	// 切换矩阵模式为模型矩阵
+	glMatrixMode(GL_MODELVIEW);
+	// 发送重绘
+	glutPostRedisplay();
+&#125;
+void onMouse(int button, int state, int x, int y)&#123;
+	if (state == GLUT_DOWN) &#123;
+		if (button == GLUT_LEFT_BUTTON)Vertex.push_back(make_pair(x, y));
+		else if (button == GLUT_RIGHT_BUTTON) &#123;
+			auto ibeg = Vertex.begin();
+			while (ibeg != Vertex.end()) &#123;
+				if (((x - ibeg-&gt;first) * (x - ibeg-&gt;first)) + ((y - ibeg-&gt;second) * (y - ibeg-&gt;second)) &lt; 400) &#123;
+					Vertex.erase(ibeg);
+					break;
+				&#125;
+				ibeg++;
+			&#125;
+		&#125;
+	&#125;
+	onDisplay();
+&#125;
+void onDisplay() &#123;
+	glClearColor(224 / 255.0, 237 / 255.0, 253 / 255.0,1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glColor3f(1.0f, 0, 0);
+	auto ibeg = Vertex.begin(),jbeg=ibeg;
+	bool flag = false;
+	while (ibeg != Vertex.end()) &#123;
+		glPointSize(m_POINT_SIZE);
+		glBegin(GL_POINTS);
+		glVertex2i(ibeg-&gt;first, ibeg-&gt;second);
+		glEnd();
+		glPointSize(m_LINE_SIZE);
+		if (!flag)
+			flag = true;
+		else &#123;
+			//这里可以选择直线绘制方式
+			BRESENHAM_Line(ibeg-&gt;first, ibeg-&gt;second, jbeg-&gt;first, jbeg-&gt;second);
+			//TMP_Line(ibeg-&gt;first, ibeg-&gt;second, jbeg-&gt;first, jbeg-&gt;second);
+			//DDA_Line(ibeg-&gt;first, ibeg-&gt;second, jbeg-&gt;first, jbeg-&gt;second);
+		&#125;
+		jbeg = ibeg;
+		ibeg++;
+	&#125;
+	glutSwapBuffers();
+&#125;
+
+int main(int argc, char* argv[])
+&#123;
+	// 初始化 glut
+	glutInit(&amp;argc, argv);
+	// 设置 OpenGL 显示模式(双缓存, RGB 颜色模式)
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	// 设置窗口初始尺寸
+	glutInitWindowSize(1000,800);
+	// 设置窗口初始位置
+	glutInitWindowPosition(0, 0);
+	// 设置窗口标题
+	glutCreateWindow(&quot;Terix&quot;);
+	glutReshapeFunc(onReshape);
+	glutDisplayFunc(onDisplay);
+	glutMouseFunc(onMouse);
+	// 进入 glut 事件循环
+	glutMainLoop();
+	return 0;
+&#125;
+``` ## 下一篇 [下一篇-&gt;圆形的绘制](https://www.cnblogs.com/zhywyt/articles/17341756.html)
+</code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><div class="post-copyright__author_img"><img class="post-copyright__author_img_front" src="/solitude/img/logo.png"></div><div class="post-copyright__author_name">zhywyt</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/solitude/">zhywyt's blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/solitude/posts/45431/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">计算机图形学笔记三——橡皮筋技术和椭圆扫描算法</div></div></a></div><div class="next-post pull-right"><a href="/solitude/posts/15450/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">基于Glut的俄罗斯方块开发</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="top-group"><div class="sayhi" id="sayhi" onclick="sco.changeWittyWord()"></div></div></div><div class="avatar"><img alt="头像" src="/img/logo.png"></div><div class="description"></div><div class="bottom-group"><span class="left"><div class="name">zhywyt</div><div class="desc">只有迎风，风筝才能飞得更高。</div></span><div class="social-icons is-center"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fas fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%98%E5%88%B6%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%AE%97%E6%B3%95"><span class="toc-text">绘制直线的算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%BE%AE%E5%88%86%E6%B3%95"><span class="toc-text">数值微分法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E7%82%B9%E7%94%BB%E7%BA%BF%E7%AE%97%E6%B3%95"><span class="toc-text">中点画线算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bresenham%E7%94%BB%E7%BA%BF%E7%AE%97%E6%B3%95"><span class="toc-text">Bresenham画线算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB"><span class="toc-text">代码汇总</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fas fa-map"></i><span>最近发布</span></div><div class="aside-list"><a class="aside-list-item" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路"><div class="content"><span class="title" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路">在Unity2D中创建角色描边的shader思路</span></div></a><a class="aside-list-item" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器"><div class="content"><span class="title" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器">Listary——不仅仅是搜索器</span></div></a><a class="aside-list-item" href="/solitude/posts/51899/" title="我的编辑器"><div class="content"><span class="title" href="/solitude/posts/51899/" title="我的编辑器">我的编辑器</span><span class="categories" href="/solitude/posts/51899/">关于博客</span></div></a><a class="aside-list-item" href="/solitude/posts/0/" title="Untitled"><div class="content"><span class="title" href="/solitude/posts/0/" title="Untitled">Untitled</span></div></a><a class="aside-list-item" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录"><div class="content"><span class="title" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录">anzhiyu主题搭建记录</span><span class="categories" href="/solitude/posts/64880/">闲鱼兼职</span></div></a></div></div></div></div></main><footer id="footer"><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2025 By&nbsp;<a class="footer-bar-link" href="/solitude/"><img class="author-avatar" src="/solitude/img/pwa/favicon.png">zhywyt</a></div><div class="beian-group"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://hexo.io/">框架：Hexo</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude">主题：Solitude</a></div></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/solitude/js/utils.js?v=3.0.15"></script><script src="/solitude/js/main.js?v=3.0.15"></script><script src="/solitude/js/third_party/waterfall.min.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/solitude/js/tw_cn.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+utils.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+</script><script src="https://fastly.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ["title","#body-wrap","#site-config","meta[name=\"description\"]",".js-pjax","meta[property^=\"og:\"]","#config-diff",".rs_show",".rs_hide"],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- google adsense--><!-- search--><!-- music--></body></html>
         <script>
-            const posts = ["posts/17428/","posts/30828/","posts/15450/","posts/45431/","posts/b4ca7a5fb5b2/","posts/50901/","posts/3472/","posts/d9709c673656/","posts/15892/","posts/1cc3941f1b85/","posts/5993/","posts/61408/","posts/5c54bd2bc06c/","posts/5181/","posts/337e148b3fb3/","posts/d8eb45be176b/","posts/b0c241b3d4cf/","posts/96dff400cced/","posts/51899/","posts/15959/","posts/32280/","posts/2977/","posts/51449/","posts/47792/","posts/27853/","posts/63067/","posts/49493/","posts/53666/","posts/61355/","posts/14027/","posts/62236/","posts/11458/","posts/16515/","posts/8fd9ab7c695f/","posts/5953/","posts/34e784d46b0a/","posts/536c11d1caa5/","posts/5790301d4de2/","posts/d586aba908b5/","posts/e3e3aee8476b/","posts/f29c63b83721/","posts/4182/","posts/24484/","posts/df4c31f7ba80/","posts/d7880d8f2f2e/","posts/6886/","posts/7287/","posts/49793/","posts/usehttps/","posts/64880/","posts/da74aa8e9f3b/","posts/2c9570b00976/","posts/bc16e0702e1d/","posts/c8b013b915a1/","posts/2024g10/","posts/a5bf365fe3fe/","posts/1fd1cabe051b/","posts/10536/","posts/6615/","posts/6295/","posts/44638/","posts/55574/","posts/6999/","posts/56214/","posts/6679/","posts/29b61e029340/","posts/56022/","posts/58283ae7cb2d/","posts/0/","posts/10907/","posts/59a4f8f59f45/","posts/54404/","posts/823c297f1d7f/","posts/247db5136c67/","posts/0e24283556b2/","posts/c6072bab6ff0/","posts/bd7f49a3fa80/","posts/d7ea97fbec36/","posts/e31df0f4a5f0/","posts/d742d8349fff/","posts/4a74e5f5d3d6/","posts/6e1ed0060e67/","posts/d863527924a0/","posts/818482b58c2a/"];
+            const posts = ["posts/10907/","posts/5993/","posts/51899/","posts/0/","posts/64880/","posts/usehttps/","posts/61408/","posts/29b61e029340/","posts/34e784d46b0a/","posts/d7880d8f2f2e/","posts/58283ae7cb2d/","posts/b0c241b3d4cf/","posts/da74aa8e9f3b/","posts/d863527924a0/","posts/247db5136c67/","posts/818482b58c2a/","posts/0e24283556b2/","posts/d8eb45be176b/","posts/8fd9ab7c695f/","posts/4a74e5f5d3d6/","posts/e31df0f4a5f0/","posts/e3e3aee8476b/","posts/d7ea97fbec36/","posts/2024g10/","posts/f29c63b83721/","posts/6e1ed0060e67/","posts/536c11d1caa5/","posts/337e148b3fb3/","posts/2c9570b00976/","posts/d586aba908b5/","posts/5790301d4de2/","posts/96dff400cced/","posts/c8b013b915a1/","posts/bc16e0702e1d/","posts/a5bf365fe3fe/","posts/bd7f49a3fa80/","posts/c6072bab6ff0/","posts/59a4f8f59f45/","posts/823c297f1d7f/","posts/1cc3941f1b85/","posts/54404/","posts/d742d8349fff/","posts/d9709c673656/","posts/5c54bd2bc06c/","posts/df4c31f7ba80/","posts/b4ca7a5fb5b2/","posts/24484/","posts/5953/","posts/5181/","posts/1fd1cabe051b/","posts/49793/","posts/4182/","posts/62236/","posts/7287/","posts/61355/","posts/14027/","posts/53666/","posts/17428/","posts/16515/","posts/11458/","posts/6679/","posts/15892/","posts/3472/","posts/56022/","posts/56214/","posts/6999/","posts/55574/","posts/6886/","posts/6615/","posts/44638/","posts/6295/","posts/45431/","posts/30828/","posts/15450/","posts/10536/","posts/49493/","posts/50901/","posts/27853/","posts/63067/","posts/32280/","posts/51449/","posts/2977/","posts/15959/","posts/47792/"];
             function toRandomPost() {
                 const randomPost = posts[Math.floor(Math.random() * posts.length)];
                 pjax.loadUrl(GLOBAL_CONFIG.root + randomPost);

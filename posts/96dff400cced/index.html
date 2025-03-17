@@ -1,40 +1,222 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>waline评论系统搭建 | zhywyt's blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/solitude/img/pwa/favicon.png"><!-- index.css--><link rel="stylesheet" href="/solitude/css/index.css?v=3.0.15"><!-- inject head--><link rel="canonical" href="https://hexothemedemo.github.io/solitude/posts/96dff400cced/index.html"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="我的hexo是私有部署，没有使用github的评论系统。使用waline作为评论系统，mysql作为后端数据库。主要由两部分组成： 数据库使用mysql简单部署，首先去这里下载waline.sql，保存到你自己的目录下，我取名为waline.sql，记住这个文件的路径，然后执行下面的语句。请将下面的"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="zhywyt's blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/solitude/img/pwa/favicon.png"><link rel="apple-touch-icon" href="/solitude/img/pwa/favicon.png" sizes="180x180"><script>console.log(' %c Solitude %c ' + '3.0.15' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
 
-block content
-    main.layout#content-inner
-        #post
-            if page.not_cover
-                include includes/widgets/post/postInfo
-            article.post-content.article-container
-                if page.ai_text && theme.post.ai.enable
-                    include includes/widgets/post/ai
-                != page.content
-            include includes/widgets/post/copyright
-            .post-tools-right
-                .tag_share
-                    .post-meta__tag-list
-                        each data in page.tags.data || []
-                            a(href=url_for(data.path)).post-meta__tags
-                                span.tags-punctuation
-                                    i.solitude.fas.fa-hashtag
-                                    =data.name
-                                    span.tagsPageCount=data.length
-            if theme.google_adsense.enable && !theme.google_adsense.auto_ads && theme.google_adsense.post_content
-                div.google-ads-warp
-                    ins.adsbygoogle(style="display:block; text-align:center; height:284px", data-ad-layout="in-article", data-ad-format="fluid", hide-unfilled="true", data-ad-client=theme.google_adsense.client, data-ad-slot=theme.google_adsense.slot)
-                    script.
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-            if site.posts.length > 1
-                include includes/widgets/post/postNav
-            if theme.related_post.enable
-                != related_posts(page, site.posts)
-            if page.comment
-                - var comment_js = true
-                include includes/widgets/third-party/comments/comment
-        if page.aside
-            include includes/widgets/aside/aside
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/solitude/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        state: {
+            morning: "✨ 早上好，新的一天开始了",
+            noon: "🍲 午餐时间",
+            afternoon: "🌞 下午好",
+            night: "早点休息",
+            goodnight: "晚安 😴",
+        },
+        witty_words: [],
+        witty_comment: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    right_menu: false,
+    translate: {"translateDelay":0,"defaultEncoding":2},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false,
+    color: false,
+}</script></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/archives/"><div class="headline">文章</div><div class="length-num">84</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fas fa-circle-half-stroke"></i><span>显示模式</span></span></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="card-tag-cloud"><a href="/solitude/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/">技术文档<sup>18</sup></a><a href="/solitude/tags/encrypt/">encrypt<sup>1</sup></a><a href="/solitude/tags/%E5%8D%9A%E5%AE%A2/">博客<sup>1</sup></a><a href="/solitude/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/">诗与散文<sup>1</sup></a><a href="/solitude/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/">错误解决<sup>5</sup></a></div></div></div></div><!-- keyboard--><!-- righhtside--><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/solitude/" title="返回博客主页"><span class="title">Solitude</span><i class="solitude fas fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">waline评论系统搭建</a></div></div><div id="menus"></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fas fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fas fa-bars"></i></a></div></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/solitude/categories/%E5%85%B3%E4%BA%8E%E5%8D%9A%E5%AE%A2/">关于博客</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/solitude/tags/%E5%8D%9A%E5%AE%A2/"><span class="tags-name tags-punctuation"><i class="solitude fas fa-hashtag"></i>博客</span></a></div></div></div></div><h1 class="post-title">waline评论系统搭建</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><div id="post-info-bottom"></div><article class="post-content article-container"><p>我的hexo是私有部署，没有使用github的评论系统。使用<a target="_blank" rel="noopener" href="https://waline.js.org/">waline</a>作为评论系统，mysql作为后端数据库。<br>主要由两部分组成：</p>
+<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p>使用mysql简单部署，首先去这里下载<a target="_blank" rel="noopener" href="https://github.com/walinejs/waline/blob/main/assets/waline.sql">waline.sql</a>，保存到你自己的目录下，我取名为waline.sql，记住这个文件的路径，然后执行下面的语句。请将下面的<code>&lt;path/to/your/waline.sql&gt;</code>替换为你下载的文件的路径，请使用绝对路径。关于mysql客户端协议问题参考[^1]</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install mysql-server</span><br><span class="line">mysql</span><br><span class="line"><span class="comment"># 需要解决Node.js mysql客户端不支持认证协议引起的错误，所以重新添加一个用户</span></span><br><span class="line">alter user <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> identified with mysql_native_password by <span class="string">&#x27;123456&#x27;</span>;</span><br><span class="line">create database waline;</span><br><span class="line">\u waline</span><br><span class="line"><span class="built_in">source</span> &lt;path/to/your/waline.sql&gt;</span><br><span class="line">show tables;</span><br><span class="line">\q</span><br></pre></td></tr></table></figure>
+
+<p>其中，最后<code>show tables;</code>的结果应该如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> tables</span><br><span class="line">    <span class="operator">-</span><span class="operator">&gt;</span> ;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="operator">|</span> Tables_in_waline <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="operator">|</span> wl_Comment       <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> wl_Counter       <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> wl_Users         <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+</span></span><br><span class="line"><span class="number">3</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<p>由apt安装的mysql数据库，默认的用户密码保存在：<code>/etc/mysql/debian.cnf</code>。<br>这里设置了<code>root</code>用户之后，下次登录需要使用密码登录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql -p</span><br><span class="line">Enter password: 123456</span><br></pre></td></tr></table></figure>
+
+<h2 id="waline后端"><a href="#waline后端" class="headerlink" title="waline后端"></a>waline后端</h2><p>安装好mysql后，我们需要为waline后端配置一些环境变量，你可以将这些写在你的<code>~/.bashrc</code>中，他们会在你打开终端的时候运行。<a href="%5Bwaline%E5%A4%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%94%AF%E6%8C%81mysql%E7%AF%87%5D(https://waline.js.org/guide/database.html#mysql)">^2</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;export MYSQL_DB=waline</span></span><br><span class="line"><span class="string">export MYSQL_USER=root</span></span><br><span class="line"><span class="string">export MYSQL_PASSWORD=123456&#x27;</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<p>检查环境变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">env</span> | grep SQL</span><br></pre></td></tr></table></figure>
+<p>如果能看到上面添加的几个值说明成功了。<br>最后一步是最简单的，我们使用<a target="_blank" rel="noopener" href="https://waline.js.org/guide/deploy/vps.html">独立部署</a>作为参考：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install @waline/vercel</span><br><span class="line">node node_modules/@waline/vercel/vanilla.js</span><br></pre></td></tr></table></figure>
+<p>第二条命令就能把后端服务启动，只要你正确配置了环境变量，就能成功将后端运行起来。</p>
+<h2 id="fliud配置"><a href="#fliud配置" class="headerlink" title="fliud配置"></a>fliud配置</h2><p>首先你来配置评论系统了，肯定已经对<code>fliud</code>有了一定的了解了，我需要你能找到它的配置文件所在的位置。打开它</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim _config.fliud.yml</span><br></pre></td></tr></table></figure>
+<p>搜索<code>waline</code>找到这一段：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Waline</span></span><br><span class="line"><span class="comment"># 从 Valine 衍生而来，额外增加了服务端和多种功能</span></span><br><span class="line"><span class="comment"># Derived from Valine, with self-hosted service and new features</span></span><br><span class="line"><span class="comment"># See: https://waline.js.org/</span></span><br><span class="line"><span class="attr">waline:</span></span><br><span class="line">  <span class="attr">serverURL:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">window.location.pathname</span></span><br><span class="line">  <span class="attr">meta:</span> [<span class="string">&#x27;nick&#x27;</span>, <span class="string">&#x27;mail&#x27;</span>, <span class="string">&#x27;link&#x27;</span>]</span><br><span class="line">  <span class="attr">requiredMeta:</span> [<span class="string">&#x27;nick&#x27;</span>]</span><br><span class="line">  <span class="attr">lang:</span> <span class="string">&#x27;zh-CN&#x27;</span></span><br><span class="line">  <span class="attr">emoji:</span> [<span class="string">&#x27;https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo&#x27;</span>]</span><br><span class="line">  <span class="attr">dark:</span> <span class="string">&#x27;html[data-user-color-scheme=&quot;dark&quot;]&#x27;</span></span><br><span class="line">  <span class="attr">wordLimit:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">pageSize:</span> <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<p>需要启动它你只需要填入<code>serverURL</code>字段即可，而且需要保证访问博客的人能正常访问到这个<code>serverURL</code>，所以你的<code>waline</code>也需要内网穿透并反向代理绑定域名，这部分自行处理。如果有网络的困难的话，请先本地游玩体验。等待网络技巧提升再来尝试。<br>然后需要启动评论系统，搜索<code>comments</code>，找到如下内容<font color='red'>对于不同的page这个评论组件是分开的，如果你需要在文章中使用评论组件，需要在post下面找到这个，如果需要在友链中使用同理。</font>：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 评论插件</span></span><br><span class="line"><span class="comment"># Comment plugin</span></span><br><span class="line"><span class="attr">comments:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 指定的插件，需要同时设置对应插件的必要参数</span></span><br><span class="line">  <span class="comment"># The specified plugin needs to set the necessary parameters at the same time</span></span><br><span class="line">  <span class="comment"># Options: utterances | disqus | gitalk | valine | waline | changyan | livere | remark42 | twikoo | cusdis | giscus | discuss</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">disqus</span></span><br></pre></td></tr></table></figure>
+<p>将<code>type</code>字段改为<code>waline</code>，并确保<code>enable</code>字段为<code>true</code>。这可以保证你的评论是启动的，并使用<code>waline</code>配置。</p>
+<p>配置好后，重启heox服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo g &amp;&amp; hexo s</span><br></pre></td></tr></table></figure>
+
+<p>不出意外你可以在你设置的界面看到如下内容：</p>
+<p><img src="/solitude/../../assets/images/QQ_1729165958539.png"></p>
+<p>不过我这里已经登录了，建议使用github登录，首次创建的账号是站主账号。到这里基础的<code>waline</code>搭建就结束了，但是其实<code>waline</code>还有很多好玩的东西，之后搭建了可以在这里补充~<br><img src="/solitude/../../assets/images/QQ_1729166051684.png"><br><a target="_blank" rel="noopener" href="https://waline.js.org/guide/features/">waline功能</a></p>
+<h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p>[^1]:<a target="_blank" rel="noopener" href="https://blog.csdn.net/kkkloveyou/article/details/91623834"># 解决Node.js mysql客户端不支持认证协议引发的“ER_NOT_SUPPORTED_AUTH_MODE”问题</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><div class="post-copyright__author_img"><img class="post-copyright__author_img_front" src="/solitude/img/logo.png"></div><div class="post-copyright__author_name">zhywyt</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/solitude/">zhywyt's blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/solitude/tags/%E5%8D%9A%E5%AE%A2/"><span class="tags-punctuation"><i class="solitude fas fa-hashtag"></i>博客<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/solitude/posts/5790301d4de2/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">2024全国乡村定向系列赛事活动（浙江海宁站）</div></div></a></div><div class="next-post pull-right"><a href="/solitude/posts/c8b013b915a1/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">甲壳虫跑团“耐力挑战赛”赛制章程</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="top-group"><div class="sayhi" id="sayhi" onclick="sco.changeWittyWord()"></div></div></div><div class="avatar"><img alt="头像" src="/img/logo.png"></div><div class="description"></div><div class="bottom-group"><span class="left"><div class="name">zhywyt</div><div class="desc">只有迎风，风筝才能飞得更高。</div></span><div class="social-icons is-center"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fas fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#waline%E5%90%8E%E7%AB%AF"><span class="toc-text">waline后端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#fliud%E9%85%8D%E7%BD%AE"><span class="toc-text">fliud配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text">reference</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fas fa-map"></i><span>最近发布</span></div><div class="aside-list"><a class="aside-list-item" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路"><div class="content"><span class="title" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路">在Unity2D中创建角色描边的shader思路</span></div></a><a class="aside-list-item" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器"><div class="content"><span class="title" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器">Listary——不仅仅是搜索器</span></div></a><a class="aside-list-item" href="/solitude/posts/51899/" title="我的编辑器"><div class="content"><span class="title" href="/solitude/posts/51899/" title="我的编辑器">我的编辑器</span><span class="categories" href="/solitude/posts/51899/">关于博客</span></div></a><a class="aside-list-item" href="/solitude/posts/0/" title="Untitled"><div class="content"><span class="title" href="/solitude/posts/0/" title="Untitled">Untitled</span></div></a><a class="aside-list-item" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录"><div class="content"><span class="title" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录">anzhiyu主题搭建记录</span><span class="categories" href="/solitude/posts/64880/">闲鱼兼职</span></div></a></div></div></div></div></main><footer id="footer"><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2025 By&nbsp;<a class="footer-bar-link" href="/solitude/"><img class="author-avatar" src="/solitude/img/pwa/favicon.png">zhywyt</a></div><div class="beian-group"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://hexo.io/">框架：Hexo</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude">主题：Solitude</a></div></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/solitude/js/utils.js?v=3.0.15"></script><script src="/solitude/js/main.js?v=3.0.15"></script><script src="/solitude/js/third_party/waterfall.min.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/solitude/js/tw_cn.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+utils.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+</script><script src="https://fastly.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ["title","#body-wrap","#site-config","meta[name=\"description\"]",".js-pjax","meta[property^=\"og:\"]","#config-diff",".rs_show",".rs_hide"],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- google adsense--><!-- search--><!-- music--></body></html>
         <script>
-            const posts = ["posts/17428/","posts/30828/","posts/15450/","posts/45431/","posts/b4ca7a5fb5b2/","posts/50901/","posts/3472/","posts/d9709c673656/","posts/15892/","posts/1cc3941f1b85/","posts/5993/","posts/61408/","posts/5c54bd2bc06c/","posts/5181/","posts/337e148b3fb3/","posts/d8eb45be176b/","posts/b0c241b3d4cf/","posts/96dff400cced/","posts/51899/","posts/15959/","posts/32280/","posts/2977/","posts/51449/","posts/47792/","posts/27853/","posts/63067/","posts/49493/","posts/53666/","posts/61355/","posts/14027/","posts/62236/","posts/11458/","posts/16515/","posts/8fd9ab7c695f/","posts/5953/","posts/34e784d46b0a/","posts/536c11d1caa5/","posts/5790301d4de2/","posts/d586aba908b5/","posts/e3e3aee8476b/","posts/f29c63b83721/","posts/4182/","posts/24484/","posts/df4c31f7ba80/","posts/d7880d8f2f2e/","posts/6886/","posts/7287/","posts/49793/","posts/usehttps/","posts/64880/","posts/da74aa8e9f3b/","posts/2c9570b00976/","posts/bc16e0702e1d/","posts/c8b013b915a1/","posts/2024g10/","posts/a5bf365fe3fe/","posts/1fd1cabe051b/","posts/10536/","posts/6615/","posts/6295/","posts/44638/","posts/55574/","posts/6999/","posts/56214/","posts/6679/","posts/29b61e029340/","posts/56022/","posts/58283ae7cb2d/","posts/0/","posts/10907/","posts/59a4f8f59f45/","posts/54404/","posts/823c297f1d7f/","posts/247db5136c67/","posts/0e24283556b2/","posts/c6072bab6ff0/","posts/bd7f49a3fa80/","posts/d7ea97fbec36/","posts/e31df0f4a5f0/","posts/d742d8349fff/","posts/4a74e5f5d3d6/","posts/6e1ed0060e67/","posts/d863527924a0/","posts/818482b58c2a/"];
+            const posts = ["posts/10907/","posts/5993/","posts/51899/","posts/0/","posts/64880/","posts/usehttps/","posts/61408/","posts/29b61e029340/","posts/34e784d46b0a/","posts/d7880d8f2f2e/","posts/58283ae7cb2d/","posts/b0c241b3d4cf/","posts/da74aa8e9f3b/","posts/d863527924a0/","posts/247db5136c67/","posts/818482b58c2a/","posts/0e24283556b2/","posts/d8eb45be176b/","posts/8fd9ab7c695f/","posts/4a74e5f5d3d6/","posts/e31df0f4a5f0/","posts/e3e3aee8476b/","posts/d7ea97fbec36/","posts/2024g10/","posts/f29c63b83721/","posts/6e1ed0060e67/","posts/536c11d1caa5/","posts/337e148b3fb3/","posts/2c9570b00976/","posts/d586aba908b5/","posts/5790301d4de2/","posts/96dff400cced/","posts/c8b013b915a1/","posts/bc16e0702e1d/","posts/a5bf365fe3fe/","posts/bd7f49a3fa80/","posts/c6072bab6ff0/","posts/59a4f8f59f45/","posts/823c297f1d7f/","posts/1cc3941f1b85/","posts/54404/","posts/d742d8349fff/","posts/d9709c673656/","posts/5c54bd2bc06c/","posts/df4c31f7ba80/","posts/b4ca7a5fb5b2/","posts/24484/","posts/5953/","posts/5181/","posts/1fd1cabe051b/","posts/49793/","posts/4182/","posts/62236/","posts/7287/","posts/61355/","posts/14027/","posts/53666/","posts/17428/","posts/16515/","posts/11458/","posts/6679/","posts/15892/","posts/3472/","posts/56022/","posts/56214/","posts/6999/","posts/55574/","posts/6886/","posts/6615/","posts/44638/","posts/6295/","posts/45431/","posts/30828/","posts/15450/","posts/10536/","posts/49493/","posts/50901/","posts/27853/","posts/63067/","posts/32280/","posts/51449/","posts/2977/","posts/15959/","posts/47792/"];
             function toRandomPost() {
                 const randomPost = posts[Math.floor(Math.random() * posts.length)];
                 pjax.loadUrl(GLOBAL_CONFIG.root + randomPost);

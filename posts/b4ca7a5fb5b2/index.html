@@ -1,40 +1,217 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ChatGLM本地配置记录 | zhywyt's blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/solitude/img/pwa/favicon.png"><!-- index.css--><link rel="stylesheet" href="/solitude/css/index.css?v=3.0.15"><!-- inject head--><link rel="canonical" href="https://hexothemedemo.github.io/solitude/posts/b4ca7a5fb5b2/index.html"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="gitea 原由可爱的室友说想玩本地部署的GPT，于是这里打算部署一个ChatGLM给他玩一下。这里记录部署过程。本地使用的机器如图。由于GLM需要大量的显存和内存，我使用的是PVE容器分配了32GB内存用于和显卡用于推理模型。 环境配置conda并使用conda安装环境。 1234567wget"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="zhywyt's blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/solitude/img/pwa/favicon.png"><link rel="apple-touch-icon" href="/solitude/img/pwa/favicon.png" sizes="180x180"><script>console.log(' %c Solitude %c ' + '3.0.15' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
 
-block content
-    main.layout#content-inner
-        #post
-            if page.not_cover
-                include includes/widgets/post/postInfo
-            article.post-content.article-container
-                if page.ai_text && theme.post.ai.enable
-                    include includes/widgets/post/ai
-                != page.content
-            include includes/widgets/post/copyright
-            .post-tools-right
-                .tag_share
-                    .post-meta__tag-list
-                        each data in page.tags.data || []
-                            a(href=url_for(data.path)).post-meta__tags
-                                span.tags-punctuation
-                                    i.solitude.fas.fa-hashtag
-                                    =data.name
-                                    span.tagsPageCount=data.length
-            if theme.google_adsense.enable && !theme.google_adsense.auto_ads && theme.google_adsense.post_content
-                div.google-ads-warp
-                    ins.adsbygoogle(style="display:block; text-align:center; height:284px", data-ad-layout="in-article", data-ad-format="fluid", hide-unfilled="true", data-ad-client=theme.google_adsense.client, data-ad-slot=theme.google_adsense.slot)
-                    script.
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-            if site.posts.length > 1
-                include includes/widgets/post/postNav
-            if theme.related_post.enable
-                != related_posts(page, site.posts)
-            if page.comment
-                - var comment_js = true
-                include includes/widgets/third-party/comments/comment
-        if page.aside
-            include includes/widgets/aside/aside
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/solitude/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        state: {
+            morning: "✨ 早上好，新的一天开始了",
+            noon: "🍲 午餐时间",
+            afternoon: "🌞 下午好",
+            night: "早点休息",
+            goodnight: "晚安 😴",
+        },
+        witty_words: [],
+        witty_comment: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    right_menu: false,
+    translate: {"translateDelay":0,"defaultEncoding":2},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false,
+    color: false,
+}</script></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/archives/"><div class="headline">文章</div><div class="length-num">84</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fas fa-circle-half-stroke"></i><span>显示模式</span></span></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="card-tag-cloud"><a href="/solitude/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/">技术文档<sup>18</sup></a><a href="/solitude/tags/encrypt/">encrypt<sup>1</sup></a><a href="/solitude/tags/%E5%8D%9A%E5%AE%A2/">博客<sup>1</sup></a><a href="/solitude/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/">诗与散文<sup>1</sup></a><a href="/solitude/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/">错误解决<sup>5</sup></a></div></div></div></div><!-- keyboard--><!-- righhtside--><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/solitude/" title="返回博客主页"><span class="title">Solitude</span><i class="solitude fas fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">ChatGLM本地配置记录</a></div></div><div id="menus"></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fas fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fas fa-bars"></i></a></div></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/solitude/categories/Linux/">Linux</a></span><div class="tag_share"><div class="post-meta__tag-list"></div></div></div></div><h1 class="post-title">ChatGLM本地配置记录</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><div id="post-info-bottom"></div><article class="post-content article-container"><p><a href="../1c09aa798545">gitea</a></p>
+<h2 id="原由"><a href="#原由" class="headerlink" title="原由"></a>原由</h2><p>可爱的室友说想玩本地部署的GPT，于是这里打算部署一个ChatGLM给他玩一下。这里记录部署过程。本地使用的机器如图。由于GLM需要大量的显存和内存，我使用的是PVE容器分配了32GB内存用于和显卡用于推理模型。<br><img src="/solitude/../../assets/images/Pasted%20image%2020240916194636.png"><br><img src="/solitude/../../assets/images/Pasted%20image%2020240916194935.png"></p>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><h4 id="conda"><a href="#conda" class="headerlink" title="conda"></a>conda</h4><p>并使用conda安装环境。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wget https://repo.anaconda.com/archive/Anaconda3-2024.06-1-Linux-x86_64.sh</span><br><span class="line"><span class="built_in">chmod</span> +x Anaconda3-2024.06-1-Linux-x86_64.sh</span><br><span class="line">./Anaconda3-2024.06-1-Linux-x86_64.sh</span><br><span class="line"><span class="comment"># 激活conda</span></span><br><span class="line"><span class="built_in">eval</span> <span class="string">&quot;<span class="subst">$(/root/anaconda3/bin/conda shell.bash hook)</span>&quot;</span></span><br><span class="line"><span class="comment"># 可选</span></span><br><span class="line"><span class="built_in">ln</span> -s /root/anaconda3/bin/conda /bin/conda</span><br></pre></td></tr></table></figure>
+
+<p>请自行根据引导安装conda。装好conda之后重启终端，开始安装ChatGLM需要的环境。</p>
+<h4 id="cuda"><a href="#cuda" class="headerlink" title="cuda"></a>cuda</h4><p>cuda的安装方法你可以在这里找到<a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-downloads?target_os=Linux">cuda</a>，不建议使用deb安装，而建议使用.run的方式安装，但是具体看你的设备环境能装上哪个版本。比如我需要12.4的cuda，所以我可以找到他并安装。<br>比如你要找<code>&lt;version&gt;</code>这个版本，你可以用这条链接找到他<br><code>https://developer.download.nvidia.com/compute/cuda/&lt;version&gt;</code></p>
+<center><font color='red'>!!!版本很重要</font></center>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda_12.4.0_550.54.14_linux.run</span><br><span class="line">sh cuda_12.4.0_550.54.14_linux.run</span><br></pre></td></tr></table></figure>
+<p>如果你没有安装显卡驱动可以在这里同步安装，如果安装了的话，请不要重复安装。<br>你可能需要一点耐心，cuda的安装非常漫长，这是由于apt是单线程导致的。你可以尝试使用多线程的apt，但是我无法保证多线程编译是否正确。安装的同时你可以进行后面不需要cuda的部分。比如conda创建环境、模型下载等。</p>
+<h4 id="pytorch"><a href="#pytorch" class="headerlink" title="pytorch"></a>pytorch</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建虚拟环境</span></span><br><span class="line">conda create -n glm python=3.10</span><br><span class="line">conda activate glm</span><br><span class="line">pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="克隆仓库"><a href="#克隆仓库" class="headerlink" title="克隆仓库"></a>克隆仓库</h4><p>这里我使用了GLM4，我想配置一个<code>GLM4-9b-chat</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/THUDM/GLM-4.git</span><br><span class="line"><span class="built_in">cd</span> GLM-4/basic_demo</span><br><span class="line">pip install -r requirements.txt</span><br><span class="line">pip install peft</span><br></pre></td></tr></table></figure>
+<h4 id="模型下载"><a href="#模型下载" class="headerlink" title="模型下载"></a>模型下载</h4><p>模型你可以在这里找到：<a target="_blank" rel="noopener" href="https://www.modelscope.cn/models/ZhipuAI/glm-4-9b-chat/files">Modelscope</a>，lfs你可以在这里找到他的安装教程<a target="_blank" rel="noopener" href="https://packagecloud.io/github/git-lfs/install">git lfs</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果你没有安装git lfs</span></span><br><span class="line">apt install git-lfs</span><br><span class="line"><span class="comment"># 这个位置是模型的默认位置</span></span><br><span class="line"><span class="built_in">mkdir</span> THUDM</span><br><span class="line"><span class="built_in">cd</span> THUDM</span><br><span class="line"><span class="comment"># 检测是否安装成功</span></span><br><span class="line">git lfs install</span><br><span class="line"><span class="comment"># 使用lfs下载</span></span><br><span class="line">git <span class="built_in">clone</span> https://www.modelscope.cn/ZhipuAI/glm-4-9b-chat.git</span><br></pre></td></tr></table></figure>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><h3 id="直接运行"><a href="#直接运行" class="headerlink" title="直接运行"></a>直接运行</h3><p>我尝试了直接运行所有模型，你但是效果非常差，速度很慢。你可以在仓库下运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意你的运行位置</span></span><br><span class="line">(base) root@ChatGLM:~/GLM-4$ python basic_demo/trans_cli_demo.py</span><br></pre></td></tr></table></figure>
+<p>来尝试模型的效果，但是这份代码是不会进行量化的。</p>
+<h3 id="INT4量化"><a href="#INT4量化" class="headerlink" title="INT4量化"></a>INT4量化</h3><p>我这里放两份我成功运行的INT4量化代码，你可以尝试修改它并运行。</p>
+<h4 id="basic-demo-trans-cli-demo-py"><a href="#basic-demo-trans-cli-demo-py" class="headerlink" title="basic_demo&#x2F;trans_cli_demo.py"></a>basic_demo&#x2F;trans_cli_demo.py</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">(base) root@ChatGLM:~/GLM-4# git diff basic_demo/trans_cli_demo.py  </span><br><span class="line">diff --git a/basic_demo/trans_cli_demo.py b/basic_demo/trans_cli_demo.py  </span><br><span class="line">index cbd0ba0..98790b5 100644  </span><br><span class="line">--- a/basic_demo/trans_cli_demo.py  </span><br><span class="line">+++ b/basic_demo/trans_cli_demo.py  </span><br><span class="line">@@ -15,7 +15,7 @@ If you use flash attention, you should install the flash-attn and  add attn_impl  </span><br><span class="line">import os  </span><br><span class="line">import torch  </span><br><span class="line">from threading import Thread  </span><br><span class="line">-from transformers import AutoTokenizer, StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer, AutoModel  </span><br><span class="line">+from transformers import AutoTokenizer, StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer, AutoModel, BitsAndBytes  </span><br><span class="line">Config  </span><br><span class="line">   </span><br><span class="line">MODEL_PATH = os.environ.get(&#x27;MODEL_PATH&#x27;, &#x27;THUDM/glm-4-9b-chat&#x27;)  </span><br><span class="line">   </span><br><span class="line">@@ -46,8 +46,10 @@ tokenizer = AutoTokenizer.from_pretrained(  </span><br><span class="line">model = AutoModel.from_pretrained(  </span><br><span class="line">    MODEL_PATH,  </span><br><span class="line">    trust_remote_code=True,  </span><br><span class="line">-    # attn_implementation=&quot;flash_attention_2&quot;, # Use Flash Attention  </span><br><span class="line">-    # torch_dtype=torch.bfloat16, #using flash-attn must use bfloat16 or float16  </span><br><span class="line">+    #attn_implementation=&quot;flash_attention_2&quot;, # Use Flash Attention  </span><br><span class="line">+    quantization_config=BitsAndBytesConfig(load_in_4bit=True),  </span><br><span class="line">+    low_cpu_mem_usage=True,  </span><br><span class="line">+    torch_dtype=torch.bfloat16, #using flash-attn must use bfloat16 or float16  </span><br><span class="line">    device_map=&quot;auto&quot;).eval()</span><br></pre></td></tr></table></figure>
+<p>成功运行大概是这样的：<br><img src="/solitude/../../assets/images/Pasted%20image%2020240917232107.png"></p>
+<h4 id="basic-demo-trans-web-demo-py"><a href="#basic-demo-trans-web-demo-py" class="headerlink" title="basic_demo&#x2F;trans_web_demo.py"></a>basic_demo&#x2F;trans_web_demo.py</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">(base) root@ChatGLM:~/GLM-4# git diff basic_demo/trans_web_demo.py  </span><br><span class="line">diff --git a/basic_demo/trans_web_demo.py b/basic_demo/trans_web_demo.py  </span><br><span class="line">diff --git a/basic_demo/trans_web_demo.py b/basic_demo/trans_web_demo.py  </span><br><span class="line">index 1a470de..a85b4bd 100644  </span><br><span class="line">--- a/basic_demo/trans_web_demo.py  </span><br><span class="line">+++ b/basic_demo/trans_web_demo.py  </span><br><span class="line">@@ -21,7 +21,9 @@ from transformers import (  </span><br><span class="line">    PreTrainedTokenizerFast,  </span><br><span class="line">    StoppingCriteria,  </span><br><span class="line">    StoppingCriteriaList,  </span><br><span class="line">-    TextIteratorStreamer  </span><br><span class="line">+    TextIteratorStreamer,  </span><br><span class="line">+    AutoModel,  </span><br><span class="line">+    BitsAndBytesConfig  </span><br><span class="line">)  </span><br><span class="line">   </span><br><span class="line">ModelType = Union[PreTrainedModel, PeftModelForCausalLM]  </span><br><span class="line">@@ -35,27 +37,44 @@ def _resolve_path(path: Union[str, Path]) -&gt; Path:  </span><br><span class="line">    return Path(path).expanduser().resolve()  </span><br><span class="line">   </span><br><span class="line">   </span><br><span class="line">-def load_model_and_tokenizer(  </span><br><span class="line">-        model_dir: Union[str, Path], trust_remote_code: bool = True  </span><br><span class="line">-) -&gt; tuple[ModelType, TokenizerType]:  </span><br><span class="line">-    model_dir = _resolve_path(model_dir)  </span><br><span class="line">-    if (model_dir / &#x27;adapter_config.json&#x27;).exists():  </span><br><span class="line">-        model = AutoPeftModelForCausalLM.from_pretrained(  </span><br><span class="line">-            model_dir, trust_remote_code=trust_remote_code, device_map=&#x27;auto&#x27;  </span><br><span class="line">-        )  </span><br><span class="line">-        tokenizer_dir = model.peft_config[&#x27;default&#x27;].base_model_name_or_path  </span><br><span class="line">-    else:  </span><br><span class="line">-        model = AutoModelForCausalLM.from_pretrained(  </span><br><span class="line">-            model_dir, trust_remote_code=trust_remote_code, device_map=&#x27;auto&#x27;  </span><br><span class="line">-        )  </span><br><span class="line">-        tokenizer_dir = model_dir  </span><br><span class="line">-    tokenizer = AutoTokenizer.from_pretrained(  </span><br><span class="line">-        tokenizer_dir, trust_remote_code=trust_remote_code, use_fast=False  </span><br><span class="line">-    )  </span><br><span class="line">-    return model, tokenizer  </span><br><span class="line">-  </span><br><span class="line">+#def load_model_and_tokenizer(  </span><br><span class="line">+#        model_dir: Union[str, Path], trust_remote_code: bool = True  </span><br><span class="line">+#) -&gt; tuple[ModelType, TokenizerType]:  </span><br><span class="line">+#    model_dir = _resolve_path(model_dir)  </span><br><span class="line">+#    if (model_dir / &#x27;adapter_config.json&#x27;).exists():  </span><br><span class="line">+#        model = AutoPeftModelForCausalLM.from_pretrained(  </span><br><span class="line">+#            model_dir, trust_remote_code=trust_remote_code, device_map=&#x27;auto&#x27;  </span><br><span class="line">+#        )  </span><br><span class="line">+#        tokenizer_dir = model.peft_config[&#x27;default&#x27;].base_model_name_or_path  </span><br><span class="line">+#    else:  </span><br><span class="line">+#        model = AutoModelForCausalLM.from_pretrained(  </span><br><span class="line">+#            model_dir, trust_remote_code=trust_remote_code, device_map=&#x27;auto&#x27;  </span><br><span class="line">+#            #model_dir, trust_remote_code=trust_remote_code, device_map=&#x27;auto&#x27;,  </span><br><span class="line">+#            #quantization_config=BitsAndBytesConfig(load_in_4bit=True),  </span><br><span class="line">+#            #low_cpu_mem_usage=False,  </span><br><span class="line">+#        )  </span><br><span class="line">+#        tokenizer_dir = model_dir  </span><br><span class="line">+#    tokenizer = AutoTokenizer.from_pretrained(  </span><br><span class="line">+#        tokenizer_dir, trust_remote_code=trust_remote_code, use_fast=False  </span><br><span class="line">+#    )  </span><br><span class="line">+#    return model, tokenizer  </span><br><span class="line">+#  </span><br><span class="line">+#  </span><br><span class="line">+#model, tokenizer = load_model_and_tokenizer(MODEL_PATH, trust_remote_code=True)  </span><br><span class="line">+tokenizer = AutoTokenizer.from_pretrained(  </span><br><span class="line">+    MODEL_PATH,  </span><br><span class="line">+    trust_remote_code=True,  </span><br><span class="line">+    encode_special_tokens=True  </span><br><span class="line">+)  </span><br><span class="line">   </span><br><span class="line">-model, tokenizer = load_model_and_tokenizer(MODEL_PATH, trust_remote_code=True)  </span><br><span class="line">+model = AutoModel.from_pretrained(  </span><br><span class="line">+    MODEL_PATH,  </span><br><span class="line">+    trust_remote_code=True,  </span><br><span class="line">+    #attn_implementation=&quot;flash_attention_2&quot;, # Use Flash Attention  </span><br><span class="line">+    quantization_config=BitsAndBytesConfig(load_in_4bit=True),  </span><br><span class="line">+    low_cpu_mem_usage=True,  </span><br><span class="line">+    torch_dtype=torch.bfloat16, #using flash-attn must use bfloat16 or float16  </span><br><span class="line">+    device_map=&quot;auto&quot;).eval()</span><br></pre></td></tr></table></figure>
+<p>这个运行结果大概是这样的：</p>
+<p><img src="/solitude/../../assets/images/Pasted%20image%2020240917232652.png"></p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><div class="post-copyright__author_img"><img class="post-copyright__author_img_front" src="/solitude/img/logo.png"></div><div class="post-copyright__author_name">zhywyt</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/solitude/">zhywyt's blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/solitude/posts/df4c31f7ba80/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">PVE软路由配置</div></div></a></div><div class="next-post pull-right"><a href="/solitude/posts/24484/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">pve 8.2.2 解决unsupported Ubuntu version '24.04'</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="top-group"><div class="sayhi" id="sayhi" onclick="sco.changeWittyWord()"></div></div></div><div class="avatar"><img alt="头像" src="/img/logo.png"></div><div class="description"></div><div class="bottom-group"><span class="left"><div class="name">zhywyt</div><div class="desc">只有迎风，风筝才能飞得更高。</div></span><div class="social-icons is-center"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fas fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%94%B1"><span class="toc-text">原由</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-text">环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#conda"><span class="toc-text">conda</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cuda"><span class="toc-text">cuda</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pytorch"><span class="toc-text">pytorch</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%8B%E9%9A%86%E4%BB%93%E5%BA%93"><span class="toc-text">克隆仓库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E4%B8%8B%E8%BD%BD"><span class="toc-text">模型下载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B"><span class="toc-text">开始</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E8%BF%90%E8%A1%8C"><span class="toc-text">直接运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#INT4%E9%87%8F%E5%8C%96"><span class="toc-text">INT4量化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#basic-demo-trans-cli-demo-py"><span class="toc-text">basic_demo&#x2F;trans_cli_demo.py</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#basic-demo-trans-web-demo-py"><span class="toc-text">basic_demo&#x2F;trans_web_demo.py</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fas fa-map"></i><span>最近发布</span></div><div class="aside-list"><a class="aside-list-item" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路"><div class="content"><span class="title" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路">在Unity2D中创建角色描边的shader思路</span></div></a><a class="aside-list-item" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器"><div class="content"><span class="title" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器">Listary——不仅仅是搜索器</span></div></a><a class="aside-list-item" href="/solitude/posts/51899/" title="我的编辑器"><div class="content"><span class="title" href="/solitude/posts/51899/" title="我的编辑器">我的编辑器</span><span class="categories" href="/solitude/posts/51899/">关于博客</span></div></a><a class="aside-list-item" href="/solitude/posts/0/" title="Untitled"><div class="content"><span class="title" href="/solitude/posts/0/" title="Untitled">Untitled</span></div></a><a class="aside-list-item" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录"><div class="content"><span class="title" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录">anzhiyu主题搭建记录</span><span class="categories" href="/solitude/posts/64880/">闲鱼兼职</span></div></a></div></div></div></div></main><footer id="footer"><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2025 By&nbsp;<a class="footer-bar-link" href="/solitude/"><img class="author-avatar" src="/solitude/img/pwa/favicon.png">zhywyt</a></div><div class="beian-group"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://hexo.io/">框架：Hexo</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude">主题：Solitude</a></div></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/solitude/js/utils.js?v=3.0.15"></script><script src="/solitude/js/main.js?v=3.0.15"></script><script src="/solitude/js/third_party/waterfall.min.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/solitude/js/tw_cn.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+utils.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+</script><script src="https://fastly.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ["title","#body-wrap","#site-config","meta[name=\"description\"]",".js-pjax","meta[property^=\"og:\"]","#config-diff",".rs_show",".rs_hide"],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- google adsense--><!-- search--><!-- music--></body></html>
         <script>
-            const posts = ["posts/17428/","posts/30828/","posts/15450/","posts/45431/","posts/b4ca7a5fb5b2/","posts/50901/","posts/3472/","posts/d9709c673656/","posts/15892/","posts/1cc3941f1b85/","posts/5993/","posts/61408/","posts/5c54bd2bc06c/","posts/5181/","posts/337e148b3fb3/","posts/d8eb45be176b/","posts/b0c241b3d4cf/","posts/96dff400cced/","posts/51899/","posts/15959/","posts/32280/","posts/2977/","posts/51449/","posts/47792/","posts/27853/","posts/63067/","posts/49493/","posts/53666/","posts/61355/","posts/14027/","posts/62236/","posts/11458/","posts/16515/","posts/8fd9ab7c695f/","posts/5953/","posts/34e784d46b0a/","posts/536c11d1caa5/","posts/5790301d4de2/","posts/d586aba908b5/","posts/e3e3aee8476b/","posts/f29c63b83721/","posts/4182/","posts/24484/","posts/df4c31f7ba80/","posts/d7880d8f2f2e/","posts/6886/","posts/7287/","posts/49793/","posts/usehttps/","posts/64880/","posts/da74aa8e9f3b/","posts/2c9570b00976/","posts/bc16e0702e1d/","posts/c8b013b915a1/","posts/2024g10/","posts/a5bf365fe3fe/","posts/1fd1cabe051b/","posts/10536/","posts/6615/","posts/6295/","posts/44638/","posts/55574/","posts/6999/","posts/56214/","posts/6679/","posts/29b61e029340/","posts/56022/","posts/58283ae7cb2d/","posts/0/","posts/10907/","posts/59a4f8f59f45/","posts/54404/","posts/823c297f1d7f/","posts/247db5136c67/","posts/0e24283556b2/","posts/c6072bab6ff0/","posts/bd7f49a3fa80/","posts/d7ea97fbec36/","posts/e31df0f4a5f0/","posts/d742d8349fff/","posts/4a74e5f5d3d6/","posts/6e1ed0060e67/","posts/d863527924a0/","posts/818482b58c2a/"];
+            const posts = ["posts/10907/","posts/5993/","posts/51899/","posts/0/","posts/64880/","posts/usehttps/","posts/61408/","posts/29b61e029340/","posts/34e784d46b0a/","posts/d7880d8f2f2e/","posts/58283ae7cb2d/","posts/b0c241b3d4cf/","posts/da74aa8e9f3b/","posts/d863527924a0/","posts/247db5136c67/","posts/818482b58c2a/","posts/0e24283556b2/","posts/d8eb45be176b/","posts/8fd9ab7c695f/","posts/4a74e5f5d3d6/","posts/e31df0f4a5f0/","posts/e3e3aee8476b/","posts/d7ea97fbec36/","posts/2024g10/","posts/f29c63b83721/","posts/6e1ed0060e67/","posts/536c11d1caa5/","posts/337e148b3fb3/","posts/2c9570b00976/","posts/d586aba908b5/","posts/5790301d4de2/","posts/96dff400cced/","posts/c8b013b915a1/","posts/bc16e0702e1d/","posts/a5bf365fe3fe/","posts/bd7f49a3fa80/","posts/c6072bab6ff0/","posts/59a4f8f59f45/","posts/823c297f1d7f/","posts/1cc3941f1b85/","posts/54404/","posts/d742d8349fff/","posts/d9709c673656/","posts/5c54bd2bc06c/","posts/df4c31f7ba80/","posts/b4ca7a5fb5b2/","posts/24484/","posts/5953/","posts/5181/","posts/1fd1cabe051b/","posts/49793/","posts/4182/","posts/62236/","posts/7287/","posts/61355/","posts/14027/","posts/53666/","posts/17428/","posts/16515/","posts/11458/","posts/6679/","posts/15892/","posts/3472/","posts/56022/","posts/56214/","posts/6999/","posts/55574/","posts/6886/","posts/6615/","posts/44638/","posts/6295/","posts/45431/","posts/30828/","posts/15450/","posts/10536/","posts/49493/","posts/50901/","posts/27853/","posts/63067/","posts/32280/","posts/51449/","posts/2977/","posts/15959/","posts/47792/"];
             function toRandomPost() {
                 const randomPost = posts[Math.floor(Math.random() * posts.length)];
                 pjax.loadUrl(GLOBAL_CONFIG.root + randomPost);

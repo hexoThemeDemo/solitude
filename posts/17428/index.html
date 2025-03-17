@@ -1,40 +1,259 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>B-Spline | zhywyt's blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/solitude/img/pwa/favicon.png"><!-- index.css--><link rel="stylesheet" href="/solitude/css/index.css?v=3.0.15"><!-- inject head--><link rel="canonical" href="https://hexothemedemo.github.io/solitude/posts/17428/index.html"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="B-Spline注：本文只是作者自己对B样条的理解和实现，如有错误欢迎指出，谢谢。作者邮箱：zhywyt@hdu.edu.cnB-Spline 是图形学中非常基础的一个曲线，我的导师徐岗徐老师，让我们从 B样条的绘制开始，无疑是一个很好的开始。 同 Bezier 曲线，B样条也是一个由伯恩斯坦基"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="zhywyt's blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/solitude/img/pwa/favicon.png"><link rel="apple-touch-icon" href="/solitude/img/pwa/favicon.png" sizes="180x180"><script>console.log(' %c Solitude %c ' + '3.0.15' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
 
-block content
-    main.layout#content-inner
-        #post
-            if page.not_cover
-                include includes/widgets/post/postInfo
-            article.post-content.article-container
-                if page.ai_text && theme.post.ai.enable
-                    include includes/widgets/post/ai
-                != page.content
-            include includes/widgets/post/copyright
-            .post-tools-right
-                .tag_share
-                    .post-meta__tag-list
-                        each data in page.tags.data || []
-                            a(href=url_for(data.path)).post-meta__tags
-                                span.tags-punctuation
-                                    i.solitude.fas.fa-hashtag
-                                    =data.name
-                                    span.tagsPageCount=data.length
-            if theme.google_adsense.enable && !theme.google_adsense.auto_ads && theme.google_adsense.post_content
-                div.google-ads-warp
-                    ins.adsbygoogle(style="display:block; text-align:center; height:284px", data-ad-layout="in-article", data-ad-format="fluid", hide-unfilled="true", data-ad-client=theme.google_adsense.client, data-ad-slot=theme.google_adsense.slot)
-                    script.
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-            if site.posts.length > 1
-                include includes/widgets/post/postNav
-            if theme.related_post.enable
-                != related_posts(page, site.posts)
-            if page.comment
-                - var comment_js = true
-                include includes/widgets/third-party/comments/comment
-        if page.aside
-            include includes/widgets/aside/aside
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/solitude/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        state: {
+            morning: "✨ 早上好，新的一天开始了",
+            noon: "🍲 午餐时间",
+            afternoon: "🌞 下午好",
+            night: "早点休息",
+            goodnight: "晚安 😴",
+        },
+        witty_words: [],
+        witty_comment: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    right_menu: false,
+    translate: {"translateDelay":0,"defaultEncoding":2},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false,
+    color: false,
+}</script></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/archives/"><div class="headline">文章</div><div class="length-num">84</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fas fa-circle-half-stroke"></i><span>显示模式</span></span></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="card-tag-cloud"><a href="/solitude/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/">技术文档<sup>18</sup></a><a href="/solitude/tags/encrypt/">encrypt<sup>1</sup></a><a href="/solitude/tags/%E5%8D%9A%E5%AE%A2/">博客<sup>1</sup></a><a href="/solitude/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/">诗与散文<sup>1</sup></a><a href="/solitude/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/">错误解决<sup>5</sup></a></div></div></div></div><!-- keyboard--><!-- righhtside--><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/solitude/" title="返回博客主页"><span class="title">Solitude</span><i class="solitude fas fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">B-Spline</a></div></div><div id="menus"></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fas fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fas fa-bars"></i></a></div></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/solitude/categories/CG/">CG</a></span><div class="tag_share"><div class="post-meta__tag-list"></div></div></div></div><h1 class="post-title">B-Spline</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><div id="post-info-bottom"></div><article class="post-content article-container"><span id="more"></span>
+
+<h1 id="B-Spline"><a href="#B-Spline" class="headerlink" title="B-Spline"></a>B-Spline</h1><p>注：<br>本文只是作者自己对B样条的理解和实现，如有错误欢迎指出，谢谢。<br>作者邮箱：zhywyt@hdu.edu.cn<br><strong>B-Spline 是图形学中非常基础的一个曲线，我的导师徐岗徐老师，让我们从 B样条的绘制开始，无疑是一个很好的开始。</strong></p>
+<p>同 Bezier 曲线，B样条也是一个由伯恩斯坦基函数加权得到的曲线，因此它和 Bezier 曲线有这很多的相似点，这里我们把 Bezier 曲线和 B 样条放在一起来研究。</p>
+<p><strong>贝塞尔曲线：</strong></p>
+<p>\[\vec{P(t)}&#x3D;\sum_{i&#x3D;0}^{n-1}\vec{p_i}B_{i,n}(t),t \in [0, 1] \]</p>
+<p><strong>B 样条曲线：</strong></p>
+<p>\[\vec{P(t)}&#x3D;\sum_{i&#x3D;0}^{n-1}\vec{p_i}B_{i,d}(t)，其中 t_{min}\leq t \leq t_{max}，2\leq d \leq n \]</p>
+<p>可以看到两个曲线的区别就在于基函数的定义：Bezier 曲线的基函数只与曲线的控制点数有关，曲线的控制点数就确定了曲线的阶数；而 B 样条的基函数中，n 换成了 d ，这也意味着曲线的控制点数不再决定曲线的阶数，而是独立的一个自由度。</p>
+<p><strong>下面是我的一些符号规定：</strong></p>
+<p>\[\begin{array} {cll} \hline 参数名 &amp; 符号 \\ \hline 参数 &amp; t\\ 顶点数 &amp; n+1 \\ 曲线阶数 &amp; p \ \&amp;\ d \\ 控制顶点 &amp; P_i \\ 下标为\ i \ 的节点向量 &amp; u_i \\ 基函数的次数 &amp; p-1\\ 第\ i+1\ 个控制顶点的\ j\ 阶基函数 &amp; B(i,j)\\ 头节点重数 &amp; h \\ 节点向量个数 &amp; n+p \\ 自由度 &amp; n,p,h\\ \hline \end{array} \]</p>
+<p><strong>解释：曲线阶数在数学中我一般使用\(d\)，而在代码中我喜欢使用\(p\)</strong></p>
+<h2 id="为什么要修改基函数？"><a href="#为什么要修改基函数？" class="headerlink" title="为什么要修改基函数？"></a>为什么要修改基函数？</h2><p><strong>众所周知，Bezier 曲线的一大缺陷就是曲线的定义是全局的，移动一个控制点就会影响整条曲线，但是设计上往往希望能够局部修改。于是产生了分段 Bezier 曲线，但是新的问题出现了：分段 Bezier 曲线的连续性很难保证，不能达到很好的效果。B 样条因此诞生，以修改基函数的方式达到目的。</strong></p>
+<h2 id="为什么修改基函数可以达到这个效果？"><a href="#为什么修改基函数可以达到这个效果？" class="headerlink" title="为什么修改基函数可以达到这个效果？"></a>为什么修改基函数可以达到这个效果？</h2><p><strong>B 样条曲线：</strong></p>
+<p>\[\vec{P(t)}&#x3D;\sum_{i&#x3D;0}^{n-1}\vec{p_i}B_{i,d}(t)，其中 t_{min}\leq t \leq t_{max}，2\leq d \leq n \]</p>
+<p><strong>再来理解一下曲线的定义，每个控制点，在参数 t 处的对曲线影响的权值由基函数控制。要控制每个点的影响范围，就需要定义基函数的非零区间，在非零区间里，该控制点就对曲线有影响，而在零区间，就没有任何影响。这样的话，就能控制每个点对曲线影响的范围了。</strong><br>在此之前，先介绍一下节点向量的概念。</p>
+<h3 id="B样条的节点向量"><a href="#B样条的节点向量" class="headerlink" title="B样条的节点向量"></a>B样条的节点向量</h3><p><strong>节点向量</strong>描述了B样条曲线上某一<strong>参数 t</strong>对应基函数的哪一部分。你可以把它想象成<strong>一部电影的时间线</strong>，给定一个时间就能得到相应的画面，而B样条就是给定<strong>一个参数 t</strong>就能得到<strong>对应的坐标</strong>。<br>下面是一个例子：</p>
+<ul>
+<li><strong>\(P_i:\) 第 i 个控制点</strong></li>
+<li><strong>\(u_i:\) 下标为 i 的节点向量的值</strong><br>下图是一个有五个控制顶点的(\(n+1&#x3D;5\))，四阶B样条(\(p&#x3D;4\))。\([u_0 , u_8]\)就是节点向量了，而上面画的曲线则是<strong>某个控制点</strong>对下面的区间的<strong>参数</strong>的权值。给定一个节点向量，就能唯一确定一个基函数的对应关系，比如最简单的，\(u_0\)对应参数的点，只被\(P_1\)这个点所影响，而\(u_3\)却被\(P_1，P_2，P_3，P_4\)四个点所影响。当然，你会发现区间\([u_0 , u_3]\)其实是被小于曲线阶数的顶点所影响的，它的权值和不等于一，这不满足B样条曲线的性质，实际上B样条的定义不从\(u_0\)开始，\(u_0\)的存在仅仅是为了其他区间的计算权值。这也就反映了B样条<strong>参数的定义域</strong>了。不是\([0,1]\)而是根据节点向量的\([u_{p-1},u_{n+1}]\)在下面这个例子中是区间\([u_3 , u_5]\)。<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20231219093349422-1400639285_1726323760639.png" alt="image"><br><strong>可以很清楚的看到，\(P_1\)控制点不会影响到\(u_5\)及以后的曲线。每一段曲线比如\([u_3, u_4]\)只由\(P_1 - P_4\)四个控制点所影响，实现了曲线的局部控制。</strong></li>
+</ul>
+<h2 id="这样的基函数如何定义？"><a href="#这样的基函数如何定义？" class="headerlink" title="这样的基函数如何定义？"></a>这样的基函数如何定义？</h2><p>从一个简单的一阶基函数定义看起：</p>
+<p>\[B_{k,1}(u) \begin{cases} 1 , u[k]\leq u\leq u[k+1]\\ 0 , else \end{cases} \]</p>
+<p><strong>它只有在自己的定义区间内才有值 1，其余部分都为 0。</strong><br>画出来也非常的清晰：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20231219195844903-1069132022_1726323760639.png" alt="image"><br>那么如果要进行升阶，我们就需要使用<strong>两个定义在相邻区间的一阶基函数</strong>：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20231219200010972-39138952_1726323760639.png" alt="image"><br>通过一个简单的线性组合就能得到二阶的基函数：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20231219200102011-907521753_1726323781567.png" alt="image"><br>可以看到这个基函数的定义域成为了两个低阶基函数定义域的并集，从定义上看这个线性组合就是：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20231219200222268-1957786021_1726323781567.png" alt="image"><br>先不要害怕两个奇怪的权值，观察上面的一阶到二阶的加权不难发现，这两个权值其实是曲线在参数为 u 处的简单加权。<strong>也就是上面出现过的一次加权直线的函数取值</strong>。但是你可能会觉得奇怪，当\(u\leq u_{k+1}\)的时候，第二项的权值好像大于一了？！这不对吧？</p>
+<p><strong>实际上在\(u\leq u_{k+1}\)的时候，右边这一项\(B_{k+1,d-1}(u)\)的值等于零了。</strong></p>
+<p>看下面这个图，计算三阶基函数会显得更清晰：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20231220083544752-147171411_1726323781567.png" alt="image"><br><strong>于是我们得到完整的 B 样条数学定义：</strong></p>
+<p>\[\begin{cases} \begin{cases} 1 , u_k \leq u\leq u_{k+1}\\ 0 , else \end{cases} \quad ,k &#x3D; 1 \\ B_{k,d}(u)&#x3D;\frac{u-u_k}{u_{k+d-1}-u_k}B_{k,d-1}(u)+\frac{u_{k+d}-u}{u_{k+d}-u_{k+1}}B_{k+1,d-1}(u) \quad ,k \ge 2 \end{cases} \]</p>
+<h2 id="B样条的自由度"><a href="#B样条的自由度" class="headerlink" title="B样条的自由度"></a>B样条的自由度</h2><p>说到 B 样条，就不得不说说它的自由度了。相比于 Bezier 曲线仅有的一个自由度（顶点数），<strong>均匀</strong>B 样条的自由度可多达三个（个人理解）：<strong>顶点数、曲线阶数、头节点重数设置</strong>（非均匀B样条修改为节点向量的设置即可）。<del>姑且允许我这么随便的称呼自由度</del>，可能不是那么标准，但是我是想让你明白 B 样条需要设置哪些参数。这里，我们讨论的是（准）均匀节点的 B 样条，也就是<strong>节点向量只会在头和尾相等而在中间以相同速率增加</strong>。比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">n+1	: 5			number of control points.</span><br><span class="line">p	: 4			rank of BSpline.</span><br><span class="line">h	: 1			repeat of <span class="built_in">head</span> and <span class="built_in">tail</span>.</span><br><span class="line">nv	: 9			number of node vector.</span><br><span class="line"><span class="built_in">head</span> vector:</span><br><span class="line">0 0.111111 0.222222 0.333333 0.444444 0.555556 0.666667 0.777778 1 </span><br><span class="line">//change para of B-Spline</span><br><span class="line">n+1	: 5			number of control points.</span><br><span class="line">p	: 3			rank of BSpline.</span><br><span class="line">h	: 3			repeat of <span class="built_in">head</span> and <span class="built_in">tail</span>.</span><br><span class="line">nv	: 8			number of node vector.</span><br><span class="line"><span class="built_in">head</span> vector:</span><br><span class="line">0 0 0 0.25 0.5 1 1 1</span><br></pre></td></tr></table></figure>
+
+<p>相信你们顶点数和曲线阶数一定都能理解意思，那么我来解释一下头节点重数的定义：</p>
+<h3 id="头节点重数的作用"><a href="#头节点重数的作用" class="headerlink" title="头节点重数的作用"></a>头节点重数的作用</h3><p><strong>头节点重数：</strong> 头节点重数是用来描述节点向量头和尾的重合个数的。首先，一个节点向量是单调不减的，而我们讨论的又是均匀节点的 B 样条曲线，所以头节点重数就可以完整的控制节点向量的生成。</p>
+<p><strong>而节点向量就能定义控制点对曲线的影响。</strong></p>
+<p>下面举两个直观的例子来带你了解头节点重数的作用。<br>首先我们绘制一个正常的 B 样条曲线，设置它的<strong>头节点重数为一</strong>：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20231221235653628-1502374889_1726323781567.png" alt="image"><br>然后我们修改它的头节点重数，使得<strong>头节点重数</strong>等于<strong>基函数阶数</strong>。<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20231221235700214-45778439_1726323781567.png" alt="image"><br>会发现，头节点重数可以使得<strong>曲线插值端点</strong>。下面我用两个图来从基函数的层面带你理解头节点重数为什么能够影响曲线。首先是<strong>一张有五个控制顶点的4阶B样条的基函数关系图</strong>。<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240130105341642-2012485333_1726323797901.jpg" alt="image"><br><strong>如果现在让头和尾重合一部分。比如 \(h &#x3D; p\) 也就是头节点重数等于曲线的阶数。节点向量就会变成下面这样：</strong></p>
+<p>\[\begin{cases} u_0 &#x3D; u_1 &#x3D; u_2 &#x3D; u_3 &#x3D; 0 \\ u_8 &#x3D; u_ 7 &#x3D; u_6 &#x3D; u_5 &#x3D; 1 \\ u_4 &#x3D; 0.5 \\ \end{cases} \]</p>
+<p>让我们把节点向量的值写到基函数的关系图上去。<strong>红色部分的基函数由于区间为零</strong>，<strong>值恒为零</strong>。所以可以看到不为零的基函数构成了<strong>伯恩斯坦基函数</strong>，也就是<strong>Bezier曲线同款基函数</strong>。<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240130110237018-1169657684_1726323797901.jpg" alt="image"></p>
+<h4 id="B样条退化为Bezier曲线"><a href="#B样条退化为Bezier曲线" class="headerlink" title="B样条退化为Bezier曲线"></a>B样条退化为Bezier曲线</h4><p>再想象一下，如果控制点的个数减少一个，也就是 \(n+1 &#x3D; p\) ，控制点的个数等于曲线阶数，并且满足头节点重数等于曲线阶数的时候，<strong>中间非零的节点区间只剩下了一个</strong>，这个时候，<strong>B样条真正的退化为了Bezier曲线</strong>。总结一下，B样条退化为Bezier曲线的条件：</p>
+<ul>
+<li><strong>1.控制顶点个数等于曲线阶数</strong> \(\quad\) \(n+1 &#x3D; p\)</li>
+<li><strong>2.头节点重数等于曲线阶数</strong> \(\quad\) \(h &#x3D; p\)</li>
+</ul>
+<h2 id="B样条的实现"><a href="#B样条的实现" class="headerlink" title="B样条的实现"></a>B样条的实现</h2><p>这部分其实不难，如果完全理解了B样条真的是非常简单的实现，但是如果不清楚自己是否完全理解了B样条的思想，可以动手实现一下，这里提供实现思路和源代码。这个项目中我用到了几个绘制算法，你无需理解他们是如何工作的，只需要像调用函数一样调用它即可。如果想要使用我的框架进行B样条曲线的学习，请确保自己有看懂C++简单代码的能力，以及稍微阅读一下函数接口的使用。这篇文章会介绍B样条曲线实现用到的所有接口。如果对算法感兴趣的同学也可以去看一下这几个绘制算法的具体实现。<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhywyt/p/17340739.html">直线的绘制</a>\(\quad\)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhywyt/articles/17341756.html">圆形的绘制</a>\(\quad\)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhywyt/p/17347089.html">橡皮筋技术</a></p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>请先下载项目源代码，并保证根据<strong>README</strong>的指导可以让程序跑起来。这个项目提供了linux和windows两个操作系统的编译方案。windows使用VS进行编译，linux使用cmake进行编译。<br><a target="_blank" rel="noopener" href="https://gitee.com/zhy2216095277/b-spline" title="gitee">B-Spline</a><br>其中CMakeLists.txt文件的内容如下：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#最低版本</span></span><br><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">2.8</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#项目信息</span></span><br><span class="line"><span class="keyword">project</span>(BSpline)</span><br><span class="line"></span><br><span class="line"><span class="comment">#查找当前目录下所有源文件</span></span><br><span class="line"><span class="comment">#并将文件名保存在DIR_SOURECE</span></span><br><span class="line"><span class="keyword">aux_source_directory</span>(. DIR_SOURCE)</span><br><span class="line"><span class="keyword">add_executable</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> <span class="variable">$&#123;DIR_SOURCE&#125;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">find_package</span>(GLUT REQUIRED)</span><br><span class="line"><span class="keyword">find_package</span>(OpenGL REQUIRED)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(GLUT_FOUND)</span><br><span class="line">    <span class="keyword">include_directories</span>(<span class="variable">$&#123;GLUT_INCLUDE_DIR&#125;</span>)</span><br><span class="line">    <span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> <span class="variable">$&#123;GLUT_LIBRARIES&#125;</span>)</span><br><span class="line"><span class="keyword">else</span>(GLUT_FOUND)</span><br><span class="line">    <span class="keyword">message</span>(FATAL_ERROR ”GLUT library <span class="keyword">not</span> found”)</span><br><span class="line"><span class="keyword">endif</span>(GLUT_FOUND)</span><br><span class="line"><span class="keyword">if</span>(OPENGL_FOUND)</span><br><span class="line">    <span class="keyword">include_directories</span>(<span class="variable">$&#123;OPENGL_INCLUDE_DIR&#125;</span>)</span><br><span class="line">    <span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> <span class="variable">$&#123;OPENGL_LIBRARIES&#125;</span>)</span><br><span class="line"><span class="keyword">else</span>(OPENGL_FOUND)</span><br><span class="line">    <span class="keyword">message</span>(FATAL_ERROR ”OpenGL library <span class="keyword">not</span> found”)</span><br><span class="line"><span class="keyword">endif</span>(OPENGL_FOUND)</span><br><span class="line"></span><br><span class="line"><span class="comment">#指定生成目标</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="b-spline-basis"><a href="#b-spline-basis" class="headerlink" title="b_spline_basis"></a>b_spline_basis</h3><p>这将是我们要实现的第一个函数，b_spline_basis，函数原型如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">GLdouble <span class="title">b_spline_basis</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> p, GLdouble u, <span class="type">const</span> vector&lt;GLdouble&gt; &amp;nodeVec)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>接受 （<code>i</code>，<code>p</code>，<code>u</code>），返回下标为<code>i</code>的控制点的<code>p</code>阶基函数在参数<code>u</code>处的函数值。<br>首先编写一阶的基函数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (p == <span class="number">1</span>)&#123;</span><br><span class="line">	<span class="keyword">if</span> (nodeVec[i] &lt;= u &amp;&amp; u &lt;= nodeVec[i + <span class="number">1</span>])</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在一阶之外的基函数，首先计算两个权值的分母：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GLdouble len1 = nodeVec[i + p - <span class="number">1</span>] - nodeVec[i];</span><br><span class="line">GLdouble len2 = nodeVec[i + p] - nodeVec[i + <span class="number">1</span>];</span><br></pre></td></tr></table></figure>
+
+<p>然后利用递归计算两个区间的子基函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GLdouble alpha, beta;</span><br><span class="line">alpha = (u - nodeVec[i]) / len1;</span><br><span class="line">beta = (nodeVec[i + p] - u) / len2;</span><br><span class="line"><span class="keyword">return</span> (alpha)*<span class="built_in">b_spline_basis</span>(i, p - <span class="number">1</span>, u, nodeVec) + (beta)*<span class="built_in">b_spline_basis</span>(i + <span class="number">1</span>, p - <span class="number">1</span>, u, nodeVec);</span><br></pre></td></tr></table></figure>
+
+<p>由于出现了对<code>len1</code>和<code>len2</code>的除法，所以需要检测区间的长度，避免浮点误差导致的离群点。而且u的区间也不能超过基函数的定义区间，需要把上面代码修改为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (u &lt; nodeVec[i] || u &gt; nodeVec[i + p])			<span class="comment">//限制参数区间</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">GLdouble len1 = nodeVec[i + p - <span class="number">1</span>] - nodeVec[i];</span><br><span class="line">GLdouble len2 = nodeVec[i + p] - nodeVec[i + <span class="number">1</span>];</span><br><span class="line">GLdouble alpha, beta;</span><br><span class="line"><span class="keyword">if</span> (len1 &lt;= <span class="number">1e-10</span>)&#123;									<span class="comment">//避免浮点误差导致的错误</span></span><br><span class="line">	alpha = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">	alpha = (u - nodeVec[i]) / len1;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (len2 &lt;= <span class="number">1e-10</span>)&#123;</span><br><span class="line">	beta = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">	beta = (nodeVec[i + p] - u) / len2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> (alpha)*<span class="built_in">b_spline_basis</span>(i, p - <span class="number">1</span>, u, nodeVec) + (beta)*<span class="built_in">b_spline_basis</span>(i + <span class="number">1</span>, p - <span class="number">1</span>, u, nodeVec);</span><br></pre></td></tr></table></figure>
+
+<p>然后就能得到完整的基函数计算方法了。下面是完整代码的展示。</p>
+<p>b_spline_basis</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">GLdouble <span class="title">b_spline_basis</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> p, GLdouble u, <span class="type">const</span> vector&lt;GLdouble&gt; &amp;nodeVec)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (p == <span class="number">1</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span> (nodeVec[i] &lt;= u &amp;&amp; u &lt;= nodeVec[i + <span class="number">1</span>])</span><br><span class="line">			<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (u &lt; nodeVec[i] || u &gt; nodeVec[i + p])</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	GLdouble len1 = nodeVec[i + p - <span class="number">1</span>] - nodeVec[i];</span><br><span class="line">	GLdouble len2 = nodeVec[i + p] - nodeVec[i + <span class="number">1</span>];</span><br><span class="line">	GLdouble alpha, beta;</span><br><span class="line">	<span class="keyword">if</span> (len1 &lt;= <span class="number">1e-10</span>)&#123;</span><br><span class="line">		alpha = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	 <span class="keyword">else</span>&#123;</span><br><span class="line">		  alpha = (u - nodeVec[i]) / len1;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (len2 &lt;= <span class="number">1e-10</span>)&#123;</span><br><span class="line">		beta = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		beta = (nodeVec[i + p] - u) / len2;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> (alpha)*<span class="built_in">b_spline_basis</span>(i, p - <span class="number">1</span>, u, nodeVec) + (beta)*<span class="built_in">b_spline_basis</span>(i + <span class="number">1</span>, p - <span class="number">1</span>, u, nodeVec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="draw"><a href="#draw" class="headerlink" title="draw"></a>draw</h3><p>然后可以开始实现绘制算法了。<br>绘制算法首先要计算参数对应点的坐标，这个坐标等于每一个控制点在参数<code>u</code>处的贡献。下面代码很好理解，我就只提一点，GLUT的使用。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">GLdouble basis;</span><br><span class="line"><span class="function">vector&lt;GLdouble&gt; <span class="title">rx</span><span class="params">(node, <span class="number">0</span>)</span>, <span class="title">ry</span><span class="params">(node, <span class="number">0</span>)</span></span>;</span><br><span class="line">GLdouble u_begin = m_nodeVec[p<span class="number">-1</span>];					<span class="comment">//注意开始参数与结尾参数</span></span><br><span class="line">GLdouble u_end = m_nodeVec[m_n<span class="number">+1</span>];</span><br><span class="line">GLdouble dis = (u_end - u_begin) / node;</span><br><span class="line">GLdouble u = u_begin;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; node; i++) &#123;</span><br><span class="line">	 <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt;= m_n; j++)&#123;</span><br><span class="line">		basis = <span class="built_in">b_spline_basis</span>(j, p, u, m_nodeVec);</span><br><span class="line">		rx[i] += m_points[j].x * basis;</span><br><span class="line">		ry[i] += m_points[j].y * basis;</span><br><span class="line">	&#125;</span><br><span class="line">u += dis;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; node; i++)&#123;</span><br><span class="line">	<span class="built_in">glVertex2d</span>(rx[i], ry[i]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">glEnd</span>();</span><br><span class="line"><span class="built_in">glFlush</span>();</span><br></pre></td></tr></table></figure>
+
+<p>本项目中，只使用了GLUT的<strong>点绘制功能</strong>，虽然它内置的算法大多比我写的高效，但是毕竟是学习目的，了解绘制算法的底层对自己没有坏处。<code>glVertex2d(int x,int y)</code>可以在屏幕上绘制出一个在(x, y)的点，非常的简单。<br>好了就讲这么多了，其余的还请大家自己看源代码了，核心代码就这么多了，下次见。白白</p>
+<h1 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h1><p>如果有小伙伴发现了本文的错误，请您第一时间联系我，我会感激不尽。<br>作者邮箱：<strong>zhywyt@hdu.edu.cn</strong><br>或者：<strong>zhywyt_6.10@qq.com</strong><br><strong>又或者您可以直接到我的<a target="_blank" rel="noopener" href="https://gitee.com/zhy2216095277/b-spline/issues" title="issue">gitee</a>项目中提出issue，我有时间一定会继续更新代码的。</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><div class="post-copyright__author_img"><img class="post-copyright__author_img_front" src="/solitude/img/logo.png"></div><div class="post-copyright__author_name">zhywyt</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/solitude/">zhywyt's blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/solitude/posts/53666/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第一课——树状数组</div></div></a></div><div class="next-post pull-right"><a href="/solitude/posts/16515/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">花期内的花的数目</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="top-group"><div class="sayhi" id="sayhi" onclick="sco.changeWittyWord()"></div></div></div><div class="avatar"><img alt="头像" src="/img/logo.png"></div><div class="description"></div><div class="bottom-group"><span class="left"><div class="name">zhywyt</div><div class="desc">只有迎风，风筝才能飞得更高。</div></span><div class="social-icons is-center"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fas fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#B-Spline"><span class="toc-text">B-Spline</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BF%AE%E6%94%B9%E5%9F%BA%E5%87%BD%E6%95%B0%EF%BC%9F"><span class="toc-text">为什么要修改基函数？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BF%AE%E6%94%B9%E5%9F%BA%E5%87%BD%E6%95%B0%E5%8F%AF%E4%BB%A5%E8%BE%BE%E5%88%B0%E8%BF%99%E4%B8%AA%E6%95%88%E6%9E%9C%EF%BC%9F"><span class="toc-text">为什么修改基函数可以达到这个效果？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#B%E6%A0%B7%E6%9D%A1%E7%9A%84%E8%8A%82%E7%82%B9%E5%90%91%E9%87%8F"><span class="toc-text">B样条的节点向量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%99%E6%A0%B7%E7%9A%84%E5%9F%BA%E5%87%BD%E6%95%B0%E5%A6%82%E4%BD%95%E5%AE%9A%E4%B9%89%EF%BC%9F"><span class="toc-text">这样的基函数如何定义？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B%E6%A0%B7%E6%9D%A1%E7%9A%84%E8%87%AA%E7%94%B1%E5%BA%A6"><span class="toc-text">B样条的自由度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%B4%E8%8A%82%E7%82%B9%E9%87%8D%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-text">头节点重数的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#B%E6%A0%B7%E6%9D%A1%E9%80%80%E5%8C%96%E4%B8%BABezier%E6%9B%B2%E7%BA%BF"><span class="toc-text">B样条退化为Bezier曲线</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B%E6%A0%B7%E6%9D%A1%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">B样条的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#b-spline-basis"><span class="toc-text">b_spline_basis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#draw"><span class="toc-text">draw</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%8E%E8%A8%80"><span class="toc-text">后言</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fas fa-map"></i><span>最近发布</span></div><div class="aside-list"><a class="aside-list-item" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路"><div class="content"><span class="title" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路">在Unity2D中创建角色描边的shader思路</span></div></a><a class="aside-list-item" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器"><div class="content"><span class="title" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器">Listary——不仅仅是搜索器</span></div></a><a class="aside-list-item" href="/solitude/posts/51899/" title="我的编辑器"><div class="content"><span class="title" href="/solitude/posts/51899/" title="我的编辑器">我的编辑器</span><span class="categories" href="/solitude/posts/51899/">关于博客</span></div></a><a class="aside-list-item" href="/solitude/posts/0/" title="Untitled"><div class="content"><span class="title" href="/solitude/posts/0/" title="Untitled">Untitled</span></div></a><a class="aside-list-item" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录"><div class="content"><span class="title" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录">anzhiyu主题搭建记录</span><span class="categories" href="/solitude/posts/64880/">闲鱼兼职</span></div></a></div></div></div></div></main><footer id="footer"><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2025 By&nbsp;<a class="footer-bar-link" href="/solitude/"><img class="author-avatar" src="/solitude/img/pwa/favicon.png">zhywyt</a></div><div class="beian-group"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://hexo.io/">框架：Hexo</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude">主题：Solitude</a></div></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/solitude/js/utils.js?v=3.0.15"></script><script src="/solitude/js/main.js?v=3.0.15"></script><script src="/solitude/js/third_party/waterfall.min.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/solitude/js/tw_cn.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+utils.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+</script><script src="https://fastly.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ["title","#body-wrap","#site-config","meta[name=\"description\"]",".js-pjax","meta[property^=\"og:\"]","#config-diff",".rs_show",".rs_hide"],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- google adsense--><!-- search--><!-- music--></body></html>
         <script>
-            const posts = ["posts/17428/","posts/30828/","posts/15450/","posts/45431/","posts/b4ca7a5fb5b2/","posts/50901/","posts/3472/","posts/d9709c673656/","posts/15892/","posts/1cc3941f1b85/","posts/5993/","posts/61408/","posts/5c54bd2bc06c/","posts/5181/","posts/337e148b3fb3/","posts/d8eb45be176b/","posts/b0c241b3d4cf/","posts/96dff400cced/","posts/51899/","posts/15959/","posts/32280/","posts/2977/","posts/51449/","posts/47792/","posts/27853/","posts/63067/","posts/49493/","posts/53666/","posts/61355/","posts/14027/","posts/62236/","posts/11458/","posts/16515/","posts/8fd9ab7c695f/","posts/5953/","posts/34e784d46b0a/","posts/536c11d1caa5/","posts/5790301d4de2/","posts/d586aba908b5/","posts/e3e3aee8476b/","posts/f29c63b83721/","posts/4182/","posts/24484/","posts/df4c31f7ba80/","posts/d7880d8f2f2e/","posts/6886/","posts/7287/","posts/49793/","posts/usehttps/","posts/64880/","posts/da74aa8e9f3b/","posts/2c9570b00976/","posts/bc16e0702e1d/","posts/c8b013b915a1/","posts/2024g10/","posts/a5bf365fe3fe/","posts/1fd1cabe051b/","posts/10536/","posts/6615/","posts/6295/","posts/44638/","posts/55574/","posts/6999/","posts/56214/","posts/6679/","posts/29b61e029340/","posts/56022/","posts/58283ae7cb2d/","posts/0/","posts/10907/","posts/59a4f8f59f45/","posts/54404/","posts/823c297f1d7f/","posts/247db5136c67/","posts/0e24283556b2/","posts/c6072bab6ff0/","posts/bd7f49a3fa80/","posts/d7ea97fbec36/","posts/e31df0f4a5f0/","posts/d742d8349fff/","posts/4a74e5f5d3d6/","posts/6e1ed0060e67/","posts/d863527924a0/","posts/818482b58c2a/"];
+            const posts = ["posts/10907/","posts/5993/","posts/51899/","posts/0/","posts/64880/","posts/usehttps/","posts/61408/","posts/29b61e029340/","posts/34e784d46b0a/","posts/d7880d8f2f2e/","posts/58283ae7cb2d/","posts/b0c241b3d4cf/","posts/da74aa8e9f3b/","posts/d863527924a0/","posts/247db5136c67/","posts/818482b58c2a/","posts/0e24283556b2/","posts/d8eb45be176b/","posts/8fd9ab7c695f/","posts/4a74e5f5d3d6/","posts/e31df0f4a5f0/","posts/e3e3aee8476b/","posts/d7ea97fbec36/","posts/2024g10/","posts/f29c63b83721/","posts/6e1ed0060e67/","posts/536c11d1caa5/","posts/337e148b3fb3/","posts/2c9570b00976/","posts/d586aba908b5/","posts/5790301d4de2/","posts/96dff400cced/","posts/c8b013b915a1/","posts/bc16e0702e1d/","posts/a5bf365fe3fe/","posts/bd7f49a3fa80/","posts/c6072bab6ff0/","posts/59a4f8f59f45/","posts/823c297f1d7f/","posts/1cc3941f1b85/","posts/54404/","posts/d742d8349fff/","posts/d9709c673656/","posts/5c54bd2bc06c/","posts/df4c31f7ba80/","posts/b4ca7a5fb5b2/","posts/24484/","posts/5953/","posts/5181/","posts/1fd1cabe051b/","posts/49793/","posts/4182/","posts/62236/","posts/7287/","posts/61355/","posts/14027/","posts/53666/","posts/17428/","posts/16515/","posts/11458/","posts/6679/","posts/15892/","posts/3472/","posts/56022/","posts/56214/","posts/6999/","posts/55574/","posts/6886/","posts/6615/","posts/44638/","posts/6295/","posts/45431/","posts/30828/","posts/15450/","posts/10536/","posts/49493/","posts/50901/","posts/27853/","posts/63067/","posts/32280/","posts/51449/","posts/2977/","posts/15959/","posts/47792/"];
             function toRandomPost() {
                 const randomPost = posts[Math.floor(Math.random() * posts.length)];
                 pjax.loadUrl(GLOBAL_CONFIG.root + randomPost);

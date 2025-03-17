@@ -1,40 +1,260 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第二课——线段树 | zhywyt's blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/solitude/img/pwa/favicon.png"><!-- index.css--><link rel="stylesheet" href="/solitude/css/index.css?v=3.0.15"><!-- inject head--><link rel="canonical" href="https://hexothemedemo.github.io/solitude/posts/14027/index.html"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="上一节课讲了树状数组，也介绍了树状数组的优点与不足，这里简单回顾一下。**优点：**树状数组的代码非常简短，易于实现，被刘老师亲切的称为IO选手的”HelloWorld!“，就是因为代码短。**缺点：**树状数组的缺点也非常的明显，只能处理单点修改区间查询或者区间修改单点查询的问题（以较高的效率"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="zhywyt's blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/solitude/img/pwa/favicon.png"><link rel="apple-touch-icon" href="/solitude/img/pwa/favicon.png" sizes="180x180"><script>console.log(' %c Solitude %c ' + '3.0.15' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
 
-block content
-    main.layout#content-inner
-        #post
-            if page.not_cover
-                include includes/widgets/post/postInfo
-            article.post-content.article-container
-                if page.ai_text && theme.post.ai.enable
-                    include includes/widgets/post/ai
-                != page.content
-            include includes/widgets/post/copyright
-            .post-tools-right
-                .tag_share
-                    .post-meta__tag-list
-                        each data in page.tags.data || []
-                            a(href=url_for(data.path)).post-meta__tags
-                                span.tags-punctuation
-                                    i.solitude.fas.fa-hashtag
-                                    =data.name
-                                    span.tagsPageCount=data.length
-            if theme.google_adsense.enable && !theme.google_adsense.auto_ads && theme.google_adsense.post_content
-                div.google-ads-warp
-                    ins.adsbygoogle(style="display:block; text-align:center; height:284px", data-ad-layout="in-article", data-ad-format="fluid", hide-unfilled="true", data-ad-client=theme.google_adsense.client, data-ad-slot=theme.google_adsense.slot)
-                    script.
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-            if site.posts.length > 1
-                include includes/widgets/post/postNav
-            if theme.related_post.enable
-                != related_posts(page, site.posts)
-            if page.comment
-                - var comment_js = true
-                include includes/widgets/third-party/comments/comment
-        if page.aside
-            include includes/widgets/aside/aside
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/solitude/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        state: {
+            morning: "✨ 早上好，新的一天开始了",
+            noon: "🍲 午餐时间",
+            afternoon: "🌞 下午好",
+            night: "早点休息",
+            goodnight: "晚安 😴",
+        },
+        witty_words: [],
+        witty_comment: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    right_menu: false,
+    translate: {"translateDelay":0,"defaultEncoding":2},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false,
+    color: false,
+}</script></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/archives/"><div class="headline">文章</div><div class="length-num">84</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fas fa-circle-half-stroke"></i><span>显示模式</span></span></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="card-tag-cloud"><a href="/solitude/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/">技术文档<sup>18</sup></a><a href="/solitude/tags/encrypt/">encrypt<sup>1</sup></a><a href="/solitude/tags/%E5%8D%9A%E5%AE%A2/">博客<sup>1</sup></a><a href="/solitude/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/">诗与散文<sup>1</sup></a><a href="/solitude/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/">错误解决<sup>5</sup></a></div></div></div></div><!-- keyboard--><!-- righhtside--><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/solitude/" title="返回博客主页"><span class="title">Solitude</span><i class="solitude fas fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">第二课——线段树</a></div></div><div id="menus"></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fas fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fas fa-bars"></i></a></div></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><div class="tag_share"><div class="post-meta__tag-list"></div></div></div></div><h1 class="post-title">第二课——线段树</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><div id="post-info-bottom"></div><article class="post-content article-container"><span id="more"></span>
+
+<p>上一节课讲了树状数组，也介绍了<strong>树状数组</strong>的优点与不足，这里简单回顾一下。<br>**优点：**树状数组的代码非常简短，易于实现，被刘老师亲切的称为IO选手的”HelloWorld!“，就是因为代码短。<br>**缺点：**树状数组的缺点也非常的明显，只能处理单点修改区间查询或者区间修改单点查询的问题（以较高的效率）。而区间修改区间查询的问题没有办法很优雅的解决，于是引出了线段树。</p>
+<h1 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h1><p>先来看一个问题：</p>
+<hr>
+<p><strong>7-1 张煊的金箍棒（2）</strong><br>张煊的金箍棒升级了！</p>
+<p>升级后的金箍棒是由几根相同长度的金属棒连接而成（最开始都是铜棒，从1到N编号）；</p>
+<p>张煊作为金箍棒的主人，可以对金箍棒施以任意的变换，每次变换操作就是将一段连续的金属棒（从X到Y编号）改为铜棒，银棒或金棒。</p>
+<p>金箍棒的总价值计算为N个金属棒的价值总和。其中，每个铜棒价值为1；每个银棒价值为2；每个金棒价值为3。</p>
+<p>现在，张煊想知道多次执行操作后的金箍棒总价值。<br><strong>输入格式:</strong></p>
+<p>输入的第一行是测试数据的组数（不超过10个）。</p>
+<p>对于每组测试数据，第一行包含一个整数N（1 &lt;&#x3D; N &lt;&#x3D; 100000），表示金箍棒有N节金属组成，第二行包含一个整数Q（0 &lt;&#x3D; Q &lt;&#x3D; 100,000），表示执行变换的操作次数。</p>
+<p>接下来的Q行，每行包含三个整数X，Y，Z（1 &lt;&#x3D; X &lt;&#x3D; Y &lt;&#x3D; N，1 &lt;&#x3D; Z &lt;&#x3D; 3），它定义了一个操作：将从X到Y编号的金属棒变换为金属种类Z，其中Z &#x3D; 1代表铜棒，Z &#x3D; 2代表银棒，Z &#x3D; 3代表金棒。<br><strong>输出格式:</strong></p>
+<p>对于每组测试数据，请输出一个数字，表示操作后金箍棒的总价值。</p>
+<p>每组数据输出一行。<br><strong>输入样例:</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">1</span> <span class="number">5</span> <span class="number">2</span></span><br><span class="line"><span class="number">5</span> <span class="number">9</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>输出样例：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">24</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>可以看到题目中非常明显的区间修改+区间查询的意图，这也是线段树的一道入门题目。接下来我来介绍这个神奇的数据结构。</strong></p>
+<h2 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h2><p>线段树由一个<strong>四倍原数组长</strong>的数组组成，对于数组中的元素也有着特殊的含义，但是比起树状数组来说要好理解多了。<br>首先我们不从数组层面来看这个数据结构，而是从一个二叉树，一棵完全二叉树。假设我们的原数组有8个数。那么线段数和原数组的关系就像这样：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240323142619781-1834453241_1726323704365.jpg" alt="image"><br>在线段树上的<strong>每一个节点</strong>表示对应区间的某个<strong>属性值</strong>，只要这个属性值<strong>满足区间的加法</strong>即可。<br>举个例子，这个<strong>属性值</strong>可以是<strong>区间和</strong>，可以是<strong>区间最值</strong>等等，这些具体的属性由题目来决定了，由于属性值的自由度极高，导致线段树在非常多的场合可以用于加速。</p>
+<p>见过了线段树的二叉树形状，接下里给线段树一个数组的表示方式。这个也非常的简单：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240323143240787-396520700_1726323720978.jpg" alt="image"><br>和《数据结构》中一致，从根节点开始为 1 ，宽度优先搜索的顺序升序标号。有了标号，我们就能用数组来存储这棵二叉树了。可是<strong>为什么我们需要四倍的原数组空间呢</strong>？</p>
+<p>这里我们从长度为5的数组开始，来探讨一下这个问题。<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240323145616173-2021873611_1726323720978.jpg" alt="image"><br>原数组长度为5，那么理论上黑色的节点已经够用了，但是我们使用的静态数组，一般会选择直接把完全二叉树所需的空间开出来，所以会用到最多四倍的空间。</p>
+<h2 id="左右子结点的访问"><a href="#左右子结点的访问" class="headerlink" title="左右子结点的访问"></a>左右子结点的访问</h2><p>学过《数据结构》的读者可以跳过这块内容。<br>这部分比较简单，假设根的标志是1，那么左右子结点分别可以用以下两个函数访问：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">left</span><span class="params">(<span class="type">int</span> d)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> data[d&lt;&lt;<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">right</span><span class="params">(<span class="type">int</span> d)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> data[d&lt;&lt;<span class="number">1</span>|<span class="number">1</span>];	<span class="comment">//等价于 d * 2 + 1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>稍微解释一下访问右节点的操作，一个二进制数在左移动后最低位一定是0，那么这时候可以用1与该数位或，就能得到乘2加一的效果。</p>
+<h2 id="树的初始化"><a href="#树的初始化" class="headerlink" title="树的初始化"></a>树的初始化</h2><p>首先定义一下线段树的结构（代码层面）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SeqTree</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">//方法定义</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">Data</span>&#123;</span><br><span class="line">		<span class="type">int</span> val;</span><br><span class="line">	&#125;data[N&lt;&lt;<span class="number">2</span>];</span><br><span class="line">&#125;seqTree;			<span class="comment">//线段树类</span></span><br><span class="line"><span class="type">int</span> arr[N];			<span class="comment">//原数组</span></span><br></pre></td></tr></table></figure>
+
+<p>树的初始化是从原数组构造我们的线段树，以前面提到的题目为例子。节点的属性是<strong>区间和</strong>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//arr为原数组、l为区间左边、r为区间右边、rt为线段树上的位置</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">build</span><span class="params">(<span class="type">int</span>*arr,<span class="type">int</span> l,<span class="type">int</span> r,<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l==r)&#123;							<span class="comment">//到了叶子节点，直接赋值</span></span><br><span class="line">		data[rt].val = arr[l<span class="number">-1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> m = (l+r)&gt;&gt;<span class="number">1</span>;					<span class="comment">//寻找左右子结点的区间边界</span></span><br><span class="line">	<span class="built_in">build</span>(arr,l,m,rt&lt;&lt;<span class="number">1</span>);				<span class="comment">//递归构造两边的线段树</span></span><br><span class="line">	<span class="built_in">build</span>(arr,m<span class="number">+1</span>,r,rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">	<span class="built_in">pushUp</span>(rt);							<span class="comment">//利用两边的子节点更新当前节点</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">pushUp</span><span class="params">(<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">	data[rt].val = data[rt&lt;&lt;<span class="number">1</span>].val + data[rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>].val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现线段树的构造是非常容易理解的。由于二分的存在它的复杂度也只是O(NlogN)。</p>
+<h2 id="单点修改"><a href="#单点修改" class="headerlink" title="单点修改"></a>单点修改</h2><p>线段树的修改，相当于修改最下层的某个节点，它会影响到上层的非常多节点，依照树的初始化的想法，我们可以很容易的写出修改代码，这里不提供。</p>
+<h2 id="区间查询"><a href="#区间查询" class="headerlink" title="区间查询"></a>区间查询</h2><p>首先有一个理论保障：线段树的每次查询不会超过O(logN)的复杂度。为什么呢？</p>
+<ul>
+<li>任一连续区间至多由\(2log_2^N\)个子区间组成</li>
+<li><ul>
+<li>原因：任一区间不在线段树同一层出现两个子区间，并且树高不超过\(logN\)</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>原因的原因：因为区间连续，所以如果在同一层出现了两个子区间，那么这两个子区间一定可以合成上一层的一个区间。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>所以查询的复杂度有了保障。于是我们来讲查询的思路。<br>对于一个区间查询\([L,R]\)，我们从根节点[0,4N]出发，进行二分查找，并把符合要求的区间上的节点都进行修改。<del>Idea is pool show me the code!</del></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//区间查询[R,L]</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">query</span><span class="params">(<span class="type">int</span> R,<span class="type">int</span> L,<span class="type">int</span> r,<span class="type">int</span> l,<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(R&gt;l||L&lt;r)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(R&lt;=r&amp;&amp;L&gt;=l)<span class="keyword">return</span> data[rt].val;</span><br><span class="line">	<span class="type">int</span> m = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">query</span>(R,L,r,m,rt&lt;&lt;<span class="number">1</span>)+<span class="built_in">query</span>(R,L,m<span class="number">+1</span>,l,rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是不是超级简单？哈哈，刘老师说：“当年我们没有人教，没有题目刷的时候，学会了线段树就开始大杀四方，当时觉得是很稀奇的东西。你们今天倒好，随便就能学到如此有意思的算法。”</p>
+<h2 id="区间修改"><a href="#区间修改" class="headerlink" title="区间修改"></a>区间修改</h2><p>这个就厉害了，不仅实现了区间修改，还引入了最高效的偷懒方式——lazy<br>思路是这样的：我们修改一个区间的时候，如果要把值给到每个受影响的节点，会非常的麻烦，并且涉及到多次修改时，程序的复杂度会较高。但是仔细想想，我们线段树上的节点不是能代表<strong>属性</strong>么，那是不是也可以记录修改的属性呢？于是<strong>lazy</strong>诞生了。<br><strong>修改一个区间的时候，我们不修改对应的叶子节点，而是在最上层的区间节点上记录本次修改，并在查询的时候应用。</strong><br>我们首先修改一下数据结构体：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SeqTree</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">//方法定义</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">Data</span>&#123;</span><br><span class="line">		<span class="type">int</span> val;</span><br><span class="line">		<span class="type">int</span> lazy;	<span class="comment">//lazy标志</span></span><br><span class="line">	&#125;data[N&lt;&lt;<span class="number">2</span>];</span><br><span class="line">&#125;seqTree;			<span class="comment">//线段树类</span></span><br><span class="line"><span class="type">int</span> arr[N];			<span class="comment">//原数组</span></span><br></pre></td></tr></table></figure>
+
+<p>然后重写之前的各个方法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">build</span><span class="params">(<span class="type">int</span>*arr,<span class="type">int</span> l,<span class="type">int</span> r,<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l==r)&#123;</span><br><span class="line">		data[rt].val = arr[l<span class="number">-1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> m = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">	data[rt].lazy = <span class="number">0</span>;										<span class="comment">//给lazy初始化值</span></span><br><span class="line">	<span class="built_in">build</span>(arr,l,m,rt&lt;&lt;<span class="number">1</span>);</span><br><span class="line">	<span class="built_in">build</span>(arr,m<span class="number">+1</span>,r,rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">	<span class="built_in">pushUp</span>(rt);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//区间查询[R,L]</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">query</span><span class="params">(<span class="type">int</span> R,<span class="type">int</span> L,<span class="type">int</span> r,<span class="type">int</span> l,<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(R&gt;l||L&lt;r)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(R&lt;=r&amp;&amp;L&gt;=l)<span class="keyword">return</span> data[rt].val;</span><br><span class="line">	<span class="type">int</span> m = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">	<span class="built_in">pushDown</span>(rt,m-r<span class="number">+1</span>,l-m);									<span class="comment">//新加了一个应用lazy的函数</span></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">query</span>(R,L,r,m,rt&lt;&lt;<span class="number">1</span>)+<span class="built_in">query</span>(R,L,m<span class="number">+1</span>,l,rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//区间修改把[R,L]修改为C</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">update</span><span class="params">(<span class="type">int</span> R,<span class="type">int</span> L,<span class="type">int</span> C,<span class="type">int</span> r,<span class="type">int</span> l,<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(R&gt;l||L&lt;r)&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(R&lt;=r&amp;&amp;L&gt;=l)&#123;</span><br><span class="line">		data[rt].val=C*(l-r<span class="number">+1</span>);								<span class="comment">//更新节点值</span></span><br><span class="line">		<span class="keyword">if</span>(r&lt;l)</span><br><span class="line">			data[rt].lazy=C;								<span class="comment">//查询到此，继承lazy值</span></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> m = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">	<span class="built_in">pushDown</span>(rt,m-r<span class="number">+1</span>,l-m);									<span class="comment">//应用lazy</span></span><br><span class="line">	<span class="built_in">update</span>(R,L,C,r,m,rt&lt;&lt;<span class="number">1</span>);</span><br><span class="line">	<span class="built_in">update</span>(R,L,C,m<span class="number">+1</span>,l,rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">	<span class="built_in">pushUp</span>(rt);												<span class="comment">//这里有一个细节，应用lazy要在向上计算value之前</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是应用lazy的函数的实现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">pushDown</span><span class="params">(<span class="type">int</span> rt,<span class="type">int</span> rn,<span class="type">int</span> ln)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(data[rt].lazy)&#123;</span><br><span class="line">		data[rt&lt;&lt;<span class="number">1</span>].val=data[rt].lazy*rn;</span><br><span class="line">		data[rt&lt;&lt;<span class="number">1</span>].lazy=data[rt].lazy;</span><br><span class="line">		data[rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>].val=data[rt].lazy*ln;</span><br><span class="line">		data[rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>].lazy=data[rt].lazy;</span><br><span class="line">		data[rt].lazy=<span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这里就讲完了，线段树我似乎没有进行多少理论的分析，大部分都是show you the code.但是线段树是一个抽象的，强大的优化工具，而不是一个算法。想要理解线段树，还需要自己去编码实现。这里提供完整的程序代码供你参考。</p>
+<p>点击查看代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> N 100000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SeqTree</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">clear</span><span class="params">(<span class="type">int</span> size)</span></span>&#123;</span><br><span class="line">		<span class="built_in">memset</span>(data,<span class="number">0</span>,<span class="built_in">sizeof</span>(Data)*(size&lt;&lt;<span class="number">2</span>));</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=(size&lt;&lt;<span class="number">2</span>);i++)&#123;</span><br><span class="line">			data[i].val = <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">pushUp</span><span class="params">(<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">		data[rt].val = data[rt&lt;&lt;<span class="number">1</span>].val + data[rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>].val;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">pushDown</span><span class="params">(<span class="type">int</span> rt,<span class="type">int</span> rn,<span class="type">int</span> ln)</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(data[rt].lazy)&#123;</span><br><span class="line">			data[rt&lt;&lt;<span class="number">1</span>].val=data[rt].lazy*rn;</span><br><span class="line">			data[rt&lt;&lt;<span class="number">1</span>].lazy=data[rt].lazy;</span><br><span class="line">			data[rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>].val=data[rt].lazy*ln;</span><br><span class="line">			data[rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>].lazy=data[rt].lazy;</span><br><span class="line">			data[rt].lazy=<span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">build</span><span class="params">(<span class="type">int</span>*arr,<span class="type">int</span> l,<span class="type">int</span> r,<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(l==r)&#123;</span><br><span class="line">			data[rt].val = arr[l<span class="number">-1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">int</span> m = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		data[rt].lazy = <span class="number">0</span>;</span><br><span class="line">		<span class="built_in">build</span>(arr,l,m,rt&lt;&lt;<span class="number">1</span>);</span><br><span class="line">		<span class="built_in">build</span>(arr,m<span class="number">+1</span>,r,rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">		<span class="built_in">pushUp</span>(rt);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//区间查询[R,L]</span></span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">query</span><span class="params">(<span class="type">int</span> R,<span class="type">int</span> L,<span class="type">int</span> r,<span class="type">int</span> l,<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(R&gt;l||L&lt;r)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span>(R&lt;=r&amp;&amp;L&gt;=l)<span class="keyword">return</span> data[rt].val;</span><br><span class="line">		<span class="type">int</span> m = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		<span class="built_in">pushDown</span>(rt,m-r<span class="number">+1</span>,l-m);</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">query</span>(R,L,r,m,rt&lt;&lt;<span class="number">1</span>)+<span class="built_in">query</span>(R,L,m<span class="number">+1</span>,l,rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">update</span><span class="params">(<span class="type">int</span> R,<span class="type">int</span> L,<span class="type">int</span> C,<span class="type">int</span> r,<span class="type">int</span> l,<span class="type">int</span> rt)</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(R&gt;l||L&lt;r)&#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(R&lt;=r&amp;&amp;L&gt;=l)&#123;</span><br><span class="line">			data[rt].val=C*(l-r<span class="number">+1</span>);</span><br><span class="line">			<span class="keyword">if</span>(r&lt;l)</span><br><span class="line">				data[rt].lazy=C;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">int</span> m = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		<span class="built_in">pushDown</span>(rt,m-r<span class="number">+1</span>,l-m);</span><br><span class="line">		<span class="built_in">update</span>(R,L,C,r,m,rt&lt;&lt;<span class="number">1</span>);</span><br><span class="line">		<span class="built_in">update</span>(R,L,C,m<span class="number">+1</span>,l,rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">		<span class="built_in">pushUp</span>(rt);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">debug</span><span class="params">(<span class="type">int</span> size)</span></span>&#123;</span><br><span class="line">		cout&lt;&lt;<span class="string">&quot;############## debug ##############\n&quot;</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=(size&lt;&lt;<span class="number">2</span>);i++)&#123;</span><br><span class="line">			cout&lt;&lt;data[i].val&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;data[i].lazy&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		cout&lt;&lt;<span class="string">&quot;############## debug ##############\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">Data</span>&#123;</span><br><span class="line">		<span class="type">int</span> val;</span><br><span class="line">		<span class="type">int</span> lazy;</span><br><span class="line">	&#125;data[N&lt;&lt;<span class="number">2</span>];</span><br><span class="line">&#125;seqTree;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> b,n,q;</span><br><span class="line">	cin&gt;&gt;b;</span><br><span class="line">	<span class="keyword">while</span>(b--)&#123;</span><br><span class="line">		cin&gt;&gt;n&gt;&gt;q;</span><br><span class="line">		seqTree.<span class="built_in">clear</span>(n);</span><br><span class="line">		<span class="type">int</span> x,y,z;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;q;i++)&#123;</span><br><span class="line">			cin&gt;&gt;x&gt;&gt;y&gt;&gt;z;</span><br><span class="line">			seqTree.<span class="built_in">update</span>(x,y,z,<span class="number">1</span>,n,<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		cout&lt;&lt;seqTree.<span class="built_in">query</span>(<span class="number">1</span>,n,<span class="number">1</span>,n,<span class="number">1</span>)&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">		<span class="comment">// seqTree.debug(n);</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好好领悟线段树的<strong>节点属性</strong>吧。</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><div class="post-copyright__author_img"><img class="post-copyright__author_img_front" src="/solitude/img/logo.png"></div><div class="post-copyright__author_name">zhywyt</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/solitude/">zhywyt's blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/solitude/posts/61355/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第三课——最短路</div></div></a></div><div class="next-post pull-right"><a href="/solitude/posts/53666/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第一课——树状数组</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="top-group"><div class="sayhi" id="sayhi" onclick="sco.changeWittyWord()"></div></div></div><div class="avatar"><img alt="头像" src="/img/logo.png"></div><div class="description"></div><div class="bottom-group"><span class="left"><div class="name">zhywyt</div><div class="desc">只有迎风，风筝才能飞得更高。</div></span><div class="social-icons is-center"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fas fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="toc-text">线段树</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E6%88%90"><span class="toc-text">构成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A6%E5%8F%B3%E5%AD%90%E7%BB%93%E7%82%B9%E7%9A%84%E8%AE%BF%E9%97%AE"><span class="toc-text">左右子结点的访问</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%91%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">树的初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9"><span class="toc-text">单点修改</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BA%E9%97%B4%E6%9F%A5%E8%AF%A2"><span class="toc-text">区间查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BA%E9%97%B4%E4%BF%AE%E6%94%B9"><span class="toc-text">区间修改</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fas fa-map"></i><span>最近发布</span></div><div class="aside-list"><a class="aside-list-item" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路"><div class="content"><span class="title" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路">在Unity2D中创建角色描边的shader思路</span></div></a><a class="aside-list-item" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器"><div class="content"><span class="title" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器">Listary——不仅仅是搜索器</span></div></a><a class="aside-list-item" href="/solitude/posts/51899/" title="我的编辑器"><div class="content"><span class="title" href="/solitude/posts/51899/" title="我的编辑器">我的编辑器</span><span class="categories" href="/solitude/posts/51899/">关于博客</span></div></a><a class="aside-list-item" href="/solitude/posts/0/" title="Untitled"><div class="content"><span class="title" href="/solitude/posts/0/" title="Untitled">Untitled</span></div></a><a class="aside-list-item" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录"><div class="content"><span class="title" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录">anzhiyu主题搭建记录</span><span class="categories" href="/solitude/posts/64880/">闲鱼兼职</span></div></a></div></div></div></div></main><footer id="footer"><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2025 By&nbsp;<a class="footer-bar-link" href="/solitude/"><img class="author-avatar" src="/solitude/img/pwa/favicon.png">zhywyt</a></div><div class="beian-group"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://hexo.io/">框架：Hexo</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude">主题：Solitude</a></div></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/solitude/js/utils.js?v=3.0.15"></script><script src="/solitude/js/main.js?v=3.0.15"></script><script src="/solitude/js/third_party/waterfall.min.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/solitude/js/tw_cn.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+utils.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+</script><script src="https://fastly.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ["title","#body-wrap","#site-config","meta[name=\"description\"]",".js-pjax","meta[property^=\"og:\"]","#config-diff",".rs_show",".rs_hide"],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- google adsense--><!-- search--><!-- music--></body></html>
         <script>
-            const posts = ["posts/17428/","posts/30828/","posts/15450/","posts/45431/","posts/b4ca7a5fb5b2/","posts/50901/","posts/3472/","posts/d9709c673656/","posts/15892/","posts/1cc3941f1b85/","posts/5993/","posts/61408/","posts/5c54bd2bc06c/","posts/5181/","posts/337e148b3fb3/","posts/d8eb45be176b/","posts/b0c241b3d4cf/","posts/96dff400cced/","posts/51899/","posts/15959/","posts/32280/","posts/2977/","posts/51449/","posts/47792/","posts/27853/","posts/63067/","posts/49493/","posts/53666/","posts/61355/","posts/14027/","posts/62236/","posts/11458/","posts/16515/","posts/8fd9ab7c695f/","posts/5953/","posts/34e784d46b0a/","posts/536c11d1caa5/","posts/5790301d4de2/","posts/d586aba908b5/","posts/e3e3aee8476b/","posts/f29c63b83721/","posts/4182/","posts/24484/","posts/df4c31f7ba80/","posts/d7880d8f2f2e/","posts/6886/","posts/7287/","posts/49793/","posts/usehttps/","posts/64880/","posts/da74aa8e9f3b/","posts/2c9570b00976/","posts/bc16e0702e1d/","posts/c8b013b915a1/","posts/2024g10/","posts/a5bf365fe3fe/","posts/1fd1cabe051b/","posts/10536/","posts/6615/","posts/6295/","posts/44638/","posts/55574/","posts/6999/","posts/56214/","posts/6679/","posts/29b61e029340/","posts/56022/","posts/58283ae7cb2d/","posts/0/","posts/10907/","posts/59a4f8f59f45/","posts/54404/","posts/823c297f1d7f/","posts/247db5136c67/","posts/0e24283556b2/","posts/c6072bab6ff0/","posts/bd7f49a3fa80/","posts/d7ea97fbec36/","posts/e31df0f4a5f0/","posts/d742d8349fff/","posts/4a74e5f5d3d6/","posts/6e1ed0060e67/","posts/d863527924a0/","posts/818482b58c2a/"];
+            const posts = ["posts/10907/","posts/5993/","posts/51899/","posts/0/","posts/64880/","posts/usehttps/","posts/61408/","posts/29b61e029340/","posts/34e784d46b0a/","posts/d7880d8f2f2e/","posts/58283ae7cb2d/","posts/b0c241b3d4cf/","posts/da74aa8e9f3b/","posts/d863527924a0/","posts/247db5136c67/","posts/818482b58c2a/","posts/0e24283556b2/","posts/d8eb45be176b/","posts/8fd9ab7c695f/","posts/4a74e5f5d3d6/","posts/e31df0f4a5f0/","posts/e3e3aee8476b/","posts/d7ea97fbec36/","posts/2024g10/","posts/f29c63b83721/","posts/6e1ed0060e67/","posts/536c11d1caa5/","posts/337e148b3fb3/","posts/2c9570b00976/","posts/d586aba908b5/","posts/5790301d4de2/","posts/96dff400cced/","posts/c8b013b915a1/","posts/bc16e0702e1d/","posts/a5bf365fe3fe/","posts/bd7f49a3fa80/","posts/c6072bab6ff0/","posts/59a4f8f59f45/","posts/823c297f1d7f/","posts/1cc3941f1b85/","posts/54404/","posts/d742d8349fff/","posts/d9709c673656/","posts/5c54bd2bc06c/","posts/df4c31f7ba80/","posts/b4ca7a5fb5b2/","posts/24484/","posts/5953/","posts/5181/","posts/1fd1cabe051b/","posts/49793/","posts/4182/","posts/62236/","posts/7287/","posts/61355/","posts/14027/","posts/53666/","posts/17428/","posts/16515/","posts/11458/","posts/6679/","posts/15892/","posts/3472/","posts/56022/","posts/56214/","posts/6999/","posts/55574/","posts/6886/","posts/6615/","posts/44638/","posts/6295/","posts/45431/","posts/30828/","posts/15450/","posts/10536/","posts/49493/","posts/50901/","posts/27853/","posts/63067/","posts/32280/","posts/51449/","posts/2977/","posts/15959/","posts/47792/"];
             function toRandomPost() {
                 const randomPost = posts[Math.floor(Math.random() * posts.length)];
                 pjax.loadUrl(GLOBAL_CONFIG.root + randomPost);

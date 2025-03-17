@@ -1,40 +1,273 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hexo+Github搭建静态网站 | zhywyt's blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/solitude/img/pwa/favicon.png"><!-- index.css--><link rel="stylesheet" href="/solitude/css/index.css?v=3.0.15"><!-- inject head--><link rel="canonical" href="https://hexothemedemo.github.io/solitude/posts/d8eb45be176b/index.html"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="2024-12-05 16:10实际上，现在你所看到的博客是我使用hexo+Fliud主题加自己的服务器搭建起来的，那为什么又来搭建博客了？ 2024-12-08 13:36更新windows版本安装教程。 收到朱老师的要求（运动队教练），需要搭建学校运动队（定向越野队）的主页，于是想着长久为好的情"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="zhywyt's blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/solitude/img/pwa/favicon.png"><link rel="apple-touch-icon" href="/solitude/img/pwa/favicon.png" sizes="180x180"><script>console.log(' %c Solitude %c ' + '3.0.15' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
 
-block content
-    main.layout#content-inner
-        #post
-            if page.not_cover
-                include includes/widgets/post/postInfo
-            article.post-content.article-container
-                if page.ai_text && theme.post.ai.enable
-                    include includes/widgets/post/ai
-                != page.content
-            include includes/widgets/post/copyright
-            .post-tools-right
-                .tag_share
-                    .post-meta__tag-list
-                        each data in page.tags.data || []
-                            a(href=url_for(data.path)).post-meta__tags
-                                span.tags-punctuation
-                                    i.solitude.fas.fa-hashtag
-                                    =data.name
-                                    span.tagsPageCount=data.length
-            if theme.google_adsense.enable && !theme.google_adsense.auto_ads && theme.google_adsense.post_content
-                div.google-ads-warp
-                    ins.adsbygoogle(style="display:block; text-align:center; height:284px", data-ad-layout="in-article", data-ad-format="fluid", hide-unfilled="true", data-ad-client=theme.google_adsense.client, data-ad-slot=theme.google_adsense.slot)
-                    script.
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-            if site.posts.length > 1
-                include includes/widgets/post/postNav
-            if theme.related_post.enable
-                != related_posts(page, site.posts)
-            if page.comment
-                - var comment_js = true
-                include includes/widgets/third-party/comments/comment
-        if page.aside
-            include includes/widgets/aside/aside
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/solitude/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        state: {
+            morning: "✨ 早上好，新的一天开始了",
+            noon: "🍲 午餐时间",
+            afternoon: "🌞 下午好",
+            night: "早点休息",
+            goodnight: "晚安 😴",
+        },
+        witty_words: [],
+        witty_comment: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    right_menu: false,
+    translate: {"translateDelay":0,"defaultEncoding":2},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false,
+    color: false,
+}</script></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/archives/"><div class="headline">文章</div><div class="length-num">84</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/solitude/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fas fa-circle-half-stroke"></i><span>显示模式</span></span></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="card-tag-cloud"><a href="/solitude/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/">技术文档<sup>18</sup></a><a href="/solitude/tags/encrypt/">encrypt<sup>1</sup></a><a href="/solitude/tags/%E5%8D%9A%E5%AE%A2/">博客<sup>1</sup></a><a href="/solitude/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/">诗与散文<sup>1</sup></a><a href="/solitude/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/">错误解决<sup>5</sup></a></div></div></div></div><!-- keyboard--><!-- righhtside--><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/solitude/" title="返回博客主页"><span class="title">Solitude</span><i class="solitude fas fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">Hexo+Github搭建静态网站</a></div></div><div id="menus"></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fas fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fas fa-bars"></i></a></div></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/solitude/categories/%E5%85%B3%E4%BA%8E%E5%8D%9A%E5%AE%A2/">关于博客</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/solitude/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/"><span class="tags-name tags-punctuation"><i class="solitude fas fa-hashtag"></i>技术文档</span></a></div></div></div></div><h1 class="post-title">Hexo+Github搭建静态网站</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><div id="post-info-bottom"></div><article class="post-content article-container"><p>2024-12-05 16:10<br>实际上，现在你所看到的博客是我使用hexo+Fliud主题加自己的服务器搭建起来的，那为什么又来搭建博客了？</p>
+<p>2024-12-08 13:36<br>更新windows版本安装教程。</p>
+<p>收到朱老师的要求（运动队教练），需要搭建学校运动队（定向越野队）的主页，于是想着长久为好的情况，选择了使用github来搭建，这样也方便队友们维护它。之后再写一篇博客维护交大家怎么用好了。这里顺便记录一下我们搭建<font color='yellow'>Hexo</font>的程过程，并学习一下<font color='yellow'>GitHub Page</font>的使用。</p>
+<blockquote>
+<p><font color='red'>我任何时候都只推荐使用Linux来搭建类似的网站。</font></p>
+</blockquote>
+<h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><h3 id="安装Node-Js和Npm"><a href="#安装Node-Js和Npm" class="headerlink" title="安装Node.Js和Npm"></a>安装Node.Js和Npm</h3><p>hexo需要一些前置环境，由于它是基于Node.Js的，我们第一步就需要安装Node.Js。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install nodejs npm</span><br></pre></td></tr></table></figure>
+<p>测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node --version</span><br><span class="line">npm --version</span><br></pre></td></tr></table></figure>
+<p>npm的安装时间可能有些久，如果网络不好请换源（STFW “ustc apt”）。这是我写这篇博客的时候的版本（2024-12-05 16:30）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@HDUDX:~# node --version &amp;&amp; npm --version</span><br><span class="line">v18.19.1</span><br><span class="line">9.2.0</span><br></pre></td></tr></table></figure>
+<p>是的，我测试的时候使用的是<code>root</code>用户，请不要模仿我，除非你有信心修好自己的机器。</p>
+<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><p>根据<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">Hexo</a>提供的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<p>我自然是全局安装，因为我使用的是容器开发。如果你介意全局安装你可以参考官网的局部安装，对后续不会产生影响。</p>
+<p>测试Hexo：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">root@HDUDX:~# hexo --version</span><br><span class="line">hexo-cli: 4.3.2</span><br><span class="line">os: linux 6.8.4-2-pve Ubuntu 22.04 LTS 22.04 (Jammy Jellyfish)</span><br><span class="line">node: 18.19.1</span><br><span class="line">acorn: 8.8.1</span><br><span class="line">ada: 2.7.2</span><br><span class="line">ares: 1.27.0</span><br><span class="line"><span class="built_in">base64</span>: 0.5.0</span><br><span class="line">brotli: 1.0.9</span><br><span class="line">cjs_module_lexer: 1.2.3</span><br><span class="line">cldr: 44.1</span><br><span class="line">icu: 74.2</span><br><span class="line">llhttp: 6.1.0</span><br><span class="line">modules: 109</span><br><span class="line">napi: 9</span><br><span class="line">nghttp2: 1.59.0</span><br><span class="line">openssl: 3.0.13</span><br><span class="line">simdutf: 3.2.18</span><br><span class="line">tz: 2022a</span><br><span class="line">unicode: 15.1</span><br><span class="line">uv: 1.48.0</span><br><span class="line">uvwasi: 0.0.19</span><br><span class="line">v8: 10.2.154.26-node.28</span><br><span class="line">zlib: 1.3</span><br></pre></td></tr></table></figure>
+<h2 id="Windows-失败"><a href="#Windows-失败" class="headerlink" title="Windows(失败)"></a>Windows(失败)</h2><h3 id="安装-Node-Js"><a href="#安装-Node-Js" class="headerlink" title="安装 Node.Js"></a>安装 Node.Js</h3><p><a target="_blank" rel="noopener" href="https://nodejs.org/en/download/package-manager">Site Unreachable</a></p>
+<p>选择安装程序安装：<br><img src="/solitude/../../assets/images/QQ_1733638521159.png"><br>安装你想要的版本，最好选择最新的LTS版本，下载好后运行安装即可。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm.cmd <span class="literal">--version</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装Hexo-1"><a href="#安装Hexo-1" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm.cmd install hexo<span class="literal">-cli</span> <span class="literal">-g</span></span><br></pre></td></tr></table></figure>
+<p>这一步我等了很久，失败乐，Windows还是别用了。我受不了了。</p>
+<h2 id="创建第一个站点！"><a href="#创建第一个站点！" class="headerlink" title="创建第一个站点！"></a>创建第一个站点！</h2><p>使用以下指令来创建一个站点，它会在当前文件夹下生成同名文件夹：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init &lt;Your site name&gt;</span><br></pre></td></tr></table></figure>
+<p>Nodejs比较慢，你可以尝试代理或者其他方式来加速。成功了像这样：<br><img src="/solitude/../../assets/images/QQ_1733388023066.png"><br>然后进入站点，安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> &lt;Your site name&gt;</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>项目里会有这么一些东西，我稍微介绍一下，之后可以自行深入了解：<br><img src="/solitude/../../assets/images/QQ_1733388505064.png"></p>
+<ul>
+<li><code>_config.landscape.yml</code><ul>
+<li>我们的初始主题叫<code>landscape</code>，这是主题的配置文件</li>
+</ul>
+</li>
+<li><code>_config.yml</code><ul>
+<li>这是hexo的配置文件</li>
+</ul>
+</li>
+<li><code>node_modules</code><ul>
+<li>这是node.js的包</li>
+</ul>
+</li>
+<li><code>source</code><ul>
+<li>这是您的md文件，会以page的形式组织，特殊的<code>_posts</code>是您的所有博客文件</li>
+</ul>
+</li>
+<li><code>themes</code><ul>
+<li>这是主题文件夹，下载的主题放在里面</li>
+</ul>
+</li>
+<li><code>public</code><ul>
+<li>这个文件夹你可能还没有，这是生成的前端文件，主要是html和css</li>
+</ul>
+</li>
+</ul>
+<h2 id="本地部署测试"><a href="#本地部署测试" class="headerlink" title="本地部署测试"></a>本地部署测试</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 生成命令，将你的md文件编译成前端文件</span><br><span class="line">hexo g</span><br><span class="line">// 启动服务命令，启动apache，在你的4000端口开发服务</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+
+<p><img src="/solitude/../../assets/images/QQ_1733388883233.png"></p>
+<p>你可以访问本地的<code>http://localhost:4000</code>，使用<code>Ctrl + C</code>中止它，这不是我们的目的。</p>
+<h1 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h1><h2 id="申请Github组织"><a href="#申请Github组织" class="headerlink" title="申请Github组织"></a>申请Github组织</h2><p>相信你自己的Page肯定已经部署了其他服务了，对于组织类型的站点，我们可以使用组织的子域名来做。<br><img src="/solitude/../../assets/images/QQ_1733386550843.png"><br>找到组织页面，创建一个新的组织，名字依据你们组织来定，我为杭电定向队创建：<br><img src="/solitude/../../assets/images/QQ_1733386590379.png"></p>
+<h2 id="创建同名项目"><a href="#创建同名项目" class="headerlink" title="创建同名项目"></a>创建同名项目</h2><p>我们暂时跳过加入成员的过程，在组织下创建一个同名项目：<br><img src="/solitude/../../assets/images/QQ_1733386665616.png"><br><img src="/solitude/../../assets/images/QQ_1733386705817.png"><br>需要注意的是你的仓库名设置为<code>&lt;组织名&gt;.github.io</code>，这与你的page类似。然后设置为公开的。</p>
+<h1 id="Hexo-Github"><a href="#Hexo-Github" class="headerlink" title="Hexo + Github"></a>Hexo + Github</h1><h2 id="远程插件"><a href="#远程插件" class="headerlink" title="远程插件"></a>远程插件</h2><p>我们需要一个插件来帮我们一键同步到github仓库中，我们安装这个插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>然后我们修改以下<code>_congig.yml</code>文件，使用你自己熟悉的文本编辑器打开它：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim _config.yml</span><br></pre></td></tr></table></figure>
+<p>找到<code># Deployment</code>项，它应该在最底部，修改信息：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  <span class="attr">repository:</span> <span class="string">&lt;Your</span> <span class="string">project</span> <span class="string">url&gt;</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建我们的ssh-key"><a href="#创建我们的ssh-key" class="headerlink" title="创建我们的ssh-key"></a>创建我们的ssh-key</h2><p>使用以下命令创建key，并一路回车。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@HDUDX:~/hdudx# ssh-keygen</span><br></pre></td></tr></table></figure>
+<p>你的key会生成在<code>~/.ssh/</code>下，找到pubkey。你可以使用你喜欢的方式查看它：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<h2 id="打开DeployKey并设置"><a href="#打开DeployKey并设置" class="headerlink" title="打开DeployKey并设置"></a>打开DeployKey并设置</h2><p>找到你的组织的设置-&gt;DeployKeys-&gt;Enable-&gt;Save<br><img src="/solitude/../../assets/images/QQ_1733389537451.png"><br>我们打开这个，就不需要将机器的ssh key放在我们的用户信用名单中，而可以对单个项目进行配置，这非常好。打开之后找到我们的项目的设置：<br><img src="/solitude/../../assets/images/QQ_1733389647445.png"><br>将我们机器的公钥填入，并勾选允许写访问<br><img src="/solitude/../../assets/images/QQ_1733389704319.png"></p>
+<h2 id="一键部署"><a href="#一键部署" class="headerlink" title="一键部署"></a>一键部署</h2><p>然后我们回到机器，尝试运行部署指令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<p>如果出现这样的问题：<br><img src="/solitude/../../assets/images/QQ_1733389762910.png"><br>请检查你的key是否设置正确，正确的运行结果类似这样：<br><img src="/solitude/../../assets/images/QQ_1733389796669.png"></p>
+<p>然后检查我们的仓库时候已经有了文件：<br><img src="/solitude/../../assets/images/QQ_1733389984259.png"><br>此时你迫不及待地打开专属你的网址，可能出现<font color='red'>404</font>，不要沮丧，打开你的项目设置，找到<code>Pages</code>，选择正确的分支和文件夹，并保存。不出意外的话在1分钟后就会得到正确的结果了！可以尝试访问我们的网站：<a target="_blank" rel="noopener" href="https://hdudx.github.io/">杭州电子科技大学定向队</a>。<br><img src="/solitude/../../assets/images/QQ_1733390075958.png"></p>
+<h1 id="主题选择"><a href="#主题选择" class="headerlink" title="主题选择"></a>主题选择</h1><p> 首先去官网找主题<a target="_blank" rel="noopener" href="https://hexo.io/themes/">Themes | Hexo</a>（PS：主题来自社区，Hexo不保证其安全性）。</p>
+<h2 id="推荐主题"><a href="#推荐主题" class="headerlink" title="推荐主题"></a>推荐主题</h2><p><a target="_blank" rel="noopener" href="https://github.com/Yue-plus/hexo-theme-arknights">GitHub - Yue-plus&#x2F;hexo-theme-arknights: 明日方舟罗德岛阵营的 Hexo 主题，支持数学公式、Valine&amp;Gitalk&amp;Waline评论系统、Mermaid图表</a><br><img src="/solitude/../../assets/images/demo.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">GitHub - xaoxuu&#x2F;hexo-theme-stellar: 内置文档系统的简约商务风Hexo主题，支持大量的标签组件和动态数据组件。</a><br><img src="/solitude/../../assets/images/QQ_1733391787975.png"></p>
+<p>2024-12-05 18:21<br>快照，看看我两个多小时的成果：<br><img src="/solitude/../../assets/images/QQ_1733394098358.png"></p>
+<h1 id="源码-前端分家"><a href="#源码-前端分家" class="headerlink" title="源码&#x2F;前端分家"></a>源码&#x2F;前端分家</h1><p>我们使用<code>hexo d</code>实现的其实只是将我们的<code>public</code>里的文件上传到github上，但是我们的<code>Markdown</code>文件其实无法保存在云端，这个时候就有一个天才站出来了，说：我们用两个分支，分别存储源码和前端不就好了吗？于是这个解决办法就这样孕育而生了：</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><div class="post-copyright__author_img"><img class="post-copyright__author_img_front" src="/solitude/img/logo.png"></div><div class="post-copyright__author_name">zhywyt</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/solitude/">zhywyt's blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/solitude/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/"><span class="tags-punctuation"><i class="solitude fas fa-hashtag"></i>技术文档<span class="tagsPageCount">18</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/solitude/posts/0e24283556b2/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">UI的位置无法正确的移动</div></div></a></div><div class="next-post pull-right"><a href="/solitude/posts/8fd9ab7c695f/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">伤病遇体测有感</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="top-group"><div class="sayhi" id="sayhi" onclick="sco.changeWittyWord()"></div></div></div><div class="avatar"><img alt="头像" src="/img/logo.png"></div><div class="description"></div><div class="bottom-group"><span class="left"><div class="name">zhywyt</div><div class="desc">只有迎风，风筝才能飞得更高。</div></span><div class="social-icons is-center"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fas fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hexo"><span class="toc-text">Hexo</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux"><span class="toc-text">Linux</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Node-Js%E5%92%8CNpm"><span class="toc-text">安装Node.Js和Npm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Hexo"><span class="toc-text">安装Hexo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows-%E5%A4%B1%E8%B4%A5"><span class="toc-text">Windows(失败)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Node-Js"><span class="toc-text">安装 Node.Js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Hexo-1"><span class="toc-text">安装Hexo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%AB%99%E7%82%B9%EF%BC%81"><span class="toc-text">创建第一个站点！</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95"><span class="toc-text">本地部署测试</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Github"><span class="toc-text">Github</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B3%E8%AF%B7Github%E7%BB%84%E7%BB%87"><span class="toc-text">申请Github组织</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%90%8C%E5%90%8D%E9%A1%B9%E7%9B%AE"><span class="toc-text">创建同名项目</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hexo-Github"><span class="toc-text">Hexo + Github</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E6%8F%92%E4%BB%B6"><span class="toc-text">远程插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%88%91%E4%BB%AC%E7%9A%84ssh-key"><span class="toc-text">创建我们的ssh-key</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E5%BC%80DeployKey%E5%B9%B6%E8%AE%BE%E7%BD%AE"><span class="toc-text">打开DeployKey并设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%94%AE%E9%83%A8%E7%BD%B2"><span class="toc-text">一键部署</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98%E9%80%89%E6%8B%A9"><span class="toc-text">主题选择</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E8%8D%90%E4%B8%BB%E9%A2%98"><span class="toc-text">推荐主题</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81-%E5%89%8D%E7%AB%AF%E5%88%86%E5%AE%B6"><span class="toc-text">源码&#x2F;前端分家</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fas fa-map"></i><span>最近发布</span></div><div class="aside-list"><a class="aside-list-item" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路"><div class="content"><span class="title" href="/solitude/posts/10907/" title="在Unity2D中创建角色描边的shader思路">在Unity2D中创建角色描边的shader思路</span></div></a><a class="aside-list-item" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器"><div class="content"><span class="title" href="/solitude/posts/5993/" title="Listary——不仅仅是搜索器">Listary——不仅仅是搜索器</span></div></a><a class="aside-list-item" href="/solitude/posts/51899/" title="我的编辑器"><div class="content"><span class="title" href="/solitude/posts/51899/" title="我的编辑器">我的编辑器</span><span class="categories" href="/solitude/posts/51899/">关于博客</span></div></a><a class="aside-list-item" href="/solitude/posts/0/" title="Untitled"><div class="content"><span class="title" href="/solitude/posts/0/" title="Untitled">Untitled</span></div></a><a class="aside-list-item" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录"><div class="content"><span class="title" href="/solitude/posts/64880/" title="anzhiyu主题搭建记录">anzhiyu主题搭建记录</span><span class="categories" href="/solitude/posts/64880/">闲鱼兼职</span></div></a></div></div></div></div></main><footer id="footer"><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2025 By&nbsp;<a class="footer-bar-link" href="/solitude/"><img class="author-avatar" src="/solitude/img/pwa/favicon.png">zhywyt</a></div><div class="beian-group"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://hexo.io/">框架：Hexo</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude">主题：Solitude</a></div></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/solitude/js/utils.js?v=3.0.15"></script><script src="/solitude/js/main.js?v=3.0.15"></script><script src="/solitude/js/third_party/waterfall.min.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/solitude/js/tw_cn.js?v=3.0.15"></script><script src="https://fastly.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+utils.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+</script><script src="https://fastly.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ["title","#body-wrap","#site-config","meta[name=\"description\"]",".js-pjax","meta[property^=\"og:\"]","#config-diff",".rs_show",".rs_hide"],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- google adsense--><!-- search--><!-- music--></body></html>
         <script>
-            const posts = ["posts/17428/","posts/30828/","posts/15450/","posts/45431/","posts/b4ca7a5fb5b2/","posts/50901/","posts/3472/","posts/d9709c673656/","posts/15892/","posts/1cc3941f1b85/","posts/5993/","posts/61408/","posts/5c54bd2bc06c/","posts/5181/","posts/337e148b3fb3/","posts/d8eb45be176b/","posts/b0c241b3d4cf/","posts/96dff400cced/","posts/51899/","posts/15959/","posts/32280/","posts/2977/","posts/51449/","posts/47792/","posts/27853/","posts/63067/","posts/49493/","posts/53666/","posts/61355/","posts/14027/","posts/62236/","posts/11458/","posts/16515/","posts/8fd9ab7c695f/","posts/5953/","posts/34e784d46b0a/","posts/536c11d1caa5/","posts/5790301d4de2/","posts/d586aba908b5/","posts/e3e3aee8476b/","posts/f29c63b83721/","posts/4182/","posts/24484/","posts/df4c31f7ba80/","posts/d7880d8f2f2e/","posts/6886/","posts/7287/","posts/49793/","posts/usehttps/","posts/64880/","posts/da74aa8e9f3b/","posts/2c9570b00976/","posts/bc16e0702e1d/","posts/c8b013b915a1/","posts/2024g10/","posts/a5bf365fe3fe/","posts/1fd1cabe051b/","posts/10536/","posts/6615/","posts/6295/","posts/44638/","posts/55574/","posts/6999/","posts/56214/","posts/6679/","posts/29b61e029340/","posts/56022/","posts/58283ae7cb2d/","posts/0/","posts/10907/","posts/59a4f8f59f45/","posts/54404/","posts/823c297f1d7f/","posts/247db5136c67/","posts/0e24283556b2/","posts/c6072bab6ff0/","posts/bd7f49a3fa80/","posts/d7ea97fbec36/","posts/e31df0f4a5f0/","posts/d742d8349fff/","posts/4a74e5f5d3d6/","posts/6e1ed0060e67/","posts/d863527924a0/","posts/818482b58c2a/"];
+            const posts = ["posts/10907/","posts/5993/","posts/51899/","posts/0/","posts/64880/","posts/usehttps/","posts/61408/","posts/29b61e029340/","posts/34e784d46b0a/","posts/d7880d8f2f2e/","posts/58283ae7cb2d/","posts/b0c241b3d4cf/","posts/da74aa8e9f3b/","posts/d863527924a0/","posts/247db5136c67/","posts/818482b58c2a/","posts/0e24283556b2/","posts/d8eb45be176b/","posts/8fd9ab7c695f/","posts/4a74e5f5d3d6/","posts/e31df0f4a5f0/","posts/e3e3aee8476b/","posts/d7ea97fbec36/","posts/2024g10/","posts/f29c63b83721/","posts/6e1ed0060e67/","posts/536c11d1caa5/","posts/337e148b3fb3/","posts/2c9570b00976/","posts/d586aba908b5/","posts/5790301d4de2/","posts/96dff400cced/","posts/c8b013b915a1/","posts/bc16e0702e1d/","posts/a5bf365fe3fe/","posts/bd7f49a3fa80/","posts/c6072bab6ff0/","posts/59a4f8f59f45/","posts/823c297f1d7f/","posts/1cc3941f1b85/","posts/54404/","posts/d742d8349fff/","posts/d9709c673656/","posts/5c54bd2bc06c/","posts/df4c31f7ba80/","posts/b4ca7a5fb5b2/","posts/24484/","posts/5953/","posts/5181/","posts/1fd1cabe051b/","posts/49793/","posts/4182/","posts/62236/","posts/7287/","posts/61355/","posts/14027/","posts/53666/","posts/17428/","posts/16515/","posts/11458/","posts/6679/","posts/15892/","posts/3472/","posts/56022/","posts/56214/","posts/6999/","posts/55574/","posts/6886/","posts/6615/","posts/44638/","posts/6295/","posts/45431/","posts/30828/","posts/15450/","posts/10536/","posts/49493/","posts/50901/","posts/27853/","posts/63067/","posts/32280/","posts/51449/","posts/2977/","posts/15959/","posts/47792/"];
             function toRandomPost() {
                 const randomPost = posts[Math.floor(Math.random() * posts.length)];
                 pjax.loadUrl(GLOBAL_CONFIG.root + randomPost);
