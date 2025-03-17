@@ -1,320 +1,315 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="zhywyt">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!--[if lt IE 9]>
-        <style>body {display: none; background: none !important} </style>
-        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
-    <![endif]-->
-
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="format-detection" content="telephone=no" />
-<meta name="author" content="zhywyt" />
-
-
-
-<meta name="description" content="无损？这里指视觉无损，对于我们这些视力不太好的程序员来说视觉无损已经非常好了。我们需要使用到ffmpeg工具，这是一个十分强大的武器。但是刚接触到它的时候我会觉得它强大而无法掌握，直到现在我也不能说有多了解它，只能在文档的加持下才能完成自己需要的操作。今天我们需要无损压缩视频，首先我们要了解的是：我们的视频能否还能被压缩？ 在压缩它之前，我们可以简单地检查一下我们的视频的编码方式，不管怎么样先安装">
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://hexothemedemo.github.io/redefine/posts/1cc3941f1b85/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何使用ffmpeg无损压缩视频？">
-<meta property="og:url" content="https://hexothemedemo.github.io/Yelee/posts/1cc3941f1b85/index.html">
+<meta property="og:url" content="https://hexothemedemo.github.io/redefine/posts/1cc3941f1b85/index.html">
 <meta property="og:site_name" content="zhywyt&#39;s blog">
-<meta property="og:description" content="无损？这里指视觉无损，对于我们这些视力不太好的程序员来说视觉无损已经非常好了。我们需要使用到ffmpeg工具，这是一个十分强大的武器。但是刚接触到它的时候我会觉得它强大而无法掌握，直到现在我也不能说有多了解它，只能在文档的加持下才能完成自己需要的操作。今天我们需要无损压缩视频，首先我们要了解的是：我们的视频能否还能被压缩？ 在压缩它之前，我们可以简单地检查一下我们的视频的编码方式，不管怎么样先安装">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hexothemedemo.github.io/assets/images/QQ_1727885854303.png">
-<meta property="og:image" content="https://hexothemedemo.github.io/assets/images/QQ_1727933952694.png">
-<meta property="og:image" content="https://hexothemedemo.github.io/assets/images/QQ_1727934518186.png">
-<meta property="og:image" content="https://hexothemedemo.github.io/assets/images/QQ_1727954182923.png">
+<meta property="og:image" content="https://hexothemedemo.github.io/images/redefine-og.webp">
 <meta property="article:published_time" content="2024-10-03T19:21:00.000Z">
 <meta property="article:modified_time" content="2024-10-03T11:25:25.706Z">
 <meta property="article:author" content="zhywyt">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hexothemedemo.github.io/assets/images/QQ_1727885854303.png">
+<meta name="twitter:image" content="https://hexothemedemo.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/redefine/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/redefine/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/redefine/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            如何使用ffmpeg无损压缩视频？ | Theme Redefine[demo site]
+        
+    </title>
 
-<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
-
-
-    <link rel="alternate" href="/atom.xml" title="zhywyt&#39;s blog" type="application/atom+xml">
-
-
-
-    <link rel="shortcut icon" href="/favicon.png">
-
-
-
-    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
-
-
-
-    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
-
-
-
-    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
-    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+    
+<link rel="stylesheet" href="/redefine/fonts/Chillax/chillax.css">
 
 
+    <!--- Inject Part-->
+    
 
-<link rel="stylesheet" href="/Yelee/css/style.css">
-
-
-
-
-<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+<link rel="stylesheet" href="/redefine/css/style.css">
 
 
-<title>如何使用ffmpeg无损压缩视频？ | zhywyt&#39;s blog</title>
+    
+        
+<link rel="stylesheet" href="/redefine/css/build/tailwind.css">
 
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+    
 
-<script>
-    var yiliaConfig = {
-        fancybox: true,
-        animate: true,
-        isHome: false,
-        isPost: true,
-        isArchive: false,
-        isTag: false,
-        isCategory: false,
-        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
-        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: 
-    }
-</script>
+    
+<link rel="stylesheet" href="/redefine/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/redefine/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"hexothemedemo.github.io","root":"/redefine/","language":"zh-CN"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Theme Redefine","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.2","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/redefine/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/redefine/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/redefine/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/redefine/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
-    <script> yiliaConfig.jquery_ui = [false]; </script>
 
-
-
-    <script> yiliaConfig.rootUrl = "\/";</script>
-
-
-
-
-
-
-</head>
 <body>
-  <div id="container">
-    <div class="left-col">
-    <div class="overlay"></div>
-<div class="intrude-less">
-    <header id="header" class="inner">
-        <a href="/Yelee/" class="profilepic">
-            <img src="/img/avatar.png" class="animated zoomIn">
-        </a>
-        <hgroup>
-          <h1 class="header-author"><a href="/Yelee/"></a></h1>
-        </hgroup>
+	<div class="progress-bar-container">
+	
 
-        
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
 
-        
+<main class="page-container" id="swup">
 
+	
 
-        
-            <div id="switch-btn" class="switch-btn">
-                <div class="icon">
-                    <div class="icon-ctn">
-                        <div class="icon-wrap icon-house" data-idx="0">
-                            <div class="birdhouse"></div>
-                            <div class="birdhouse_holes"></div>
-                        </div>
-                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                            <div class="ribbon"></div>
-                        </div>
-                        
-                        <div class="icon-wrap icon-link hide" data-idx="2">
-                            <div class="loopback_l"></div>
-                            <div class="loopback_r"></div>
-                        </div>
-                        
-                        
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
-                    </div>
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/redefine/">
+                
+                Theme Redefine[demo site]
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
                     
-                </div>
-                <div class="tips-box hide">
-                    <div class="tips-arrow"></div>
-                    <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
                         
-                        <li>友情链接</li>
-                        
-                        
-                        <li>关于我</li>
-                        
-                    </ul>
-                </div>
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/redefine/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
             </div>
-        
-
-        <div id="switch-area" class="switch-area">
-            <div class="switch-wrap">
-                <section class="switch-part switch-part1">
-                    <nav class="header-menu">
-                        <ul>
-                        
-                            <li><a href="/Yelee/">主页</a></li>
-                        
-                            <li><a href="/Yelee/archives/">所有文章</a></li>
-                        
-                            <li><a href="/Yelee/tags/">标签云</a></li>
-                        
-                            <li><a href="/Yelee/about/">关于我</a></li>
-                        
-                        </ul>
-                    </nav>
-                    <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
-                            
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" href="/Yelee/atom.xml" title="RSS"></a>
-                            
-                        </ul>
-                    </nav>
-                </section>
+            <!-- Mobile -->
+            <div class="mobile">
                 
-                
-                <section class="switch-part switch-part2">
-                    <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/encrypt/" rel="tag">encrypt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="tag">技术文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/" rel="tag">诗与散文</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/" rel="tag">错误解决</a></li></ul>
-                    </div>
-                </section>
-                
-                
-                
-                <section class="switch-part switch-part3">
-                    <div id="js-friends">
-                    
-                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
-                    
-                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://pages.github.com/">GitHub</a>
-                    
-                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="http://moxfive.xyz/">MOxFIVE</a>
-                    
-                    </div>
-                </section>
-                
-
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">专注于前端</div>
-                </section>
-                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
             </div>
         </div>
-    </header>                
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/redefine/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/redefine/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">5</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/redefine/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">33</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/redefine/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">84</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
 </div>
     </div>
-    <div class="mid-col">
-      <nav id="mobile-nav">
-      <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
-      </div>
-    <div class="intrude-less">
-        <header id="header" class="inner">
-            <a href="/Yelee/" class="profilepic">
-                <img src="/img/avatar.png" class="animated zoomIn">
-            </a>
-            <hgroup>
-              <h1 class="header-author"><a href="/Yelee/" title="回到主页"></a></h1>
-            </hgroup>
-            
-            <nav class="header-menu">
-                <ul>
-                
-                    <li><a href="/Yelee/">主页</a></li>
-                
-                    <li><a href="/Yelee/archives/">所有文章</a></li>
-                
-                    <li><a href="/Yelee/tags/">标签云</a></li>
-                
-                    <li><a href="/Yelee/about/">关于我</a></li>
-                
-                <div class="clearfix"></div>
-                </ul>
-            </nav>
-            <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
-                            
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" target="_blank" href="/Yelee/atom.xml" title="RSS"></a>
-                            
-                        </ul>
-            </nav>
-        </header>                
-    </div>
-    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
-</nav>
-      <div class="body-wrap"><article id="post-Linux/使用ffmpeg无损压缩视频" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/Yelee/posts/1cc3941f1b85/" class="article-date">
-      <time datetime="2024-10-03T19:21:00.000Z" itemprop="datePublished">2024-10-03</time>
-</a>
+
+    <div class="window-mask"></div>
+
+</header>
 
 
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      如何使用ffmpeg无损压缩视频？
-    </h1>
-  
+		</div>
 
-      </header>
-      
-      <div class="article-info article-info-post">
-        
+		<div class="main-content-body transition-fade-up">
+			
 
-        
-        <div class="clearfix"></div>
-      </div>
-      
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">如何使用ffmpeg无损压缩视频？</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/redefine/images/redefine-avatar.svg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">zhywyt</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-10-03 19:21</span>
+        <span class="mobile">2024-10-03 19:21</span>
+        <span class="hover-info">创建</span>
+    </span>
     
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <p><strong>无损</strong>？这里指视觉无损，对于我们这些视力不太好的程序员来说视觉无损已经非常好了。我们需要使用到<code>ffmpeg</code>工具，这是一个十分强大的武器。但是刚接触到它的时候我会觉得它强大而无法掌握，直到现在我也不能说有多了解它，只能在文档的加持下才能完成自己需要的操作。今天我们需要无损压缩视频，首先我们要了解的是：<strong>我们的视频能否还能被压缩？</strong></p>
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-10-03 11:25:25</span>
+            <span class="mobile">2024-10-03 11:25:25</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p><strong>无损</strong>？这里指视觉无损，对于我们这些视力不太好的程序员来说视觉无损已经非常好了。我们需要使用到<code>ffmpeg</code>工具，这是一个十分强大的武器。但是刚接触到它的时候我会觉得它强大而无法掌握，直到现在我也不能说有多了解它，只能在文档的加持下才能完成自己需要的操作。今天我们需要无损压缩视频，首先我们要了解的是：<strong>我们的视频能否还能被压缩？</strong></p>
 <p>在压缩它之前，我们可以简单地检查一下我们的视频的编码方式，不管怎么样先安装<code>ffmpeg</code>再开始下面的操作吧。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install ffmpeg</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install ffmpeg</span><br></pre></td></tr></table></figure></div>
 
 <h2 id="第一步：检查源文件"><a href="#第一步：检查源文件" class="headerlink" title="第一步：检查源文件"></a>第一步：检查源文件</h2><p>一个视频大多由三部分组成，画面（Video）、音频（Audio）、字幕（Subtitle）。<del>我自己的翻译，英语不好还请自行理解</del>我们可以简单地使用ffmpeg中附加的一个工具<code>ffprobe</code>来检查他们：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ffprobe -i &lt;checkfilename&gt;</span></span><br><span class="line">ffprobe -i 01\ 猴王初问世.mkv</span><br></pre></td></tr></table></figure>
-<p>你可以在结果中找到这三部分：<br><img src="/Yelee/../../assets/images/QQ_1727885854303.png"></p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ffprobe -i &lt;checkfilename&gt;</span></span><br><span class="line">ffprobe -i 01\ 猴王初问世.mkv</span><br></pre></td></tr></table></figure></div>
+<p>你可以在结果中找到这三部分：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/redefine/../../assets/images/QQ_1727885854303.png"
+                     
+                ></p>
 <p>我们一般需要压缩视频的时候，大多从画面下手，也就是我们的Video，所以我们需要格外的关注我们的Video格式。（后面我都用<code>Video</code>代替<code>画面</code>）可以看到，这里我检查的是一个<code>.mkv</code>文件，它的Video编码格式是<code>hevc</code>也就是我们俗称的<code>H.265</code>，但是这个格式有一个很大的问题：<font color='red'>兼容性很差。</font>，需要注意的是<code>.mkv</code>是该视频的容器——而非编码方式，你需要使用<code>ffprobe</code>才能看到正确的编码格式。因为容器与编码方式是多对多的。</p>
 <blockquote>
 <p>HEVC（High Efficiency Video Coding），也称为H.265或H.265&#x2F;MPEG-H Part 2，是一种视频压缩标准，它是继H.264（AVC）&#x2F;MPEG-4 Part 10之后的新一代视频编码技术。HEVC旨在提供更高的数据传输效率，即在相同的数据率下实现更高质量的图像，或者在相同的图像质量下减少所需的数据量。</p>
 </blockquote>
 <p><del>我非常讨厌H.265，主要还是因为它兼容性实在是太差了。因为我的视频都是存放在我的NAS中的，我需要经常使用web浏览、播放他们，而hevc(H.265)在大多情况下无法完成这个工作。</del></p>
 <p>我们常见的格式有：</p>
-<h3 id="常见的Video编码格式"><a href="#常见的Video编码格式" class="headerlink" title="常见的Video编码格式"></a>常见的Video编码格式</h3><p>这里参考<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E5%A3%93%E7%B8%AE">wiki-视频压缩</a></p>
-<p>视频编码标准主要是由<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T" title="ITU-T">ITU-T</a>与<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO" title="ISO">ISO</a>／<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC" title="IEC">IEC</a>两大组织制定而成，其发展如下表所示。(<font color='red'>注：原文体验更佳</font>)</p>
+<h3 id="常见的Video编码格式"><a href="#常见的Video编码格式" class="headerlink" title="常见的Video编码格式"></a>常见的Video编码格式</h3><p>这里参考<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E5%A3%93%E7%B8%AE" >wiki-视频压缩<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p>视频编码标准主要是由<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T"  title="ITU-T">ITU-T<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>与<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO"  title="ISO">ISO<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>／<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC"  title="IEC">IEC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>两大组织制定而成，其发展如下表所示。(<font color='red'>注：原文体验更佳</font>)</p>
 <table>
 <thead>
 <tr>
@@ -329,75 +324,75 @@
 <td>年份</td>
 <td>标准</td>
 <td>制定组织</td>
-<td>解除著作权保护  <br>（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B0%E5%AD%97%E7%89%88%E6%9D%83%E7%AE%A1%E7%90%86#%E2%80%9CDRM-Free%E2%80%9D" title="数字版权管理">DRM-free</a>）</td>
+<td>解除著作权保护  <br>（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B0%E5%AD%97%E7%89%88%E6%9D%83%E7%AE%A1%E7%90%86#%E2%80%9CDRM-Free%E2%80%9D"  title="数字版权管理">DRM-free<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）</td>
 <td>主要应用</td>
 </tr>
 <tr>
 <td><strong>1984</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=H.120&action=edit&redlink=1" title="H.120（页面不存在）">H.120</a></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T" title="ITU-T">ITU-T</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=H.120&action=edit&redlink=1"  title="H.120（页面不存在）">H.120<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T"  title="ITU-T">ITU-T<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td>是</td>
 <td></td>
 </tr>
 <tr>
 <td><strong>1990</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/H.261" title="H.261">H.261</a></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T" title="ITU-T">ITU-T</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/H.261"  title="H.261">H.261<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T"  title="ITU-T">ITU-T<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td>是</td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E6%9C%83%E8%AD%B0" title="视频会议">视频会议</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E9%80%9A%E8%A9%B1" title="视频通话">视频通话</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E6%9C%83%E8%AD%B0"  title="视频会议">视频会议<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E9%80%9A%E8%A9%B1"  title="视频通话">视频通话<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 </tr>
 <tr>
 <td><strong>1993</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MPEG-1" title="MPEG-1">MPEG-1第二部分</a></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO" title="ISO">ISO</a>／<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC" title="IEC">IEC</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MPEG-1"  title="MPEG-1">MPEG-1第二部分<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO"  title="ISO">ISO<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>／<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC"  title="IEC">IEC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td>是</td>
-<td>影音光盘（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/VCD" title="VCD">VCD</a>）</td>
+<td>影音光盘（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/VCD"  title="VCD">VCD<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）</td>
 </tr>
 <tr>
 <td><strong>1995</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MPEG-2" title="MPEG-2">H.262&#x2F;MPEG-2第二部分</a></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO" title="ISO">ISO</a>／<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC" title="IEC">IEC</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T" title="ITU-T">ITU-T</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MPEG-2"  title="MPEG-2">H.262&#x2F;MPEG-2第二部分<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO"  title="ISO">ISO<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>／<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC"  title="IEC">IEC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T"  title="ITU-T">ITU-T<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td>否</td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=DVD%E5%BD%B1%E7%A2%9F&action=edit&redlink=1" title="DVD影碟（页面不存在）">DVD影碟</a>（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DVD-Video" title="DVD-Video">DVD-Video</a>）、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%8D%E5%85%89" title="蓝光">蓝光</a>（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%8D%E5%85%89%E5%85%89%E7%A2%9F" title="蓝光光盘">Blu-Ray</a>）影碟、数字视频广播（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DVB" title="DVB">DVB</a>）、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/SVCD" title="SVCD">SVCD</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=DVD%E5%BD%B1%E7%A2%9F&action=edit&redlink=1"  title="DVD影碟（页面不存在）">DVD影碟<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DVD-Video"  title="DVD-Video">DVD-Video<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%8D%E5%85%89"  title="蓝光">蓝光<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%8D%E5%85%89%E5%85%89%E7%A2%9F"  title="蓝光光盘">Blu-Ray<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）影碟、数字视频广播（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DVB"  title="DVB">DVB<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/SVCD"  title="SVCD">SVCD<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 </tr>
 <tr>
 <td><strong>1996</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/H.263" title="H.263">H.263</a></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T" title="ITU-T">ITU-T</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/H.263"  title="H.263">H.263<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T"  title="ITU-T">ITU-T<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E6%9C%83%E8%AD%B0" title="视频会议">视频会议</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E9%80%9A%E8%A9%B1" title="视频通话">视频通话</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/3G" title="3G">3G</a>手机视频（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/3GP" title="3GP">3GP</a>）</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E6%9C%83%E8%AD%B0"  title="视频会议">视频会议<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A8%8A%E9%80%9A%E8%A9%B1"  title="视频通话">视频通话<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/3G"  title="3G">3G<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>手机视频（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/3GP"  title="3GP">3GP<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）</td>
 </tr>
 <tr>
 <td><strong>1999</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MPEG-4" title="MPEG-4">MPEG-4第二部分</a></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO" title="ISO">ISO</a>／<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC" title="IEC">IEC</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MPEG-4"  title="MPEG-4">MPEG-4第二部分<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO"  title="ISO">ISO<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>／<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC"  title="IEC">IEC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td>否</td>
 <td></td>
 </tr>
 <tr>
 <td><strong>2003</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/H.264/MPEG-4_AVC" title="H.264&#x2F;MPEG-4 AVC">H.264&#x2F;MPEG-4 AVC</a></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO" title="ISO">ISO</a>／<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC" title="IEC">IEC</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T" title="ITU-T">ITU-T</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/H.264/MPEG-4_AVC"  title="H.264&#x2F;MPEG-4 AVC">H.264&#x2F;MPEG-4 AVC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO"  title="ISO">ISO<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>／<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC"  title="IEC">IEC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T"  title="ITU-T">ITU-T<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td>否</td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%8D%E5%85%89" title="蓝光">蓝光</a>（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%8D%E5%85%89%E5%85%89%E7%A2%9F" title="蓝光光盘">Blu-Ray</a>）影碟、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%AB%98%E7%95%AB%E8%B3%AADVD" title="高清DVD">高清DVD</a>（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/HD_DVD" title="HD DVD">HD DVD</a>）、数字视频广播（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DVB" title="DVB">DVB</a>）、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%B5%81%E5%AA%92%E4%BD%93" title="流媒体">流媒体</a>、视频录制</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%8D%E5%85%89"  title="蓝光">蓝光<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%8D%E5%85%89%E5%85%89%E7%A2%9F"  title="蓝光光盘">Blu-Ray<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）影碟、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%AB%98%E7%95%AB%E8%B3%AADVD"  title="高清DVD">高清DVD<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/HD_DVD"  title="HD DVD">HD DVD<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）、数字视频广播（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DVB"  title="DVB">DVB<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%B5%81%E5%AA%92%E4%BD%93"  title="流媒体">流媒体<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、视频录制</td>
 </tr>
 <tr>
 <td><strong>2013</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%AB%98%E6%95%88%E7%8E%87%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81" title="高效率视频编码">高效率视频编码</a>（H.265&#x2F;HEVC）</td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO" title="ISO">ISO</a>&#x2F;<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC" title="IEC">IEC</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T" title="ITU-T">ITU-T</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%AB%98%E6%95%88%E7%8E%87%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81"  title="高效率视频编码">高效率视频编码<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（H.265&#x2F;HEVC）</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO"  title="ISO">ISO<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>&#x2F;<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC"  title="IEC">IEC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T"  title="ITU-T">ITU-T<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td>否</td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B6%85%E9%AB%98%E6%B8%85%E8%93%9D%E5%85%89%E5%85%89%E7%A2%9F" title="超高清蓝光光盘">超高清蓝光光盘</a>（UHD Blu-Ray）、数字视频广播（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DVB" title="DVB">DVB</a>）、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%B5%81%E5%AA%92%E4%BD%93" title="流媒体">流媒体</a>、视频录制</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B6%85%E9%AB%98%E6%B8%85%E8%93%9D%E5%85%89%E5%85%89%E7%A2%9F"  title="超高清蓝光光盘">超高清蓝光光盘<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（UHD Blu-Ray）、数字视频广播（<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DVB"  title="DVB">DVB<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>）、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%B5%81%E5%AA%92%E4%BD%93"  title="流媒体">流媒体<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、视频录制</td>
 </tr>
 <tr>
 <td><strong>2020</strong></td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%8A%9F%E8%83%BD%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81" title="多功能视频编码">多功能视频编码</a>（H.266&#x2F;VVC）</td>
-<td><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO" title="ISO">ISO</a>&#x2F;<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC" title="IEC">IEC</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T" title="ITU-T">ITU-T</a></td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%8A%9F%E8%83%BD%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81"  title="多功能视频编码">多功能视频编码<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（H.266&#x2F;VVC）</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO"  title="ISO">ISO<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>&#x2F;<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IEC"  title="IEC">IEC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ITU-T"  title="ITU-T">ITU-T<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
 <td>否</td>
 <td>未普及</td>
 </tr>
 </tbody></table>
 <p>到现在，我们使用的最多的仍然是H.264。我非常喜欢这个编码，兼容性好，体积也不大。</p>
-<h3 id="常见的容器"><a href="#常见的容器" class="headerlink" title="常见的容器"></a>常见的容器</h3><p>这里参考<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A7%86%E9%A2%91%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F">wiki-视频文件格式</a></p>
+<h3 id="常见的容器"><a href="#常见的容器" class="headerlink" title="常见的容器"></a>常见的容器</h3><p>这里参考<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A7%86%E9%A2%91%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F" >wiki-视频文件格式<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <table>
 <thead>
 <tr>
@@ -407,48 +402,48 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Flash_Video" title="Flash Video">Flash Video</a></strong></td>
-<td>由<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Adobe_Flash" title="Adobe Flash">Adobe Flash</a>延伸出来的的一种流行<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%BD%91%E7%BB%9C" title="网络">网络</a><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A7%86%E9%A2%91" title="视频">视频</a>封装格式。此格式作为早期网络视频载体而曾非常普及，但已于2020年被替换性淘汰。</td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Flash_Video"  title="Flash Video">Flash Video<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong></td>
+<td>由<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Adobe_Flash"  title="Adobe Flash">Adobe Flash<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>延伸出来的的一种流行<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%BD%91%E7%BB%9C"  title="网络">网络<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A7%86%E9%A2%91"  title="视频">视频<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>封装格式。此格式作为早期网络视频载体而曾非常普及，但已于2020年被替换性淘汰。</td>
 <td>flv</td>
 </tr>
 <tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/AVI" title="AVI">AVI</a></strong>  <br>（Audio Video Interleave）</td>
-<td>比较早的AVI是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%BE%AE%E8%BB%9F" title="微软">微软</a>开发的。其含义是Audio Video Interactive，就是把视频和音频编码混合在一起存储。AVI也是最长寿的格式，首次发布于 1992 年，虽然发布过改版（V2.0于1996年发布），但已显老态。AVI格式上限制比较多，只能有一个视频轨道和一个音频轨道（现在有非标准插件可加入最多两个音频轨道），还可以有一些附加轨道，如文字等。AVI格式不提供任何控制功能。</td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/AVI"  title="AVI">AVI<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong>  <br>（Audio Video Interleave）</td>
+<td>比较早的AVI是<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%BE%AE%E8%BB%9F"  title="微软">微软<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>开发的。其含义是Audio Video Interactive，就是把视频和音频编码混合在一起存储。AVI也是最长寿的格式，首次发布于 1992 年，虽然发布过改版（V2.0于1996年发布），但已显老态。AVI格式上限制比较多，只能有一个视频轨道和一个音频轨道（现在有非标准插件可加入最多两个音频轨道），还可以有一些附加轨道，如文字等。AVI格式不提供任何控制功能。</td>
 <td>avi</td>
 </tr>
 <tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/WMV" title="WMV">WMV</a></strong>  <br>（Windows Media Video）</td>
-<td>同样是微软开发的一组数字视频编解码格式的通称，<strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ASF" title="ASF">ASF</a></strong>（Advanced Systems Format）是其封装格式。ASF封装的WMV档具有“数字版权保护”功能。</td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/WMV"  title="WMV">WMV<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong>  <br>（Windows Media Video）</td>
+<td>同样是微软开发的一组数字视频编解码格式的通称，<strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ASF"  title="ASF">ASF<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong>（Advanced Systems Format）是其封装格式。ASF封装的WMV档具有“数字版权保护”功能。</td>
 <td>wmv&#x2F;asf  <br>wmvhd</td>
 </tr>
 <tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MPEG" title="MPEG">MPEG</a></strong>  <br>（Moving Picture Experts Group）</td>
-<td>是一个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9C%8B%E9%9A%9B%E6%A8%99%E6%BA%96%E5%8C%96%E7%B5%84%E7%B9%94" title="国际标准化组织">国际标准化组织</a>（ISO）认可的媒体封装形式，受到大部分机器的支持。其存储方式多样，可以适应不同的应用环境。MPEG-4档的档容器格式在Part 1（mux）、14（asp）、15（avc）等中规定。MPEG的控制功能丰富，可以有多个视频（即角度）、音轨、字幕（位图字幕）等等。MPEG的一个简化版本3GP还广泛的用于准<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/3G" title="3G">3G</a>手机上。</td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MPEG"  title="MPEG">MPEG<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong>  <br>（Moving Picture Experts Group）</td>
+<td>是一个<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9C%8B%E9%9A%9B%E6%A8%99%E6%BA%96%E5%8C%96%E7%B5%84%E7%B9%94"  title="国际标准化组织">国际标准化组织<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（ISO）认可的媒体封装形式，受到大部分机器的支持。其存储方式多样，可以适应不同的应用环境。MPEG-4档的档容器格式在Part 1（mux）、14（asp）、15（avc）等中规定。MPEG的控制功能丰富，可以有多个视频（即角度）、音轨、字幕（位图字幕）等等。MPEG的一个简化版本3GP还广泛的用于准<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/3G"  title="3G">3G<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>手机上。</td>
 <td>dat（VCD）  <br>vob（DVD）  <br>mpg&#x2F;mpeg  <br>mp4  <br>3gp&#x2F;3g2（手机）</td>
 </tr>
 <tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Matroska" title="Matroska">Matroska</a></strong></td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Matroska"  title="Matroska">Matroska<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong></td>
 <td>是一种新的多媒体封装格式，这个封装格式可把多种不同编码的视频及16条或以上不同格式的音频和语言不同的字幕封装到一个Matroska Media档内。它也是其中一种开放源代码的多媒体封装格式。Matroska同时还可以提供非常好的交互功能，而且比MPEG更方便、强大。</td>
 <td>mkv</td>
 </tr>
 <tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/RealVideo" title="RealVideo">Real Video</a></strong>  <br>Real Media（RM）</td>
-<td>是由RealNetworks开发的一种档容器。它通常只能容纳Real Video和Real Audio编码的媒体。该档带有一定的交互功能，允许编写脚本以控制播放。<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/RM" title="RM">RM</a>，尤其是可变比特率的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/RMVB" title="RMVB">RMVB</a>格式，没有复杂的Profile&#x2F;Level，制作起来较<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/H.264" title="H.264">H.264</a>视频格式简单，非常受到网络上传者的欢迎。此外很多人仍有RMVB体积小高质量的错误认知，这个不太正确的观念也导致很多人倾向使用rmvb，事实上在相同码率下，rmvb编码和H.264这个高度压缩的视频编码相比，体积会较大。</td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/RealVideo"  title="RealVideo">Real Video<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong>  <br>Real Media（RM）</td>
+<td>是由RealNetworks开发的一种档容器。它通常只能容纳Real Video和Real Audio编码的媒体。该档带有一定的交互功能，允许编写脚本以控制播放。<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/RM"  title="RM">RM<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，尤其是可变比特率的<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/RMVB"  title="RMVB">RMVB<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>格式，没有复杂的Profile&#x2F;Level，制作起来较<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/H.264"  title="H.264">H.264<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>视频格式简单，非常受到网络上传者的欢迎。此外很多人仍有RMVB体积小高质量的错误认知，这个不太正确的观念也导致很多人倾向使用rmvb，事实上在相同码率下，rmvb编码和H.264这个高度压缩的视频编码相比，体积会较大。</td>
 <td>rm&#x2F;rmvb</td>
 </tr>
 <tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/QuickTime" title="QuickTime">QuickTime File Format</a></strong></td>
-<td>是由<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%98%8B%E6%9E%9C%E5%85%AC%E5%8F%B8" title="苹果公司">苹果公司</a>开发的容器。1998年2月11日，国际标准化组织（ISO）认可<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/QuickTime" title="QuickTime">QuickTime</a>文件格式作为MPEG-4标准的基础。QuickTime可存储的内容相当丰富，除了视频、音频以外还可支持图片、文字（文本字幕）等。</td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/QuickTime"  title="QuickTime">QuickTime File Format<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong></td>
+<td>是由<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%98%8B%E6%9E%9C%E5%85%AC%E5%8F%B8"  title="苹果公司">苹果公司<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>开发的容器。1998年2月11日，国际标准化组织（ISO）认可<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/QuickTime"  title="QuickTime">QuickTime<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>文件格式作为MPEG-4标准的基础。QuickTime可存储的内容相当丰富，除了视频、音频以外还可支持图片、文字（文本字幕）等。</td>
 <td>mov  <br>qt</td>
 </tr>
 <tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Ogg" title="Ogg">Ogg</a></strong></td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Ogg"  title="Ogg">Ogg<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong></td>
 <td>Media是一个完全开放性的多媒体系统项目，OGM（Ogg Media File）是其容器格式。OGM可以支持多视频、音频、字幕（文本字幕）等多种轨道。</td>
 <td>ogg&#x2F;ogv&#x2F;oga</td>
 </tr>
 <tr>
-<td><strong><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MOD" title="MOD">MOD</a></strong></td>
-<td>是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/JVC" title="JVC">JVC</a>生产的硬盘摄录机所采用的单元格式名称。</td>
+<td><strong><a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MOD"  title="MOD">MOD<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></strong></td>
+<td>是<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/JVC"  title="JVC">JVC<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>生产的硬盘摄录机所采用的单元格式名称。</td>
 <td>mod</td>
 </tr>
 </tbody></table>
@@ -483,13 +478,23 @@
 </tr>
 </tbody></table>
 <p>我喜欢<code>H.264</code>与<code>MP4</code>，这两种格式有着非常强大的兼容性，并且有着不错的压缩效率。了解了这些之后，你也可以在wiki上继续了解音频、字幕的格式。但是本文只会介绍如何使用<code>ffmpeg</code>将格式转化为我最喜欢的格式——<code>H.264</code>的<code>MP4</code>。</p>
-<h2 id="第二步：简单的了解一下我们的工具"><a href="#第二步：简单的了解一下我们的工具" class="headerlink" title="第二步：简单的了解一下我们的工具"></a>第二步：简单的了解一下我们的工具</h2><p><code>ffmpeg</code>提供了清晰，但是复杂的框架。如果你觉得看过文章之后还是不喜欢使用可以尝试网上的一些ffmpeg命令生成器。<del>但是我比较笨，那个不太会用。</del>Whatever 我希望你可以自己去wiki上学习ffmpeg：<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/FFmpeg">wiki-ffmpeg</a></p>
+<h2 id="第二步：简单的了解一下我们的工具"><a href="#第二步：简单的了解一下我们的工具" class="headerlink" title="第二步：简单的了解一下我们的工具"></a>第二步：简单的了解一下我们的工具</h2><p><code>ffmpeg</code>提供了清晰，但是复杂的框架。如果你觉得看过文章之后还是不喜欢使用可以尝试网上的一些ffmpeg命令生成器。<del>但是我比较笨，那个不太会用。</del>Whatever 我希望你可以自己去wiki上学习ffmpeg：<a class="link"   target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/FFmpeg" >wiki-ffmpeg<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <p>请尝试使用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg --<span class="built_in">help</span></span><br><span class="line">ffmpeg --<span class="built_in">help</span> &gt; /dev/null</span><br><span class="line">ffmpeg --<span class="built_in">help</span> &gt; /dev/null 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
-<p>你应该会发现三次输出均有些不同，特别的是第二次的指令仍然会在控制台打印一些信息出来，就像这样：<br><img src="/Yelee/../../assets/images/QQ_1727933952694.png"><br>它是ffmpeg的配置输出，属于错误输出流，所以第三句命令在将错误输出也重定向到黑洞时就不会再出现他们了，新手在使用ffmpeg的时候经常会被这个配置单吓到，请不用害怕，我们暂时可以跳过它。仔细阅读下面的<code>manual</code>。</p>
-<h3 id="输入输出-i"><a href="#输入输出-i" class="headerlink" title="输入输出-i"></a>输入输出<code>-i</code></h3><p>ffmpeg的输入需要使用<code>-i</code>指定，输出文件名放在命令的最后。如果不设置输出名，是不会执行任何写操作的：<br><img src="/Yelee/../../assets/images/QQ_1727934518186.png"><br>可以看到，它会提醒你需要设置输出文件。</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg --<span class="built_in">help</span></span><br><span class="line">ffmpeg --<span class="built_in">help</span> &gt; /dev/null</span><br><span class="line">ffmpeg --<span class="built_in">help</span> &gt; /dev/null 2&gt;&amp;1</span><br></pre></td></tr></table></figure></div>
+<p>你应该会发现三次输出均有些不同，特别的是第二次的指令仍然会在控制台打印一些信息出来，就像这样：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/redefine/../../assets/images/QQ_1727933952694.png"
+                     
+                ><br>它是ffmpeg的配置输出，属于错误输出流，所以第三句命令在将错误输出也重定向到黑洞时就不会再出现他们了，新手在使用ffmpeg的时候经常会被这个配置单吓到，请不用害怕，我们暂时可以跳过它。仔细阅读下面的<code>manual</code>。</p>
+<h3 id="输入输出-i"><a href="#输入输出-i" class="headerlink" title="输入输出-i"></a>输入输出<code>-i</code></h3><p>ffmpeg的输入需要使用<code>-i</code>指定，输出文件名放在命令的最后。如果不设置输出名，是不会执行任何写操作的：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/redefine/../../assets/images/QQ_1727934518186.png"
+                     
+                ><br>可以看到，它会提醒你需要设置输出文件。</p>
 <h3 id="使用预设-preset"><a href="#使用预设-preset" class="headerlink" title="使用预设-preset"></a>使用预设<code>-preset</code></h3><p>首先检查你的ffmpeg时候存在预设功能：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg --<span class="built_in">help</span> | grep preset</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg --<span class="built_in">help</span> | grep preset</span><br></pre></td></tr></table></figure></div>
 <p>如果能找到就可以使用：<br>ffmpeg支持很多种预设，速度从快到慢：</p>
 <table>
 <thead>
@@ -594,230 +599,421 @@
 </tr>
 </tbody></table>
 <p>但是实际上，编码速度和文件大小并不呈反比，我只测试了几种预设：</p>
-<p><img src="/Yelee/../../assets/images/QQ_1727954182923.png"></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/redefine/../../assets/images/QQ_1727954182923.png"
+                     
+                ></p>
 <p>通过这张表和码率我们可以清晰的看到速度与压缩率不是成正比的，一般我们需要一个相对平衡的点，我习惯使用fast进行压缩。</p>
 <h3 id="设置输出Video编码格式-c-v"><a href="#设置输出Video编码格式-c-v" class="headerlink" title="设置输出Video编码格式-c:v"></a>设置输出Video编码格式<code>-c:v</code></h3><p>如果你读过上面的ffmpeg维基百科，你应该能够看到类似的指令。<code>ffmpeg</code>不需要指定输入文件的格式，和输出文件的容器格式，因为后缀名可以体现一个视频的容器格式。所以我们只需要指定他们的<code>-c:v</code>Video格式，<code>-c:a</code>Audio格式。</p>
 <h3 id="第三步：写出自己的指令！"><a href="#第三步：写出自己的指令！" class="headerlink" title="第三步：写出自己的指令！"></a>第三步：写出自己的指令！</h3><p>比如我们有一个名为：<font color='red'>test.mkv</font> 的文件，我们需要将它设置为容器格式为：<font color='red'>MP4</font> Video编码格式为：<font color='red'>H.264</font> 的名为<font color='red'>out.mp4</font> 的视频，我们可以这么写：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mkv -c:v libx264 out.mp4</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mkv -c:v libx264 out.mp4</span><br></pre></td></tr></table></figure></div>
 
 <p>然后在加上一些压缩：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mkv -preset fast -c:v libx264 out.mp4</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mkv -preset fast -c:v libx264 out.mp4</span><br></pre></td></tr></table></figure></div>
 
 <p>这里我选择了<code>fast</code>预设，它的肉眼损失很小，并且能有很好的压缩率。</p>
 <h2 id="第三步：批处理"><a href="#第三步：批处理" class="headerlink" title="第三步：批处理"></a>第三步：批处理</h2><p>我们从网上下载的资源经常不会遵守命名规则，可能有空格和中文，这个时候就不是很好分割他们。这里我给出一个使用后缀名识别中文与空格文件的批处理指令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">input_dir=<span class="string">&quot;../&quot;</span></span><br><span class="line"><span class="built_in">tail</span>=<span class="string">&quot;.mkv&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下面无需修改</span></span><br><span class="line">IFS=$<span class="string">&quot;\t\n&quot;</span></span><br><span class="line">input_list=$(<span class="built_in">ls</span> <span class="variable">$input_dir</span> | grep <span class="variable">$tail</span>)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;File list:&quot;</span></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> <span class="variable">$input_list</span>;<span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="variable">$file</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;Make Sure?(Y/N)&quot;</span> flag</span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$flag</span>&quot;</span> == <span class="string">&quot;N&quot;</span> ];<span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Cancel&quot;</span></span><br><span class="line">        <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> <span class="variable">$input_list</span>;<span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Solving <span class="variable">$file</span> ....&quot;</span></span><br><span class="line">        ffmpeg -i <span class="string">&quot;<span class="variable">$file</span>&quot;</span> -preset fast -c:v libx264 <span class="string">&quot;output-<span class="subst">$(basename <span class="string">&quot;<span class="variable">$file</span>&quot;</span> .mkv)</span>.mp4&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Converted <span class="variable">$file</span> to H.264 format&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">input_dir=<span class="string">&quot;../&quot;</span></span><br><span class="line"><span class="built_in">tail</span>=<span class="string">&quot;.mkv&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下面无需修改</span></span><br><span class="line">IFS=$<span class="string">&quot;\t\n&quot;</span></span><br><span class="line">input_list=$(<span class="built_in">ls</span> <span class="variable">$input_dir</span> | grep <span class="variable">$tail</span>)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;File list:&quot;</span></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> <span class="variable">$input_list</span>;<span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="variable">$file</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;Make Sure?(Y/N)&quot;</span> flag</span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$flag</span>&quot;</span> == <span class="string">&quot;N&quot;</span> ];<span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Cancel&quot;</span></span><br><span class="line">        <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> <span class="variable">$input_list</span>;<span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Solving <span class="variable">$file</span> ....&quot;</span></span><br><span class="line">        ffmpeg -i <span class="string">&quot;<span class="variable">$file</span>&quot;</span> -preset fast -c:v libx264 <span class="string">&quot;output-<span class="subst">$(basename <span class="string">&quot;<span class="variable">$file</span>&quot;</span> .mkv)</span>.mp4&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Converted <span class="variable">$file</span> to H.264 format&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure></div>
 <p>我添加了一个展示待处理文件的功能，防止误操作。你可以放心的运行这个批处理。如果有能力可以自行修改预设或者压缩率。</p>
 
-      
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 如何使用ffmpeg无损压缩视频？</li>
+        <li><strong>作者:</strong> zhywyt</li>
+        <li><strong>创建于
+                :</strong> 2024-10-03 19:21:00</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-10-03 11:25:25
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://hexothemedemo.github.io/redefine/posts/1cc3941f1b85/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/redefine/posts/823c297f1d7f/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">Unity如何保存存档？</span>
+						<span class="post-nav-item">上一篇</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/redefine/posts/54404/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">Unity本地化字体选择</span>
+						<span class="post-nav-item">下一篇</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
     </div>
     
-  </div>
-  
-    
-    <div class="copyright">
-        <p><span>本文标题:</span><a href="/Yelee/posts/1cc3941f1b85/">如何使用ffmpeg无损压缩视频？</a></p>
-        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
-        <p><span>发布时间:</span>2024-10-03, 19:21:00</p>
-        <p><span>最后更新:</span>2024-10-03, 11:25:25</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/Yelee/posts/1cc3941f1b85/" title="如何使用ffmpeg无损压缩视频？">https://hexothemedemo.github.io/Yelee/posts/1cc3941f1b85/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://hexothemedemo.github.io/Yelee/posts/1cc3941f1b85/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
-            <script> var clipboard = new Clipboard('.copy-path'); </script>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
 
-
-
-    <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/Yelee/posts/823c297f1d7f/">
-                    Unity如何保存存档？
-                </a>
-            </div>
-        
-        
-            <div id="article-nav-older" class="article-nav-title">
-                <a href="/Yelee/posts/54404/">
-                    Unity本地化字体选择
-                </a>
-            </div>
-        
-    </nav>
+            
+    <div id="waline"></div>
+    <script type="module" data-swup-reload-script>
+      import { init } from '/redefine/js/libs/waline.mjs';
 
-  
-</article>
+      function loadWaline() {
+        init({
+          el: '#waline',
+          serverURL: 'https://example.example.com',
+          lang: 'zh-CN',
+          dark: 'body[class~="dark-mode"]',
+          reaction: false,
+          requiredMeta: ['nick', 'mail'],
+          emoji: [],
+          
+          
+        });
+      }
 
-    <div id="toc" class="toc-article">
-        <strong class="toc-title">文章目录</strong>
-        
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E6%A3%80%E6%9F%A5%E6%BA%90%E6%96%87%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">第一步：检查源文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84Video%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text">常见的Video编码格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%AE%B9%E5%99%A8"><span class="toc-number">1.2.</span> <span class="toc-text">常见的容器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E7%AE%80%E5%8D%95%E7%9A%84%E4%BA%86%E8%A7%A3%E4%B8%80%E4%B8%8B%E6%88%91%E4%BB%AC%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">第二步：简单的了解一下我们的工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA-i"><span class="toc-number">2.1.</span> <span class="toc-text">输入输出-i</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E9%A2%84%E8%AE%BE-preset"><span class="toc-number">2.2.</span> <span class="toc-text">使用预设-preset</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%BE%93%E5%87%BAVideo%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F-c-v"><span class="toc-number">2.3.</span> <span class="toc-text">设置输出Video编码格式-c:v</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E5%86%99%E5%87%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E6%8C%87%E4%BB%A4%EF%BC%81"><span class="toc-number">2.4.</span> <span class="toc-text">第三步：写出自己的指令！</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%89%B9%E5%A4%84%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">第三步：批处理</span></a></li></ol>
-        
-    </div>
-    <style>
-        .left-col .switch-btn,
-        .left-col .switch-area {
-            display: none;
-        }
-        .toc-level-3 i,
-        .toc-level-3 ol {
-            display: none !important;
-        }
-    </style>
-
-    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
-
-    <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+      if (typeof swup !== 'undefined') {
+        loadWaline();
+      } else {
+        window.addEventListener('DOMContentLoaded', loadWaline);
+      }
     </script>
 
 
 
-    
-<div class="share">
-    
-        <div class="bdsharebuttonbox">
-            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
-            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
-            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
-            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
-            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
-            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
-        </div>
-        <script>
-            window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"如何使用ffmpeg无损压缩视频？　| zhywyt's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-        </script>
-    
-
+        
     
 </div>
 
+		</div>
+		
+	</div>
 
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">目录</div>
+		<div class="page-title">如何使用ffmpeg无损压缩视频？</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E6%A3%80%E6%9F%A5%E6%BA%90%E6%96%87%E4%BB%B6"><span class="nav-text">第一步：检查源文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84Video%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F"><span class="nav-text">常见的Video编码格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%AE%B9%E5%99%A8"><span class="nav-text">常见的容器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E7%AE%80%E5%8D%95%E7%9A%84%E4%BA%86%E8%A7%A3%E4%B8%80%E4%B8%8B%E6%88%91%E4%BB%AC%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="nav-text">第二步：简单的了解一下我们的工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA-i"><span class="nav-text">输入输出-i</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E9%A2%84%E8%AE%BE-preset"><span class="nav-text">使用预设-preset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%BE%93%E5%87%BAVideo%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F-c-v"><span class="nav-text">设置输出Video编码格式-c:v</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E5%86%99%E5%87%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E6%8C%87%E4%BB%A4%EF%BC%81"><span class="nav-text">第三步：写出自己的指令！</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%89%B9%E5%A4%84%E7%90%86"><span class="nav-text">第三步：批处理</span></a></li></ol>
 
-
-
-
-
-    
-
-
-
-
-    <div class="scroll" id="post-nav-button">
-        
-            <a href="/Yelee/posts/823c297f1d7f/" title="上一篇: Unity如何保存存档？">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
-
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-
-        
-            <a href="/Yelee/posts/54404/" title="下一篇: Unity本地化字体选择">
-                <i class="fa fa-angle-right"></i>
-            </a>
-        
-    </div>
-
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10907/">在Unity2D中创建角色描边的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5993/">Listary——不仅仅是搜索器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51899/">我的编辑器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0/">游戏开发/Unity/shader/在Unity2D中创建屏幕扫描线的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/64880/">anzhiyu主题搭建记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/usehttps/">使用HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61408/">实现自己的SHELL</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/29b61e029340/">不适用docker的gitea runner配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/34e784d46b0a/">如何在Ubuntu上使用Cmake编译Glut</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7880d8f2f2e/">docker 设置代理与镜像站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/58283ae7cb2d/">什么是shader？什么是Material？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b0c241b3d4cf/">hexo设置加密文章(失败)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/da74aa8e9f3b/">搭建一个多线程的MineCraft服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d863527924a0/">修复使用RigidBody2D实现击退效果时的叠加问题</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/247db5136c67/">解决Unity中的路径报错：DirectoryNotFoundException。</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/818482b58c2a/">如何创建一个朝向正确的飞行物？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0e24283556b2/">UI的位置无法正确的移动</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d8eb45be176b/">Hexo+Github搭建静态网站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/8fd9ab7c695f/">伤病遇体测有感</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4a74e5f5d3d6/">Unity2D场景交互设计</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e31df0f4a5f0/">Unity屏幕分辨率调整导致UI消失的原因</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e3e3aee8476b/">2024浙江省青少年定向锦标赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7ea97fbec36/">Unity如何设置鼠标图标？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2024g10/">2024第一届下沙十英里接力赛后记</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/f29c63b83721/">马原实践汇报</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6e1ed0060e67/">Unity如何控制场景切换后角色的位置？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/536c11d1caa5/">2024定向队新生选拔赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/337e148b3fb3/">远程连接与传输</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2c9570b00976/">NU-NeRF论文解读</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d586aba908b5/">如何绘制一张定向路线图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5790301d4de2/">2024全国乡村定向系列赛事活动（浙江海宁站）</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/96dff400cced/">waline评论系统搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c8b013b915a1/">甲壳虫跑团“耐力挑战赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bc16e0702e1d/">甲壳虫跑团“十英里接力赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/a5bf365fe3fe/">甲壳虫跑团“十英里接力赛分院杯”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bd7f49a3fa80/">Unity 如何创建不带UI的截图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c6072bab6ff0/">Unity如何优雅地管理UI图层顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/59a4f8f59f45/">Unity如何在脚本中使用本地话字符？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/823c297f1d7f/">Unity如何保存存档？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1cc3941f1b85/">如何使用ffmpeg无损压缩视频？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/54404/">Unity本地化字体选择</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d742d8349fff/">Unity瓦片地图碰撞体积与图片大小不一致</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d9709c673656/">Linux基础操作</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5c54bd2bc06c/">frp配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/df4c31f7ba80/">PVE软路由配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b4ca7a5fb5b2/">ChatGLM本地配置记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/24484/">pve 8.2.2 解决unsupported Ubuntu version '24.04'</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5953/">nerfstudio环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5181/">zerotier单向不通解决办法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1fd1cabe051b/">2024第一届甲壳虫跑团百公里接力赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49793/">KUbuntu安装CIscoPacketTracer</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4182/">PVE学生自用记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/62236/">第？课——基于矩阵快速幂的递推解法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/7287/">ubuntu无法进入桌面的一种情况</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61355/">第三课——最短路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/14027/">第二课——线段树</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/53666/">第一课——树状数组</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/17428/">B-Spline</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/16515/">花期内的花的数目</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/11458/">简单的拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6679/">games101 HomeWork7</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15892/">多线程之OMP</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/3472/">Linux批量修改文件名字</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56022/">games101 HomeWork6</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56214/">games101 HomeWork5</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6999/">games101 HomeWork4</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/55574/">games101 HomeWork3</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6886/">Ubuntu解决高分屏下Matlab工具栏字体过小</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6615/">games101 HomeWork2</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/44638/">games101 HomeWork 作业以及提高课详解</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6295/">games101 HomeWork1</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/45431/">计算机图形学笔记三——橡皮筋技术和椭圆扫描算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/30828/">计算机图形学笔记一——绘制直线的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15450/">基于Glut的俄罗斯方块开发</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10536/">Games101笔记 P11~?</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49493/">快速读入模板</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/50901/">Git 教程转载</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/27853/">c语言文件读写</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/63067/">康托展开</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/32280/">P1088 [NOIP2004 普及组] 火星人</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51449/">P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2977/">P1177 【模板】快速排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15959/">P1045 [NOIP2003 普及组] 麦森数——快速幂</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/47792/">P5461 赦免战俘</a></li></ul>
-
-
-
-
-    <script>
-        
-    </script>
+	</div>
 </div>
-      <footer id="footer">
-    <div class="outer">
-        <div id="footer-info">
-            <div class="footer-left">
-                <i class="fa fa-copyright"></i> 
-                2016-2025 zhywyt
-            </div>
-            <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
-            </div>
-        </div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
         
-            <div class="visit">
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/redefine/">zhywyt</a>
+            
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
-                        </span>
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共撰写了 84 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
                     </span>
                 
                 
-                    <span>| </span>
-                
-                
-                    <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
-                        </span>
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
                     </span>
                 
             </div>
         
-    </div>
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
 </footer>
-    </div>
-    
-<script data-main="/Yelee/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+		</div>
+	</div>
 
-    <script>
-        $(document).ready(function() {
-            var iPad = window.navigator.userAgent.indexOf('iPad');
-            if (iPad > -1 || $(".left-col").css("display") === "none") {
-                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
-                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
-                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
-            }
-            else {
-                var backgroundnum = 5;
-                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
-                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
-            }
-        })
-    </script>
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
 
-
-
-
-
-<div class="scroll" id="scroll">
-    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
 </div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+
+</main>
+
+
+
+<script src="/redefine/js/build/libs/Swup.min.js"></script>
+
+<script src="/redefine/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/redefine/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/redefine/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/redefine/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/redefine/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
 <script>
-    // Open in New Window
-    
-        var oOpenInNew = {
-            
-            
-            
-            
-            
-            
-             archives: ".archive-article-title", 
-             miniArchives: "a.post-list-link", 
-            
-             friends: "#js-friends a", 
-             socail: ".social a" 
-        }
-        for (var x in oOpenInNew) {
-            $(oOpenInNew[x]).attr("target", "_blank");
-        }
-    
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
 </script>
 
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
-  </div>
+
+
+
+	
+<script src="/redefine/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/redefine/js/build/utils.js" type="module"></script>
+
+<script src="/redefine/js/build/main.js" type="module"></script>
+
+<script src="/redefine/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/redefine/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/redefine/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/redefine/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/redefine/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/redefine/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/redefine/js/build/tools/runtime.js"></script>
+
+    
+<script src="/redefine/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/redefine/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/redefine/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/redefine/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/redefine/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/redefine/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/redefine/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/redefine/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/redefine/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/redefine/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
 </body>
+
 </html>
