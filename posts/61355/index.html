@@ -1,785 +1,561 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="Hexo Theme Redefine">
-    
-    <meta name="author" content="zhywyt">
-    <!-- preconnect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    
-    <!--- Seo Part-->
-    
-    <link rel="canonical" href="https://hexothemedemo.github.io/redefine/posts/61355/"/>
-    <meta name="robots" content="index,follow">
-    <meta name="googlebot" content="index,follow">
-    <meta name="revisit-after" content="1 days">
-    
-    
-    
-        
-        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="zhywyt" />
+
+
+
+<meta name="description" content="最短路最短路的算法是学了非常多次的一个算法了，但是这次学到的算是更加全面的一次。以前从数据结构中学到的两种最短路的算法，Dijkstra和Floyd。这两个算法在这篇文章中也会提到，最为最基础的两种最短路算法，后续的算法也都是在他们的基础上展开的。文章的最后，还提到了最短路的一个变种（故切算是？）差分约束。 DijkstraDijkstra的想法其实有一种局部搜索的感觉，它做的事情是：“按照中">
 <meta property="og:type" content="article">
 <meta property="og:title" content="第三课——最短路">
-<meta property="og:url" content="https://hexothemedemo.github.io/redefine/posts/61355/index.html">
+<meta property="og:url" content="https://hexothemedemo.github.io/posts/61355/index.html">
 <meta property="og:site_name" content="zhywyt&#39;s blog">
-<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:description" content="最短路最短路的算法是学了非常多次的一个算法了，但是这次学到的算是更加全面的一次。以前从数据结构中学到的两种最短路的算法，Dijkstra和Floyd。这两个算法在这篇文章中也会提到，最为最基础的两种最短路算法，后续的算法也都是在他们的基础上展开的。文章的最后，还提到了最短路的一个变种（故切算是？）差分约束。 DijkstraDijkstra的想法其实有一种局部搜索的感觉，它做的事情是：“按照中">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hexothemedemo.github.io/images/redefine-og.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154048155-648329158_1726323679699.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154458113-1501790980_1726323704365.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154742845-679931193_1726323693763.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155028854-2035783510_1726323693763.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155208065-1326914405_1726323693763.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155651840-1076251832_1726323693763.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155909612-657872432_1726323693763.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402161453232-665487656_1726323704365.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402161528088-345057567_1726323704365.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402195635977-707252819_1726323704365.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154458113-1501790980_1726323704365.png">
 <meta property="article:published_time" content="2024-04-05T15:14:00.000Z">
 <meta property="article:modified_time" content="2024-10-22T11:39:16.436Z">
 <meta property="article:author" content="zhywyt">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hexothemedemo.github.io/images/redefine-og.webp">
-    
-    
-    <!--- Icon Part-->
-    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
-    <meta name="theme-color" content="#A31F34">
-    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
-    <!--- Page Info-->
-    
-    <title>
-        
-            第三课——最短路 | Theme Redefine[demo site]
-        
-    </title>
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154048155-648329158_1726323679699.png">
 
-    
-<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
 
-    <!--- Inject Part-->
-    
-
-    
-<link rel="stylesheet" href="/css/style.css">
+    <link rel="alternate" href="/atom.xml" title="zhywyt&#39;s blog" type="application/atom+xml">
 
 
-    
-        
-<link rel="stylesheet" href="/css/build/tailwind.css">
 
-    
+    <link rel="shortcut icon" href="/favicon.png">
 
-    
-<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
 
-    
-<link rel="stylesheet" href="/fonts/Geist/geist.css">
 
-    <!--- Font Part-->
-    
-    
-    
-    
-    
-    
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
 
-    <script id="hexo-configurations">
-    window.config = {"hostname":"hexothemedemo.github.io","root":"/","language":"zh-CN"};
-    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Theme Redefine","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.2","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
-    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
-    window.data = {"masonry":false};
-  </script>
-    
-    <!--- Fontawesome Part-->
-    
-<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
 
-    
-<link rel="stylesheet" href="/fontawesome/brands.min.css">
 
-    
-<link rel="stylesheet" href="/fontawesome/solid.min.css">
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
 
-    
-<link rel="stylesheet" href="/fontawesome/regular.min.css">
 
-    
-    
-    
-    
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/Yelee/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>第三课——最短路 | zhywyt&#39;s blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: 
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
 <meta name="generator" content="Hexo 7.3.0"></head>
-
-
-
 <body>
-	<div class="progress-bar-container">
-	
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/Yelee/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/Yelee/"></a></h1>
+        </hgroup>
 
-	
-	<span class="pjax-progress-bar"></span>
-	<!--        <span class="swup-progress-icon">-->
-	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
-	<!--        </span>-->
-	
-</div>
+        
 
-<main class="page-container" id="swup">
+        
 
-	
 
-	<div class="main-content-container flex flex-col justify-between min-h-dvh">
-		<div class="main-content-header">
-			<header class="navbar-container px-6 md:px-12">
-    <div class="navbar-content transition-navbar ">
-        <div class="left">
-            
-            <a class="logo-title" href="/">
-                
-                Theme Redefine[demo site]
-                
-            </a>
-        </div>
-
-        <div class="right">
-            <!-- PC -->
-            <div class="desktop">
-                <ul class="navbar-list">
-                    
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
                         
-                            
-
-                            <li class="navbar-item">
-                                <!-- Menu -->
-                                <a class=""
-                                   href="/"
-                                        >
-                                    <i class="fa-regular fa-house fa-fw"></i>
-                                    首页
-                                    
-                                </a>
-
-                                <!-- Submenu -->
-                                
-                            </li>
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
                     
-                    
-                </ul>
-            </div>
-            <!-- Mobile -->
-            <div class="mobile">
-                
-                <div class="icon-item navbar-bar">
-                    <div class="navbar-bar-middle"></div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
                 </div>
             </div>
-        </div>
-    </div>
+        
 
-    <!-- Mobile sheet -->
-    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
-        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
-            
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/Yelee/">主页</a></li>
+                        
+                            <li><a href="/Yelee/archives/">所有文章</a></li>
+                        
+                            <li><a href="/Yelee/tags/">标签云</a></li>
+                        
+                            <li><a href="/Yelee/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/Yelee/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
                 
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/encrypt/" rel="tag">encrypt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="tag">技术文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/" rel="tag">诗与散文</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/" rel="tag">错误解决</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
                     
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
 
-                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
-                        
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
-                           href="/"
-                        >
-                            <span>
-                                首页
-                            </span>
-                            
-                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
-                            
-                        </a>
-                        
-
-                        
-                    </li>
-            
-
-            
-            
-        </ul>
-
-        <div class="statistics flex justify-around my-2.5">
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">5</div>
-        <div class="label text-third-text-color text-sm">标签</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">33</div>
-        <div class="label text-third-text-color text-sm">分类</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">84</div>
-        <div class="label text-third-text-color text-sm">文章</div>
-    </a>
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
 </div>
     </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/Yelee/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/Yelee/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/Yelee/">主页</a></li>
+                
+                    <li><a href="/Yelee/archives/">所有文章</a></li>
+                
+                    <li><a href="/Yelee/tags/">标签云</a></li>
+                
+                    <li><a href="/Yelee/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/Yelee/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-算法基础/第三课——最短路" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/Yelee/posts/61355/" class="article-date">
+      <time datetime="2024-04-05T15:14:00.000Z" itemprop="datePublished">2024-04-05</time>
+</a>
 
-    <div class="window-mask"></div>
 
-</header>
-
-
-		</div>
-
-		<div class="main-content-body transition-fade-up">
-			
-
-			<div class="main-content">
-				<div class="post-page-container flex relative justify-between box-border w-full h-full">
-	<div class="article-content-container">
-
-		<div class="article-title relative w-full">
-			
-			<div class="w-full flex items-center pt-6 justify-start">
-				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">第三课——最短路</h1>
-			</div>
-			
-		</div>
-
-		
-		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
-			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
-				<img src="/images/redefine-avatar.svg">
-			</div>
-			<div class="info flex flex-col justify-between">
-				<div class="author flex items-center">
-					<span class="name text-default-text-color text-lg font-semibold">zhywyt</span>
-					
-					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
-					
-				</div>
-				<div class="meta-info">
-					<div class="article-meta-info">
-    <span class="article-date article-meta-item">
-        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2024-04-05 15:14</span>
-        <span class="mobile">2024-04-05 15:14</span>
-        <span class="hover-info">创建</span>
-    </span>
+    </div>
+  
+  <div class="article-inner">
     
-        <span class="article-date article-meta-item">
-            <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-10-22 11:39:16</span>
-            <span class="mobile">2024-10-22 11:39:16</span>
-            <span class="hover-info">更新</span>
-        </span>
+      <input type="hidden" class="isFancy" />
     
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      第三课——最短路
+    </h1>
+  
 
-    
-    
+      </header>
+      
+      <div class="article-info article-info-post">
+        
 
+        
+        <div class="clearfix"></div>
+      </div>
+      
     
-    
-    
-    
-        <span class="article-pv article-meta-item">
-            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
-        </span>
-    
-</div>
-
-				</div>
-			</div>
-		</div>
-		
-
-		
-
-
-		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-			<span id="more"></span>
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <span id="more"></span>
 
 <h1 id="最短路"><a href="#最短路" class="headerlink" title="最短路"></a>最短路</h1><p>最短路的算法是学了非常多次的一个算法了，但是这次学到的算是更加全面的一次。以前从数据结构中学到的两种最短路的算法，<strong>Dijkstra</strong>和<strong>Floyd</strong>。这两个算法在这篇文章中也会提到，最为最基础的两种最短路算法，后续的算法也都是在他们的基础上展开的。文章的最后，还提到了最短路的一个变种（故切算是？）<strong>差分约束</strong>。</p>
-<h2 id="Dijkstra"><a href="#Dijkstra" class="headerlink" title="Dijkstra"></a>Dijkstra</h2><p><strong>Dijkstra</strong>的想法其实有一种局部搜索的感觉，它做的事情是：“按照中转次数递增的顺序找最短路。”。和人的思想很像，看下面这张图：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154048155-648329158_1726323679699.png"
-                      alt="image"
-                ><br>假如我从\(C_{1}\)出发，那么人会先看到自己一步能走到的地方：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154458113-1501790980_1726323704365.png"
-                      alt="image"
-                ><br>不管它最终要到哪里，都应该先走到最近的地方，也就是\(C_{3}\)，那么\(C_{1}\)到\(C_{3}\)的最短路就找到了，也就是\(edge_{1,3}\)。然后我们把\(C_{3}\)一步能到的点加入视线中：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154742845-679931193_1726323693763.png"
-                      alt="image"
-                ><br>这里我们通过中转可以到达\(C_{4}\)，但是发现从\(C_{3}\)中转再到\(C_{4}\)的距离大于到\(C_{2}\)的距离。所以我们把\(C_{2}\)加入候选集。同样的，\(C_{2}\)能到的点也要加入视线。<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155028854-2035783510_1726323693763.png"
-                      alt="image"
-                ><br>后续的操作我就用图片展示了：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155208065-1326914405_1726323693763.png"
-                      alt="image"
-                ><br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155651840-1076251832_1726323693763.png"
-                      alt="image"
-                ><br>这里有个点，提一下。可以发现当前\(edge{1,2,4}\)是比\(edge{1,3,4,6}\)短的，但是因为\(C_{4}\)已经存在最短路了，而且那条路一定比新的路更短，所以不需要考虑在候选集中的点的最短路了。接下来应该更新\(C_{6}\)：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155909612-657872432_1726323693763.png"
-                      alt="image"
-                ><br>到这里，从起点到所有点的最短路就都算出来了。这是人脑的求路过程，而<strong>Dijkstra</strong>也是非常相似的做法，这里给出代码描述：</p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*数据定义*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> N 101  			<span class="comment">//节点个数、</span></span></span><br><span class="line"><span class="comment">//inf 不能赋值为0x7fffffff，执行inf+inf时会溢出。</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> inf 0x3FFFFFFF</span></span><br><span class="line"><span class="type">int</span> map[N][N];</span><br><span class="line"><span class="type">int</span> via[N];</span><br><span class="line"><span class="type">int</span> dis[N];				<span class="comment">//起点到某一个点的最短距离</span></span><br><span class="line"><span class="comment">/*初始化*/</span></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;=n;i++)&#123;</span><br><span class="line">	via[i] = <span class="number">1</span>;</span><br><span class="line">	dis[i] = inf;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;=n;j++)map[i][j]=inf;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*算法部分*/</span></span><br><span class="line"><span class="type">int</span> start = <span class="number">1</span>, target = n;</span><br><span class="line"><span class="type">int</span> now = start;</span><br><span class="line">dis[start]=<span class="number">0</span>;</span><br><span class="line">via[start]=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span>(now!=target)&#123;</span><br><span class="line">	<span class="type">int</span> MIN = inf,next=now;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;		<span class="comment">//注意这里，下面要讲</span></span><br><span class="line">		<span class="keyword">if</span>(map[now][i]!=inf)	<span class="comment">//没有这一句会上溢出，因为涉及了0x7FFFFFF+0x7FFFFFFF</span></span><br><span class="line">			dis[i] = <span class="built_in">min</span>(dis[i],map[now][i]+dis[now]);</span><br><span class="line">		<span class="keyword">if</span>(via[i]&amp;&amp;dis[i]&lt;MIN)&#123;</span><br><span class="line">			next = i;</span><br><span class="line">			MIN = dis[i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(MIN == inf)<span class="keyword">break</span>;</span><br><span class="line">	now = next;</span><br><span class="line">	via[now]=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(dis[target]==inf)<span class="built_in">printf</span>(<span class="string">&quot;-1\n&quot;</span>);</span><br><span class="line"><span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,dis[target]);</span><br></pre></td></tr></table></figure></div>
+<h2 id="Dijkstra"><a href="#Dijkstra" class="headerlink" title="Dijkstra"></a>Dijkstra</h2><p><strong>Dijkstra</strong>的想法其实有一种局部搜索的感觉，它做的事情是：“按照中转次数递增的顺序找最短路。”。和人的思想很像，看下面这张图：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154048155-648329158_1726323679699.png" alt="image"><br>假如我从\(C_{1}\)出发，那么人会先看到自己一步能走到的地方：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154458113-1501790980_1726323704365.png" alt="image"><br>不管它最终要到哪里，都应该先走到最近的地方，也就是\(C_{3}\)，那么\(C_{1}\)到\(C_{3}\)的最短路就找到了，也就是\(edge_{1,3}\)。然后我们把\(C_{3}\)一步能到的点加入视线中：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154742845-679931193_1726323693763.png" alt="image"><br>这里我们通过中转可以到达\(C_{4}\)，但是发现从\(C_{3}\)中转再到\(C_{4}\)的距离大于到\(C_{2}\)的距离。所以我们把\(C_{2}\)加入候选集。同样的，\(C_{2}\)能到的点也要加入视线。<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155028854-2035783510_1726323693763.png" alt="image"><br>后续的操作我就用图片展示了：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155208065-1326914405_1726323693763.png" alt="image"><br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155651840-1076251832_1726323693763.png" alt="image"><br>这里有个点，提一下。可以发现当前\(edge{1,2,4}\)是比\(edge{1,3,4,6}\)短的，但是因为\(C_{4}\)已经存在最短路了，而且那条路一定比新的路更短，所以不需要考虑在候选集中的点的最短路了。接下来应该更新\(C_{6}\)：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402155909612-657872432_1726323693763.png" alt="image"><br>到这里，从起点到所有点的最短路就都算出来了。这是人脑的求路过程，而<strong>Dijkstra</strong>也是非常相似的做法，这里给出代码描述：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*数据定义*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> N 101  			<span class="comment">//节点个数、</span></span></span><br><span class="line"><span class="comment">//inf 不能赋值为0x7fffffff，执行inf+inf时会溢出。</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> inf 0x3FFFFFFF</span></span><br><span class="line"><span class="type">int</span> map[N][N];</span><br><span class="line"><span class="type">int</span> via[N];</span><br><span class="line"><span class="type">int</span> dis[N];				<span class="comment">//起点到某一个点的最短距离</span></span><br><span class="line"><span class="comment">/*初始化*/</span></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;=n;i++)&#123;</span><br><span class="line">	via[i] = <span class="number">1</span>;</span><br><span class="line">	dis[i] = inf;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;=n;j++)map[i][j]=inf;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*算法部分*/</span></span><br><span class="line"><span class="type">int</span> start = <span class="number">1</span>, target = n;</span><br><span class="line"><span class="type">int</span> now = start;</span><br><span class="line">dis[start]=<span class="number">0</span>;</span><br><span class="line">via[start]=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span>(now!=target)&#123;</span><br><span class="line">	<span class="type">int</span> MIN = inf,next=now;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;		<span class="comment">//注意这里，下面要讲</span></span><br><span class="line">		<span class="keyword">if</span>(map[now][i]!=inf)	<span class="comment">//没有这一句会上溢出，因为涉及了0x7FFFFFF+0x7FFFFFFF</span></span><br><span class="line">			dis[i] = <span class="built_in">min</span>(dis[i],map[now][i]+dis[now]);</span><br><span class="line">		<span class="keyword">if</span>(via[i]&amp;&amp;dis[i]&lt;MIN)&#123;</span><br><span class="line">			next = i;</span><br><span class="line">			MIN = dis[i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(MIN == inf)<span class="keyword">break</span>;</span><br><span class="line">	now = next;</span><br><span class="line">	via[now]=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(dis[target]==inf)<span class="built_in">printf</span>(<span class="string">&quot;-1\n&quot;</span>);</span><br><span class="line"><span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,dis[target]);</span><br></pre></td></tr></table></figure>
 
-<p><strong>Dijkstra</strong>有一个非常明显的问题，通过比较与人脑的算法就能看出来，<strong>Dijkstra</strong>算法在判断下一个要进候选集的点的时候，需要遍历所有的点，这也使得复杂度来到了\(O(n^2)\)。想像一下，如果一个图比较稀疏，比如城市道路，可能有上千个十字路口，但是每个十字路口只有四条边左右。这个时候，如果也需要搜索每一个点的话，就会显得非常的多余。下面就是一个对比：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402161453232-665487656_1726323704365.png"
-                      alt="image"
-                ><br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402161528088-345057567_1726323704365.png"
-                      alt="image"
-                ><br>所以我可以使用链表来存储点的邻边，这样就能非常方便的访问各个点边了，但是有人会说了<del>链表太慢了，我才不用</del>，于是我们用数组来模拟链表——<strong>链式前向星</strong>。</p>
-<h2 id="链式前向星"><a href="#链式前向星" class="headerlink" title="链式前向星"></a>链式前向星</h2><p>这是一种数据结构，它用数组来存储邻接表。<br>邻接表我就不介绍了，这里直接介绍<strong>链式前向星</strong>：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402195635977-707252819_1726323704365.png"
-                      alt="image"
-                ></p>
+<p><strong>Dijkstra</strong>有一个非常明显的问题，通过比较与人脑的算法就能看出来，<strong>Dijkstra</strong>算法在判断下一个要进候选集的点的时候，需要遍历所有的点，这也使得复杂度来到了\(O(n^2)\)。想像一下，如果一个图比较稀疏，比如城市道路，可能有上千个十字路口，但是每个十字路口只有四条边左右。这个时候，如果也需要搜索每一个点的话，就会显得非常的多余。下面就是一个对比：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402161453232-665487656_1726323704365.png" alt="image"><br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402161528088-345057567_1726323704365.png" alt="image"><br>所以我可以使用链表来存储点的邻边，这样就能非常方便的访问各个点边了，但是有人会说了<del>链表太慢了，我才不用</del>，于是我们用数组来模拟链表——<strong>链式前向星</strong>。</p>
+<h2 id="链式前向星"><a href="#链式前向星" class="headerlink" title="链式前向星"></a>链式前向星</h2><p>这是一种数据结构，它用数组来存储邻接表。<br>邻接表我就不介绍了，这里直接介绍<strong>链式前向星</strong>：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402195635977-707252819_1726323704365.png" alt="image"></p>
 <p>图上模拟的就是内存中的数据存储。这个数据结构主要由两个表组成，第一个是<strong>head表</strong>，其中<code>from</code>作为下标而存在，实际上它只有一个值，就是<code>next</code>，表示从该下标对应的顶点出发的点存储位置。比如，我们上面提到的图中，\(C_{1}\)点有两条出边，分别是\(C_{2}，C_{3}\)，那么我们可以通过<code>head[1].next</code>找到<strong>edge表</strong>中对应的边。再看<strong>edge表</strong>，首先是一个下标<code>index</code>实际并不存储，然后是<code>to</code>它是边的另一个顶点的编号，再是<code>value</code>也就是该边的权值，最后是<code>next</code>它和<strong>head表</strong>中的<code>next</code>有着相同的属性，他们都是<strong>edge表</strong>的下标。通过<code>edge[1].next</code>我们可以找到\(C_{1}\)的下一条边。也就是\(edge_{1,3}\)。学过链表的同学想必已经理解了。没有学过的同学可以再思考一下。<br>最后是这个数据结构的一个基础实现，主要是一个插入操作。</p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 100005		<span class="comment">//顶点数</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> M 200005		<span class="comment">//边数</span></span></span><br><span class="line"><span class="type">long</span> <span class="type">long</span> head[N];</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Edge</span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> to,dis,next;</span><br><span class="line">&#125;edge[M];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add_dege</span><span class="params">(<span class="type">long</span> <span class="type">long</span> from,<span class="type">long</span> <span class="type">long</span> to,<span class="type">long</span> <span class="type">long</span> value)</span></span>&#123;</span><br><span class="line">    edge[++cnt].to = to;</span><br><span class="line">    edge[cnt].dis = value;</span><br><span class="line">    edge[cnt].next = head[from];</span><br><span class="line">    head[from] = cnt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 100005		<span class="comment">//顶点数</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> M 200005		<span class="comment">//边数</span></span></span><br><span class="line"><span class="type">long</span> <span class="type">long</span> head[N];</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Edge</span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> to,dis,next;</span><br><span class="line">&#125;edge[M];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add_dege</span><span class="params">(<span class="type">long</span> <span class="type">long</span> from,<span class="type">long</span> <span class="type">long</span> to,<span class="type">long</span> <span class="type">long</span> value)</span></span>&#123;</span><br><span class="line">    edge[++cnt].to = to;</span><br><span class="line">    edge[cnt].dis = value;</span><br><span class="line">    edge[cnt].next = head[from];</span><br><span class="line">    head[from] = cnt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="堆优化的Dijkstra"><a href="#堆优化的Dijkstra" class="headerlink" title="堆优化的Dijkstra"></a>堆优化的Dijkstra</h2><p>学会了<strong>链式前向星</strong>，我们来尝试一下思考如何用在<strong>Dijkstra</strong>上吧。<br>我们需要优化的点是：<strong>Dijkstra每次更新候选集的时候，需要遍历所有的点。</strong></p>
-<h3 id="优先队列的设计"><a href="#优先队列的设计" class="headerlink" title="优先队列的设计"></a>优先队列的设计</h3><p>那么我们可以使用一个<strong>优先队列</strong>来维护我们当前访问到的点，并且排序的依据应该是<strong>该点到起始点的当前最短路长度</strong>。回到我们的人工计算最短路上来：<br><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154458113-1501790980_1726323704365.png"
-                      alt="image"
-                ><br>我们起初候选集里只有起点，但是我们能访问到的点有两个，<strong>并且这两个点都不在候选集里面</strong>。于是我们将他们<strong>连同他们的当前最短路</strong>加入优先队列中，下次从队列中取出最短的最短路就可以了。<br>我们可以设计一个放入队列中的数据包like this，其中，重载了小于运算符是为了让它在优先队列中能自动排序。因为我们需要构造最小堆，所以应该重载为<code>a.dis&lt;dis</code>。因为优先队列是默认最大堆，而默认使用小于符号排序，所以我们需要重载反向的小于符号。</p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">node</span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> id,dis;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span> &lt;(<span class="type">const</span> node&amp;a)<span class="type">const</span>&#123;<span class="keyword">return</span> a.dis&lt;dis;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
+<h3 id="优先队列的设计"><a href="#优先队列的设计" class="headerlink" title="优先队列的设计"></a>优先队列的设计</h3><p>那么我们可以使用一个<strong>优先队列</strong>来维护我们当前访问到的点，并且排序的依据应该是<strong>该点到起始点的当前最短路长度</strong>。回到我们的人工计算最短路上来：<br><img src="https://raw.githubusercontent.com/zhywyt/cnblogs_pic/master/img/3080748-20240402154458113-1501790980_1726323704365.png" alt="image"><br>我们起初候选集里只有起点，但是我们能访问到的点有两个，<strong>并且这两个点都不在候选集里面</strong>。于是我们将他们<strong>连同他们的当前最短路</strong>加入优先队列中，下次从队列中取出最短的最短路就可以了。<br>我们可以设计一个放入队列中的数据包like this，其中，重载了小于运算符是为了让它在优先队列中能自动排序。因为我们需要构造最小堆，所以应该重载为<code>a.dis&lt;dis</code>。因为优先队列是默认最大堆，而默认使用小于符号排序，所以我们需要重载反向的小于符号。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">node</span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> id,dis;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span> &lt;(<span class="type">const</span> node&amp;a)<span class="type">const</span>&#123;<span class="keyword">return</span> a.dis&lt;dis;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h3 id="点的重复"><a href="#点的重复" class="headerlink" title="点的重复"></a>点的重复</h3><p>点的重复指的是一个点可能多次入队列，但是只要我们取出了某一个点，就能判断：<strong>后续出现的该点的距离一定比当前大，也就是后续的点都是多余的部分。</strong> 所以我们维护一个数组来标记顶点是否出队列，一旦出队列，就在后续的计算中不再接受该顶点。看代码：</p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Dijkstra</span><span class="params">()</span></span>&#123;</span><br><span class="line">    priority_queue&lt;node&gt;q;</span><br><span class="line">    q.<span class="built_in">push</span>(node&#123;s,<span class="number">0</span>&#125;);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i = <span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">        dis[i] = INF;</span><br><span class="line">    &#125;</span><br><span class="line">    dis[s]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(!q.<span class="built_in">empty</span>())&#123;</span><br><span class="line">        node a = q.<span class="built_in">top</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> now = a.id;</span><br><span class="line">        <span class="keyword">if</span>(vis[now])<span class="keyword">continue</span>;		<span class="comment">//一旦出队列，就在后续的计算中不再接受该顶点</span></span><br><span class="line">        vis[now]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i = head[now];i;i=edge[i].next)&#123;</span><br><span class="line">            <span class="type">long</span> <span class="type">long</span> j = edge[i].to;</span><br><span class="line">            <span class="keyword">if</span>(dis[now]+edge[i].dis&lt;dis[j])&#123;</span><br><span class="line">                dis[j]=dis[now]+edge[i].dis;</span><br><span class="line">                q.<span class="built_in">push</span>(node&#123;j,dis[j]&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Dijkstra</span><span class="params">()</span></span>&#123;</span><br><span class="line">    priority_queue&lt;node&gt;q;</span><br><span class="line">    q.<span class="built_in">push</span>(node&#123;s,<span class="number">0</span>&#125;);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i = <span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">        dis[i] = INF;</span><br><span class="line">    &#125;</span><br><span class="line">    dis[s]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(!q.<span class="built_in">empty</span>())&#123;</span><br><span class="line">        node a = q.<span class="built_in">top</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> now = a.id;</span><br><span class="line">        <span class="keyword">if</span>(vis[now])<span class="keyword">continue</span>;		<span class="comment">//一旦出队列，就在后续的计算中不再接受该顶点</span></span><br><span class="line">        vis[now]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i = head[now];i;i=edge[i].next)&#123;</span><br><span class="line">            <span class="type">long</span> <span class="type">long</span> j = edge[i].to;</span><br><span class="line">            <span class="keyword">if</span>(dis[now]+edge[i].dis&lt;dis[j])&#123;</span><br><span class="line">                dis[j]=dis[now]+edge[i].dis;</span><br><span class="line">                q.<span class="built_in">push</span>(node&#123;j,dis[j]&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>一个完整的例子</p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INF 0x3FFFFFFFFFFFFFFF</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> N 100005</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> M 200005</span></span><br><span class="line"></span><br><span class="line"><span class="type">long</span> <span class="type">long</span> cnt,head[N];</span><br><span class="line"><span class="type">long</span> <span class="type">long</span> n,m,s;</span><br><span class="line"><span class="type">long</span> <span class="type">long</span> dis[N],vis[N];</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Edge</span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> to,dis,next;</span><br><span class="line">&#125;edge[M];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add_dege</span><span class="params">(<span class="type">long</span> <span class="type">long</span> from,<span class="type">long</span> <span class="type">long</span> to,<span class="type">long</span> <span class="type">long</span> value)</span></span>&#123;</span><br><span class="line">    edge[++cnt].to = to;</span><br><span class="line">    edge[cnt].dis = value;</span><br><span class="line">    edge[cnt].next = head[from];</span><br><span class="line">    head[from] = cnt;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">node</span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> id,dis;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span> &lt;(<span class="type">const</span> node&amp;a)<span class="type">const</span>&#123;<span class="keyword">return</span> a.dis&lt;dis;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Dijkstra</span><span class="params">()</span></span>&#123;</span><br><span class="line">    priority_queue&lt;node&gt;q;</span><br><span class="line">    q.<span class="built_in">push</span>(node&#123;s,<span class="number">0</span>&#125;);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i = <span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">        dis[i] = INF;</span><br><span class="line">    &#125;</span><br><span class="line">    dis[s]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(!q.<span class="built_in">empty</span>())&#123;</span><br><span class="line">        node a = q.<span class="built_in">top</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> now = a.id;</span><br><span class="line">        <span class="keyword">if</span>(vis[now])<span class="keyword">continue</span>;</span><br><span class="line">        vis[now]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i = head[now];i;i=edge[i].next)&#123;</span><br><span class="line">            <span class="type">long</span> <span class="type">long</span> j = edge[i].to;</span><br><span class="line">            <span class="keyword">if</span>(dis[now]+edge[i].dis&lt;dis[j])&#123;</span><br><span class="line">                dis[j]=dis[now]+edge[i].dis;</span><br><span class="line">                q.<span class="built_in">push</span>(node&#123;j,dis[j]&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">&quot;%lld%lld%lld&quot;</span>,&amp;n,&amp;m,&amp;s)!=<span class="number">-1</span>)&#123;</span><br><span class="line">        <span class="comment">//初始化</span></span><br><span class="line">        cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">memset</span>(head,<span class="number">0</span>,<span class="built_in">sizeof</span>(<span class="type">long</span> <span class="type">long</span>)*N);</span><br><span class="line">        <span class="built_in">memset</span>(dis,<span class="number">0</span>,<span class="built_in">sizeof</span>(<span class="type">long</span> <span class="type">long</span>)*N);</span><br><span class="line">        <span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="built_in">sizeof</span>(<span class="type">long</span> <span class="type">long</span>)*N);</span><br><span class="line">        <span class="built_in">memset</span>(edge,<span class="number">0</span>,<span class="built_in">sizeof</span>(Edge)*M);</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> u,v,w;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i=<span class="number">0</span>;i&lt;m;i++)&#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%lld%lld%lld&quot;</span>,&amp;u,&amp;v,&amp;w);</span><br><span class="line">            <span class="built_in">add_dege</span>(u,v,w);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">Dijkstra</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">            i==<span class="number">1</span>?<span class="number">1</span>:<span class="built_in">printf</span>(<span class="string">&quot; &quot;</span>);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%lld&quot;</span>,dis[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INF 0x3FFFFFFFFFFFFFFF</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> N 100005</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> M 200005</span></span><br><span class="line"></span><br><span class="line"><span class="type">long</span> <span class="type">long</span> cnt,head[N];</span><br><span class="line"><span class="type">long</span> <span class="type">long</span> n,m,s;</span><br><span class="line"><span class="type">long</span> <span class="type">long</span> dis[N],vis[N];</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Edge</span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> to,dis,next;</span><br><span class="line">&#125;edge[M];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add_dege</span><span class="params">(<span class="type">long</span> <span class="type">long</span> from,<span class="type">long</span> <span class="type">long</span> to,<span class="type">long</span> <span class="type">long</span> value)</span></span>&#123;</span><br><span class="line">    edge[++cnt].to = to;</span><br><span class="line">    edge[cnt].dis = value;</span><br><span class="line">    edge[cnt].next = head[from];</span><br><span class="line">    head[from] = cnt;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">node</span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> id,dis;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span> &lt;(<span class="type">const</span> node&amp;a)<span class="type">const</span>&#123;<span class="keyword">return</span> a.dis&lt;dis;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Dijkstra</span><span class="params">()</span></span>&#123;</span><br><span class="line">    priority_queue&lt;node&gt;q;</span><br><span class="line">    q.<span class="built_in">push</span>(node&#123;s,<span class="number">0</span>&#125;);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i = <span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">        dis[i] = INF;</span><br><span class="line">    &#125;</span><br><span class="line">    dis[s]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(!q.<span class="built_in">empty</span>())&#123;</span><br><span class="line">        node a = q.<span class="built_in">top</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> now = a.id;</span><br><span class="line">        <span class="keyword">if</span>(vis[now])<span class="keyword">continue</span>;</span><br><span class="line">        vis[now]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i = head[now];i;i=edge[i].next)&#123;</span><br><span class="line">            <span class="type">long</span> <span class="type">long</span> j = edge[i].to;</span><br><span class="line">            <span class="keyword">if</span>(dis[now]+edge[i].dis&lt;dis[j])&#123;</span><br><span class="line">                dis[j]=dis[now]+edge[i].dis;</span><br><span class="line">                q.<span class="built_in">push</span>(node&#123;j,dis[j]&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">&quot;%lld%lld%lld&quot;</span>,&amp;n,&amp;m,&amp;s)!=<span class="number">-1</span>)&#123;</span><br><span class="line">        <span class="comment">//初始化</span></span><br><span class="line">        cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">memset</span>(head,<span class="number">0</span>,<span class="built_in">sizeof</span>(<span class="type">long</span> <span class="type">long</span>)*N);</span><br><span class="line">        <span class="built_in">memset</span>(dis,<span class="number">0</span>,<span class="built_in">sizeof</span>(<span class="type">long</span> <span class="type">long</span>)*N);</span><br><span class="line">        <span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="built_in">sizeof</span>(<span class="type">long</span> <span class="type">long</span>)*N);</span><br><span class="line">        <span class="built_in">memset</span>(edge,<span class="number">0</span>,<span class="built_in">sizeof</span>(Edge)*M);</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> u,v,w;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i=<span class="number">0</span>;i&lt;m;i++)&#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%lld%lld%lld&quot;</span>,&amp;u,&amp;v,&amp;w);</span><br><span class="line">            <span class="built_in">add_dege</span>(u,v,w);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">Dijkstra</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">            i==<span class="number">1</span>?<span class="number">1</span>:<span class="built_in">printf</span>(<span class="string">&quot; &quot;</span>);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%lld&quot;</span>,dis[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="Floyd"><a href="#Floyd" class="headerlink" title="Floyd"></a>Floyd</h2><p>相比<strong>Dijkstra</strong>，<strong>Floyd</strong>真是再简单不过了，它使用的是一个非常清晰的动态规划的思想，使用三次循环直接算出任意两点之间的最短路。这里先给出核心代码：</p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(k=<span class="number">0</span>;k&lt;n;k++)</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;n;j++)</span><br><span class="line">			 e[i][j] = <span class="built_in">min</span>(e[i][j],e[i][k]+e[k][j]);</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(k=<span class="number">0</span>;k&lt;n;k++)</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;n;j++)</span><br><span class="line">			 e[i][j] = <span class="built_in">min</span>(e[i][j],e[i][k]+e[k][j]);</span><br></pre></td></tr></table></figure>
 
 <p>状态转移方程的含义就是从<code>i</code>点出发，借助<code>k</code>点到达<code>j</code>点是否会更快。</p>
 <h2 id="Bellman-Ford"><a href="#Bellman-Ford" class="headerlink" title="Bellman-Ford"></a>Bellman-Ford</h2><p><strong>Bellman-Ford</strong>优化了<strong>Floyd</strong>固定\(O(N^3)\)的时间复杂度，继承了<code>Floyd</code>的动态规划的思想，得到了这么一个可以控制最大中转次数的路径算法：</p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">1</span>;k&lt;=n<span class="number">-1</span>;k++)&#123;				<span class="comment">//控制中转的次数</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;m;i++)&#123;				<span class="comment">//遍历所有的边</span></span><br><span class="line">		  <span class="keyword">if</span>(dis[v[i]]&gt;disp[u[i]]+w[i])&#123;</span><br><span class="line">			dis[v[i]]=dis[u[i]]+w[i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">1</span>;k&lt;=n<span class="number">-1</span>;k++)&#123;				<span class="comment">//控制中转的次数</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;m;i++)&#123;				<span class="comment">//遍历所有的边</span></span><br><span class="line">		  <span class="keyword">if</span>(dis[v[i]]&gt;disp[u[i]]+w[i])&#123;</span><br><span class="line">			dis[v[i]]=dis[u[i]]+w[i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>其中<code>v[i]</code>是第<code>i</code>条边的入点，<code>u[i]</code>是第<code>i</code>条边的出点，<code>w[i]</code>是第<code>i</code>条边的权值。它的单点时间复杂度是\(O(N\times M )\)，可能会比<strong>Dijkstra</strong>还慢，但是优点是算法简单，而且可以解负权边。</p>
 <p>如何解负权边呢？</p>
 <p><strong>Dijkstra</strong>不能解负权边的原因是遇到负环的时候会出现死循环，而<strong>Bellman-Ford</strong>可以控制中转次数。如果一条路的中转次数超过了<code>n-1</code>次那说明它一定经过了负权环。也就是说，只要我们再进行一次内部循环，如果<code>dis</code>数组发生了改变，说明存在负权环。下面是判断负权环的代码<del>其实很简单</del></p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">1</span>;k&lt;=n<span class="number">-1</span>;k++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;m;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(dis[v[i]]&gt;disp[u[i]]+w[i])&#123;</span><br><span class="line">            dis[v[i]]=dis[u[i]]+w[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;m;i++)&#123;</span><br><span class="line">    <span class="keyword">if</span>(dis[v[i]]&gt;disp[u[i]]+w[i])&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;存在负权环\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">1</span>;k&lt;=n<span class="number">-1</span>;k++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;m;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(dis[v[i]]&gt;disp[u[i]]+w[i])&#123;</span><br><span class="line">            dis[v[i]]=dis[u[i]]+w[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;m;i++)&#123;</span><br><span class="line">    <span class="keyword">if</span>(dis[v[i]]&gt;disp[u[i]]+w[i])&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;存在负权环\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="SPFA"><a href="#SPFA" class="headerlink" title="SPFA"></a>SPFA</h2><p>SPFA全称<strong>shortest path fast algorithm</strong>，也就是快速最短路算法，非常正宗的中国式英语。<br>SPFA尝试解决<strong>Bellman-Ford</strong>每次都需要遍历<code>n-1</code>条边的问题，用队列维护需要修改的点。具体做法如下：<br><strong>首先把起点放入队列，然后松弛相邻的所有点，如果松弛成功而且点不在队列中，则把点加入队列。</strong></p>
-<div class="code-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//spfa参考代码</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">spfa</span><span class="params">(<span class="type">int</span> u)</span></span>&#123;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt;q;</span><br><span class="line">    q.<span class="built_in">push</span>(u); vis[u]=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(!q.<span class="built_in">empty</span>())&#123;</span><br><span class="line">        <span class="type">int</span> x = q.<span class="built_in">front</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>(); vis[x]=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=first[x];i!=<span class="number">-1</span>;i=next[i])&#123;</span><br><span class="line">            <span class="type">int</span> y = v[i];</span><br><span class="line">            <span class="keyword">if</span>(dis[x]+w[i]&lt;dis[y])&#123;</span><br><span class="line">                dis[y]=dis[x]+w[i];</span><br><span class="line">                <span class="keyword">if</span>(!vis[y])vis[y]=<span class="number">1</span>,q.<span class="built_in">push</span>(y);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//spfa参考代码</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">spfa</span><span class="params">(<span class="type">int</span> u)</span></span>&#123;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt;q;</span><br><span class="line">    q.<span class="built_in">push</span>(u); vis[u]=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(!q.<span class="built_in">empty</span>())&#123;</span><br><span class="line">        <span class="type">int</span> x = q.<span class="built_in">front</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>(); vis[x]=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=first[x];i!=<span class="number">-1</span>;i=next[i])&#123;</span><br><span class="line">            <span class="type">int</span> y = v[i];</span><br><span class="line">            <span class="keyword">if</span>(dis[x]+w[i]&lt;dis[y])&#123;</span><br><span class="line">                dis[y]=dis[x]+w[i];</span><br><span class="line">                <span class="keyword">if</span>(!vis[y])vis[y]=<span class="number">1</span>,q.<span class="built_in">push</span>(y);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>同样的，spfa也能够判断负环的存在，但是需要我们记录每次使用的点，只要某一个节点我们使用的次数超过了<code>n-1</code>次，那么也能说明存在负环。这里就不给代码了。</p>
 <h2 id="差分约束"><a href="#差分约束" class="headerlink" title="差分约束"></a>差分约束</h2><p>差分约束是最短路的一种问题表达形式，本质上是同一个问题。<br>2024-04-05 15:13:11 星期五<strong>后续再更新差分约束</strong></p>
 
-		</div>
-
-		
-		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
-			<div class="article-copyright-info-container">
-    <ul>
-        <li><strong>标题:</strong> 第三课——最短路</li>
-        <li><strong>作者:</strong> zhywyt</li>
-        <li><strong>创建于
-                :</strong> 2024-04-05 15:14:00</li>
-        
-            <li>
-                <strong>更新于
-                    :</strong> 2024-10-22 11:39:16
-            </li>
-        
-        <li>
-            <strong>链接:</strong> https://hexothemedemo.github.io/redefine/posts/61355/
-        </li>
-        <li>
-            <strong>
-                版权声明:
-            </strong>
-            
-
-            
-                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
-            
-        </li>
-    </ul>
-</div>
-
-		</div>
-		
-
-		
-
-		
-
-		
-		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
-			
-			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="prev" rel="prev" href="/posts/7287/">
-					<span class="left arrow-icon flex justify-center items-center">
-						<i class="fa-solid fa-chevron-left"></i>
-					</span>
-					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item">ubuntu无法进入桌面的一种情况</span>
-						<span class="post-nav-item">上一篇</span>
-					</span>
-				</a>
-			</div>
-			
-			
-			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="next" rel="next" href="/posts/14027/">
-					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item">第二课——线段树</span>
-						<span class="post-nav-item">下一篇</span>
-					</span>
-					<span class="right arrow-icon flex justify-center items-center">
-						<i class="fa-solid fa-chevron-right"></i>
-					</span>
-				</a>
-			</div>
-			
-		</div>
-		
-
-
-		
-		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
-			<div class="comments-container mt-10 w-full ">
-    <div id="comment-anchor" class="w-full h-2.5"></div>
-    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
-        评论
+      
     </div>
     
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/Yelee/posts/61355/">第三课——最短路</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2024-04-05, 15:14:00</p>
+        <p><span>最后更新:</span>2024-10-22, 11:39:16</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/Yelee/posts/61355/" title="第三课——最短路">https://hexothemedemo.github.io/posts/61355/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://hexothemedemo.github.io/posts/61355/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
 
+
+
+    <nav id="article-nav">
         
-            
-    <div id="waline"></div>
-    <script type="module" data-swup-reload-script>
-      import { init } from '/js/libs/waline.mjs';
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/Yelee/posts/7287/">
+                    ubuntu无法进入桌面的一种情况
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/Yelee/posts/14027/">
+                    第二课——线段树
+                </a>
+            </div>
+        
+    </nav>
 
-      function loadWaline() {
-        init({
-          el: '#waline',
-          serverURL: 'https://example.example.com',
-          lang: 'zh-CN',
-          dark: 'body[class~="dark-mode"]',
-          reaction: false,
-          requiredMeta: ['nick', 'mail'],
-          emoji: [],
-          
-          
-        });
-      }
+  
+</article>
 
-      if (typeof swup !== 'undefined') {
-        loadWaline();
-      } else {
-        window.addEventListener('DOMContentLoaded', loadWaline);
-      }
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF"><span class="toc-number">1.</span> <span class="toc-text">最短路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dijkstra"><span class="toc-number">1.1.</span> <span class="toc-text">Dijkstra</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E5%BC%8F%E5%89%8D%E5%90%91%E6%98%9F"><span class="toc-number">1.2.</span> <span class="toc-text">链式前向星</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E4%BC%98%E5%8C%96%E7%9A%84Dijkstra"><span class="toc-number">1.3.</span> <span class="toc-text">堆优化的Dijkstra</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.3.1.</span> <span class="toc-text">优先队列的设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%B9%E7%9A%84%E9%87%8D%E5%A4%8D"><span class="toc-number">1.3.2.</span> <span class="toc-text">点的重复</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Floyd"><span class="toc-number">1.4.</span> <span class="toc-text">Floyd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bellman-Ford"><span class="toc-number">1.5.</span> <span class="toc-text">Bellman-Ford</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SPFA"><span class="toc-number">1.6.</span> <span class="toc-text">SPFA</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%AE%E5%88%86%E7%BA%A6%E6%9D%9F"><span class="toc-number">1.7.</span> <span class="toc-text">差分约束</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
     </script>
 
 
 
-        
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"第三课——最短路　| zhywyt's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
     
 </div>
 
-		</div>
-		
-	</div>
 
-	
-	<div class="toc-content-container">
-		<div class="post-toc-wrap">
-	<div class="post-toc">
-		<div class="toc-title">目录</div>
-		<div class="page-title">第三课——最短路</div>
-		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF"><span class="nav-text">最短路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dijkstra"><span class="nav-text">Dijkstra</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E5%BC%8F%E5%89%8D%E5%90%91%E6%98%9F"><span class="nav-text">链式前向星</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E4%BC%98%E5%8C%96%E7%9A%84Dijkstra"><span class="nav-text">堆优化的Dijkstra</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-text">优先队列的设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E7%9A%84%E9%87%8D%E5%A4%8D"><span class="nav-text">点的重复</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Floyd"><span class="nav-text">Floyd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bellman-Ford"><span class="nav-text">Bellman-Ford</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SPFA"><span class="nav-text">SPFA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%AE%E5%88%86%E7%BA%A6%E6%9D%9F"><span class="nav-text">差分约束</span></a></li></ol></li></ol>
 
-	</div>
-</div>
-	</div>
-	
-</div>
-			</div>
 
-			
-		</div>
 
-		<div class="main-content-footer">
-			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
-    <div class="info-container py-3 text-center">
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
         
-        <div class="text-center">
-            &copy;
-            
-              <span>2022</span>
-              -
-            
-            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">zhywyt</a>
-            
-                
-                <p class="post-count space-x-0.5">
-                    <span>
-                        共撰写了 84 篇文章
-                    </span>
-                    
-                </p>
-            
+            <a href="/Yelee/posts/7287/" title="上一篇: ubuntu无法进入桌面的一种情况">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/Yelee/posts/14027/" title="下一篇: 第二课——线段树">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10907/">在Unity2D中创建角色描边的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5993/">Listary——不仅仅是搜索器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51899/">我的编辑器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0/">游戏开发/Unity/shader/在Unity2D中创建屏幕扫描线的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/64880/">anzhiyu主题搭建记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/usehttps/">使用HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61408/">实现自己的SHELL</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/29b61e029340/">不适用docker的gitea runner配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/34e784d46b0a/">如何在Ubuntu上使用Cmake编译Glut</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7880d8f2f2e/">docker 设置代理与镜像站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/58283ae7cb2d/">什么是shader？什么是Material？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b0c241b3d4cf/">hexo设置加密文章(失败)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/da74aa8e9f3b/">搭建一个多线程的MineCraft服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d863527924a0/">修复使用RigidBody2D实现击退效果时的叠加问题</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/247db5136c67/">解决Unity中的路径报错：DirectoryNotFoundException。</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/818482b58c2a/">如何创建一个朝向正确的飞行物？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0e24283556b2/">UI的位置无法正确的移动</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d8eb45be176b/">Hexo+Github搭建静态网站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/8fd9ab7c695f/">伤病遇体测有感</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4a74e5f5d3d6/">Unity2D场景交互设计</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e31df0f4a5f0/">Unity屏幕分辨率调整导致UI消失的原因</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e3e3aee8476b/">2024浙江省青少年定向锦标赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7ea97fbec36/">Unity如何设置鼠标图标？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2024g10/">2024第一届下沙十英里接力赛后记</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/f29c63b83721/">马原实践汇报</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6e1ed0060e67/">Unity如何控制场景切换后角色的位置？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/536c11d1caa5/">2024定向队新生选拔赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/337e148b3fb3/">远程连接与传输</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2c9570b00976/">NU-NeRF论文解读</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d586aba908b5/">如何绘制一张定向路线图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5790301d4de2/">2024全国乡村定向系列赛事活动（浙江海宁站）</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/96dff400cced/">waline评论系统搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c8b013b915a1/">甲壳虫跑团“耐力挑战赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bc16e0702e1d/">甲壳虫跑团“十英里接力赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/a5bf365fe3fe/">甲壳虫跑团“十英里接力赛分院杯”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bd7f49a3fa80/">Unity 如何创建不带UI的截图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c6072bab6ff0/">Unity如何优雅地管理UI图层顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/59a4f8f59f45/">Unity如何在脚本中使用本地话字符？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/823c297f1d7f/">Unity如何保存存档？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1cc3941f1b85/">如何使用ffmpeg无损压缩视频？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/54404/">Unity本地化字体选择</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d742d8349fff/">Unity瓦片地图碰撞体积与图片大小不一致</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d9709c673656/">Linux基础操作</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5c54bd2bc06c/">frp配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/df4c31f7ba80/">PVE软路由配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b4ca7a5fb5b2/">ChatGLM本地配置记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/24484/">pve 8.2.2 解决unsupported Ubuntu version '24.04'</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5953/">nerfstudio环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5181/">zerotier单向不通解决办法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1fd1cabe051b/">2024第一届甲壳虫跑团百公里接力赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49793/">KUbuntu安装CIscoPacketTracer</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4182/">PVE学生自用记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/62236/">第？课——基于矩阵快速幂的递推解法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/7287/">ubuntu无法进入桌面的一种情况</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61355/">第三课——最短路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/14027/">第二课——线段树</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/53666/">第一课——树状数组</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/17428/">B-Spline</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/16515/">花期内的花的数目</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/11458/">简单的拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6679/">games101 HomeWork7</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15892/">多线程之OMP</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/3472/">Linux批量修改文件名字</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56022/">games101 HomeWork6</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56214/">games101 HomeWork5</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6999/">games101 HomeWork4</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/55574/">games101 HomeWork3</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6886/">Ubuntu解决高分屏下Matlab工具栏字体过小</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6615/">games101 HomeWork2</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/44638/">games101 HomeWork 作业以及提高课详解</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6295/">games101 HomeWork1</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/45431/">计算机图形学笔记三——橡皮筋技术和椭圆扫描算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/30828/">计算机图形学笔记一——绘制直线的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15450/">基于Glut的俄罗斯方块开发</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10536/">Games101笔记 P11~?</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49493/">快速读入模板</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/50901/">Git 教程转载</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/27853/">c语言文件读写</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/63067/">康托展开</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/32280/">P1088 [NOIP2004 普及组] 火星人</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51449/">P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2977/">P1177 【模板】快速排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15959/">P1045 [NOIP2003 普及组] 麦森数——快速幂</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/47792/">P5461 赦免战俘</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2025 zhywyt
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
         </div>
         
-            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
-            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+            <div class="visit">
                 
-                    <span id="busuanzi_container_site_uv" class="lg:!block">
-                        <span class="text-sm">访问人数</span>
-                        <span id="busuanzi_value_site_uv"></span>
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
                     </span>
                 
                 
-                    <span id="busuanzi_container_site_pv" class="lg:!block">
-                        <span class="text-sm">总访问量</span>
-                        <span id="busuanzi_value_site_pv"></span>
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
                     </span>
                 
             </div>
         
-        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
-            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
-            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
-        </div>
-        
-        
-            <div>
-                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
-            </div>
-        
-        
-            <script data-swup-reload-script>
-                try {
-                    function odometer_init() {
-                    const elements = document.querySelectorAll('.odometer');
-                    elements.forEach(el => {
-                        new Odometer({
-                            el,
-                            format: '( ddd).dd',
-                            duration: 200
-                        });
-                    });
-                    }
-                    odometer_init();
-                } catch (error) {}
-            </script>
-        
-        
-        
-    </div>  
+    </div>
 </footer>
-		</div>
-	</div>
+    </div>
+    
+<script data-main="/Yelee/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
 
-	
-	<div class="post-tools">
-		<div class="post-tools-container">
-	<ul class="article-tools-list">
-		<!-- TOC aside toggle -->
-		
-		<li class="right-bottom-tools page-aside-toggle">
-			<i class="fa-regular fa-outdent"></i>
-		</li>
-		
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
 
-		<!-- go comment -->
-		
-		<li class="go-comment">
-			<i class="fa-regular fa-comments"></i>
-		</li>
-		
-	</ul>
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
 </div>
-	</div>
-	
-
-	<div class="right-side-tools-container">
-		<div class="side-tools-container">
-	<ul class="hidden-tools-list">
-		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-plus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-minus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
-			<i class="fa-regular fa-moon"></i>
-		</li>
-
-		<!-- rss -->
-		
-
-		
-
-		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
-			<i class="fa-regular fa-arrow-down"></i>
-		</li>
-	</ul>
-
-	<ul class="visible-tools-list">
-		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
-			<i class="fa-regular fa-cog fa-spin"></i>
-		</li>
-		
-		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
-			<i class="arrow-up fas fa-arrow-up"></i>
-			<span class="percent"></span>
-		</li>
-		
-		
-	</ul>
-</div>
-	</div>
-
-	<div class="image-viewer-container">
-	<img src="">
-</div>
-
-	
-
-</main>
-
-
-
-<script src="/js/build/libs/Swup.min.js"></script>
-
-<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
-
-<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
-
 <script>
-    const swup = new Swup({
-        plugins: [
-            new SwupScriptsPlugin({
-                optin: true,
-            }),
-            new SwupProgressPlugin(),
-            new SwupScrollPlugin({
-                offset: 80,
-            }),
-            new SwupSlideTheme({
-                mainElement: ".main-content-body",
-            }),
-            new SwupPreloadPlugin(),
-        ],
-        containers: ["#swup"],
-    });
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
 </script>
 
-
-
-
-	
-<script src="/js/build/tools/imageViewer.js" type="module"></script>
-
-<script src="/js/build/utils.js" type="module"></script>
-
-<script src="/js/build/main.js" type="module"></script>
-
-<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
-
-<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
-
-<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
-
-<script src="/js/build/layouts/categoryList.js" type="module"></script>
-
-
-
-
-
-    
-<script src="/js/build/tools/codeBlock.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/layouts/lazyload.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/tools/runtime.js"></script>
-
-    
-<script src="/js/build/libs/odometer.min.js"></script>
-
-    
-<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
-
-
-
-
-  
-<script src="/js/build/libs/Typed.min.js"></script>
-
-  
-<script src="/js/build/plugins/typed.js" type="module"></script>
-
-
-
-
-
-
-
-
-    
-<script src="/js/build/libs/anime.min.js"></script>
-
-
-
-
-
-    
-<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
-
-
-<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-
-	
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
 </body>
-
 </html>
