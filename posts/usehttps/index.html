@@ -1,563 +1,744 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="zhywyt">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!--[if lt IE 9]>
-        <style>body {display: none; background: none !important} </style>
-        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
-    <![endif]-->
-
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="format-detection" content="telephone=no" />
-<meta name="author" content="zhywyt" />
-
-
-
-<meta name="description" content="前言如果正常的话，我当前的域名应该是：https:&#x2F;&#x2F;hexo.zhywyt.me，为了庆祝我找到了免费的https方案，特地来写下这篇文章。 话不多说展示军火： 1234- frp- nginx- acme.sh- ZeroSSL&#x2F;Let&#x27;s Encrypt  具体思路是，使用nginx做本地的两个服务，一个是81端口的http转https服务，一个是正常的80端口http服务。再使用">
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://hexothemedemo.github.io/redefine/posts/usehttps/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用HTTPS">
-<meta property="og:url" content="https://hexothemedemo.github.io/Yelee/posts/usehttps/index.html">
+<meta property="og:url" content="https://hexothemedemo.github.io/redefine/posts/usehttps/index.html">
 <meta property="og:site_name" content="zhywyt&#39;s blog">
-<meta property="og:description" content="前言如果正常的话，我当前的域名应该是：https:&#x2F;&#x2F;hexo.zhywyt.me，为了庆祝我找到了免费的https方案，特地来写下这篇文章。 话不多说展示军火： 1234- frp- nginx- acme.sh- ZeroSSL&#x2F;Let&#x27;s Encrypt  具体思路是，使用nginx做本地的两个服务，一个是81端口的http转https服务，一个是正常的80端口http服务。再使用">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hexothemedemo.github.io/images/redefine-og.webp">
 <meta property="article:published_time" content="2025-03-14T22:14:00.000Z">
 <meta property="article:modified_time" content="2025-03-17T04:10:42.104Z">
 <meta property="article:author" content="zhywyt">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hexothemedemo.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="./redefine/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="./redefine/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="./redefine/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            使用HTTPS | Theme Redefine[demo site]
+        
+    </title>
 
-<link rel="apple-touch-icon" href= "/Yelee//apple-touch-icon.png">
-
-
-    <link rel="alternate" href="/atom.xml" title="zhywyt&#39;s blog" type="application/atom+xml">
-
-
-
-    <link rel="shortcut icon" href="/Yelee//favicon.png">
-
-
-
-    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
-
-
-
-    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
-
-
-
-    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
-    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+    
+<link rel="stylesheet" href="./redefine/fonts/Chillax/chillax.css">
 
 
+    <!--- Inject Part-->
+    
 
-<link rel="stylesheet" href="/Yelee/css/style.css">
-
-
-
-
-<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+<link rel="stylesheet" href="./redefine/css/style.css">
 
 
-<title>使用HTTPS | zhywyt&#39;s blog</title>
+    
+        
+<link rel="stylesheet" href="./redefine/css/build/tailwind.css">
 
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+    
 
-<script>
-    var yiliaConfig = {
-        fancybox: true,
-        animate: true,
-        isHome: false,
-        isPost: true,
-        isArchive: false,
-        isTag: false,
-        isCategory: false,
-        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
-        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: 
-    }
-</script>
+    
+<link rel="stylesheet" href="./redefine/fonts/GeistMono/geist-mono.css">
 
+    
+<link rel="stylesheet" href="./redefine/fonts/Geist/geist.css">
 
-    <script> yiliaConfig.jquery_ui = [false]; </script>
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
 
+    <script id="hexo-configurations">
+    window.config = {"hostname":"hexothemedemo.github.io","root":"./redefine/","language":"zh-CN"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Theme Redefine","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.2","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="./redefine/fontawesome/fontawesome.min.css">
 
+    
+<link rel="stylesheet" href="./redefine/fontawesome/brands.min.css">
 
-    <script> yiliaConfig.rootUrl = /Yelee/; </script>
+    
+<link rel="stylesheet" href="./redefine/fontawesome/solid.min.css">
 
+    
+<link rel="stylesheet" href="./redefine/fontawesome/regular.min.css">
 
-
-
-
-
+    
+    
+    
+    
 <meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
 <body>
-  <div id="container">
-    <div class="left-col">
-    <div class="overlay"></div>
-<div class="intrude-less">
-    <header id="header" class="inner">
-        <a href="/Yelee/" class="profilepic">
-            <img src="/Yelee//img/avatar.png" class="animated zoomIn">
-        </a>
-        <hgroup>
-          <h1 class="header-author"><a href="/Yelee/"></a></h1>
-        </hgroup>
+	<div class="progress-bar-container">
+	
 
-        
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
 
-        
+<main class="page-container" id="swup">
 
+	
 
-        
-            <div id="switch-btn" class="switch-btn">
-                <div class="icon">
-                    <div class="icon-ctn">
-                        <div class="icon-wrap icon-house" data-idx="0">
-                            <div class="birdhouse"></div>
-                            <div class="birdhouse_holes"></div>
-                        </div>
-                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                            <div class="ribbon"></div>
-                        </div>
-                        
-                        <div class="icon-wrap icon-link hide" data-idx="2">
-                            <div class="loopback_l"></div>
-                            <div class="loopback_r"></div>
-                        </div>
-                        
-                        
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
-                    </div>
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="./redefine/">
+                
+                Theme Redefine[demo site]
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
                     
-                </div>
-                <div class="tips-box hide">
-                    <div class="tips-arrow"></div>
-                    <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
                         
-                        <li>友情链接</li>
-                        
-                        
-                        <li>关于我</li>
-                        
-                    </ul>
-                </div>
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="./redefine/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
             </div>
-        
-
-        <div id="switch-area" class="switch-area">
-            <div class="switch-wrap">
-                <section class="switch-part switch-part1">
-                    <nav class="header-menu">
-                        <ul>
-                        
-                            <li><a href="/Yelee//Yelee/">主页</a></li>
-                        
-                            <li><a href="/Yelee//Yelee/archives/">所有文章</a></li>
-                        
-                            <li><a href="/Yelee//Yelee/tags/">标签云</a></li>
-                        
-                            <li><a href="/Yelee//Yelee/about/">关于我</a></li>
-                        
-                        </ul>
-                    </nav>
-                    <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
-                            
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" href="/Yelee/atom.xml" title="RSS"></a>
-                            
-                        </ul>
-                    </nav>
-                </section>
+            <!-- Mobile -->
+            <div class="mobile">
                 
-                
-                <section class="switch-part switch-part2">
-                    <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/encrypt/" rel="tag">encrypt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="tag">技术文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E8%AF%97%E4%B8%8E%E6%95%A3%E6%96%87/" rel="tag">诗与散文</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Yelee/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/" rel="tag">错误解决</a></li></ul>
-                    </div>
-                </section>
-                
-                
-                
-                <section class="switch-part switch-part3">
-                    <div id="js-friends">
-                    
-                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
-                    
-                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://pages.github.com/">GitHub</a>
-                    
-                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="http://moxfive.xyz/">MOxFIVE</a>
-                    
-                    </div>
-                </section>
-                
-
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">专注于前端</div>
-                </section>
-                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
             </div>
         </div>
-    </header>                
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="./redefine/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="./redefine/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">5</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="./redefine/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">33</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="./redefine/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">84</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
 </div>
     </div>
-    <div class="mid-col">
-      <nav id="mobile-nav">
-      <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
-      </div>
-    <div class="intrude-less">
-        <header id="header" class="inner">
-            <a href="/Yelee/" class="profilepic">
-                <img src="/Yelee//img/avatar.png" class="animated zoomIn">
-            </a>
-            <hgroup>
-              <h1 class="header-author"><a href="/Yelee/" title="回到主页"></a></h1>
-            </hgroup>
-            
-            <nav class="header-menu">
-                <ul>
-                
-                    <li><a href="/Yelee/">主页</a></li>
-                
-                    <li><a href="/Yelee/archives/">所有文章</a></li>
-                
-                    <li><a href="/Yelee/tags/">标签云</a></li>
-                
-                    <li><a href="/Yelee/about/">关于我</a></li>
-                
-                <div class="clearfix"></div>
-                </ul>
-            </nav>
-            <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
-                            
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" target="_blank" href="/Yelee/atom.xml" title="RSS"></a>
-                            
-                        </ul>
-            </nav>
-        </header>                
-    </div>
-    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
-</nav>
-      <div class="body-wrap"><article id="post-关于博客/https/使用HTTPS" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/Yelee/posts/usehttps/" class="article-date">
-      <time datetime="2025-03-14T22:14:00.000Z" itemprop="datePublished">2025-03-14</time>
-</a>
+
+    <div class="window-mask"></div>
+
+</header>
 
 
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      使用HTTPS
-    </h1>
-  
+		</div>
 
-      </header>
-      
-      <div class="article-info article-info-post">
-        
+		<div class="main-content-body transition-fade-up">
+			
 
-        
-        <div class="clearfix"></div>
-      </div>
-      
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">使用HTTPS</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="./redefine/images/redefine-avatar.svg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">zhywyt</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-03-14 22:14</span>
+        <span class="mobile">2025-03-14 22:14</span>
+        <span class="hover-info">创建</span>
+    </span>
     
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>如果正常的话，我当前的域名应该是：<a target="_blank" rel="noopener" href="https://hexo.zhywyt.me,为了庆祝我找到了免费的https方案,特地来写下这篇文章./">https://hexo.zhywyt.me，为了庆祝我找到了免费的https方案，特地来写下这篇文章。</a></p>
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-03-17 04:10:42</span>
+            <span class="mobile">2025-03-17 04:10:42</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>如果正常的话，我当前的域名应该是：<a class="link"   target="_blank" rel="noopener" href="https://hexo.zhywyt.me,为了庆祝我找到了免费的https方案,特地来写下这篇文章./" >https://hexo.zhywyt.me，为了庆祝我找到了免费的https方案，特地来写下这篇文章。<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <p>话不多说展示军火：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- frp</span><br><span class="line">- nginx</span><br><span class="line">- acme.sh</span><br><span class="line">- ZeroSSL/Let&#x27;s Encrypt</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- frp</span><br><span class="line">- nginx</span><br><span class="line">- acme.sh</span><br><span class="line">- ZeroSSL/Let&#x27;s Encrypt</span><br></pre></td></tr></table></figure></div>
 
-<p>具体思路是，使用<code>nginx</code>做本地的两个服务，一个是<code>81</code>端口的<a target="_blank" rel="noopener" href="https://www.cnblogs.com/larrydpk/p/12819231.html">http转https服务</a>，一个是正常的<code>80</code>端口http服务。再使用<code>acme.sh</code>在<code>ZeroSSL</code>或者<code>Let&#39;s Encrypt</code>上<a target="_blank" rel="noopener" href="https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E">自动申请证书</a>，然后使用<code>frp</code><a target="_blank" rel="noopener" href="https://gofrp.org/zh-cn/docs/examples/https2http/">为本地 HTTP 服务启用 HTTPS | frp</a>，</p>
-<p>然而你也可以不使用<code>frp</code>做<code>https</code>服务，那么你需要使用<code>nginx</code>进行认证，你可以参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/chuanghongmeng/p/18466820">免费永久HTTPS(ssl)证书——Let’s Encrypt来了 - 大司徒 - 博客园</a>。</p>
+<p>具体思路是，使用<code>nginx</code>做本地的两个服务，一个是<code>81</code>端口的<a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/larrydpk/p/12819231.html" >http转https服务<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，一个是正常的<code>80</code>端口http服务。再使用<code>acme.sh</code>在<code>ZeroSSL</code>或者<code>Let&#39;s Encrypt</code>上<a class="link"   target="_blank" rel="noopener" href="https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E" >自动申请证书<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，然后使用<code>frp</code><a class="link"   target="_blank" rel="noopener" href="https://gofrp.org/zh-cn/docs/examples/https2http/" >为本地 HTTP 服务启用 HTTPS | frp<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，</p>
+<p>然而你也可以不使用<code>frp</code>做<code>https</code>服务，那么你需要使用<code>nginx</code>进行认证，你可以参考：<a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/chuanghongmeng/p/18466820" >免费永久HTTPS(ssl)证书——Let’s Encrypt来了 - 大司徒 - 博客园<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>。</p>
 <p>让我们开始HTTP<font color='red'>S</font>。</p>
 <h1 id="frps"><a href="#frps" class="headerlink" title="frps"></a>frps</h1><p>你需要启用<code>frps</code>的<code>https</code>穿透，具体配置文件为：</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">bindPort</span> = <span class="number">7000</span></span><br><span class="line"><span class="attr">vhostHTTPPort</span> = <span class="number">80</span></span><br><span class="line"><span class="attr">vhostHTTPSPort</span> = <span class="number">443</span></span><br><span class="line"><span class="attr">webServer.addr</span> = <span class="string">&quot;0.0.0.0&quot;</span></span><br><span class="line"><span class="attr">webServer.port</span> = <span class="number">7500</span></span><br><span class="line"><span class="attr">webServer.user</span> = <span class="string">&quot;****&quot;</span></span><br><span class="line"><span class="attr">webServer.password</span> = <span class="string">&quot;****&quot;</span></span><br><span class="line"><span class="attr">enablePrometheus</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">auth.token</span> = <span class="string">&quot;****&quot;</span></span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Toml"><figure class="iseeu highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">bindPort</span> = <span class="number">7000</span></span><br><span class="line"><span class="attr">vhostHTTPPort</span> = <span class="number">80</span></span><br><span class="line"><span class="attr">vhostHTTPSPort</span> = <span class="number">443</span></span><br><span class="line"><span class="attr">webServer.addr</span> = <span class="string">&quot;0.0.0.0&quot;</span></span><br><span class="line"><span class="attr">webServer.port</span> = <span class="number">7500</span></span><br><span class="line"><span class="attr">webServer.user</span> = <span class="string">&quot;****&quot;</span></span><br><span class="line"><span class="attr">webServer.password</span> = <span class="string">&quot;****&quot;</span></span><br><span class="line"><span class="attr">enablePrometheus</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">auth.token</span> = <span class="string">&quot;****&quot;</span></span><br></pre></td></tr></table></figure></div>
 
 <p>重要的是你的<code>vhostHTTPSPort</code>字段，其他的请不要修改。修改完配置后重启<code>frps</code>，并打开你服务器的<code>443</code>端口。</p>
 <h1 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h1><p>为什么使用<code>nginx</code>？<del>因为我只会用这个</del>，并且它的配置文件很有意思，且好玩。</p>
 <h2 id="使用frp"><a href="#使用frp" class="headerlink" title="使用frp"></a>使用frp</h2><p>如果你使用了<code>frp</code>，那么你就不需要在<code>nginx</code>中设置<code>443</code>端口的<code>https</code>服务，只需要开放本机上的<code>http</code>服务即可。请修改下面的<code>&lt;yourservername&gt;</code>为你想要的名字。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> /etc/nginx/sites-available/default /etc/nginx/sites-available/&lt;yourservername&gt;</span><br><span class="line"><span class="built_in">ln</span> -s /etc/nginx/sites-available/&lt;yourservername&gt; /etc/nginx/sites-enabled/&lt;yourservername&gt;</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> /etc/nginx/sites-available/default /etc/nginx/sites-available/&lt;yourservername&gt;</span><br><span class="line"><span class="built_in">ln</span> -s /etc/nginx/sites-available/&lt;yourservername&gt; /etc/nginx/sites-enabled/&lt;yourservername&gt;</span><br></pre></td></tr></table></figure></div>
 <p>并将下面的配置文件写入你创建的文件中。请修改下面的<code>&lt;your server path&gt;</code>为你的网站路径，修改下面的<code>&lt;your domain&gt;</code>为你的域名。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">81</span>;</span><br><span class="line">        <span class="attribute">rewrite</span><span class="regexp"> ^(.*)$</span> https://<span class="variable">$host</span><span class="variable">$1</span> <span class="literal">permanent</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">root</span> &lt;your server path&gt; ;</span><br><span class="line">        <span class="attribute">index</span> index.html;</span><br><span class="line">        <span class="attribute">server_name</span> &lt;your domain&gt; ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Nginx"><figure class="iseeu highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">81</span>;</span><br><span class="line">        <span class="attribute">rewrite</span><span class="regexp"> ^(.*)$</span> https://<span class="variable">$host</span><span class="variable">$1</span> <span class="literal">permanent</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">root</span> &lt;your server path&gt; ;</span><br><span class="line">        <span class="attribute">index</span> index.html;</span><br><span class="line">        <span class="attribute">server_name</span> &lt;your domain&gt; ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>然后重启<code>nginx</code>。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl restart nginx</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl restart nginx</span><br></pre></td></tr></table></figure></div>
 
-<h1 id="acme-sh"><a href="#acme-sh" class="headerlink" title="acme.sh"></a>acme.sh</h1><p>我使用了<a target="_blank" rel="noopener" href="https://github.com/acmesh-official/acme.sh">acme.sh</a>项目来实现证书的申请和自动更新！🥰<br>这是令人兴奋的，但是我有义务让你知道免费SSL证书的来源！我是从这篇知乎文章得知了这一渠道：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/22869797">为什么 SSL 证书要花钱购买，而不是政府免费发放的？怎么知道卖证书的是否可信呢？</a></p>
+<h1 id="acme-sh"><a href="#acme-sh" class="headerlink" title="acme.sh"></a>acme.sh</h1><p>我使用了<a class="link"   target="_blank" rel="noopener" href="https://github.com/acmesh-official/acme.sh" >acme.sh<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>项目来实现证书的申请和自动更新！🥰<br>这是令人兴奋的，但是我有义务让你知道免费SSL证书的来源！我是从这篇知乎文章得知了这一渠道：<a class="link"   target="_blank" rel="noopener" href="https://www.zhihu.com/question/22869797" >为什么 SSL 证书要花钱购买，而不是政府免费发放的？怎么知道卖证书的是否可信呢？<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <p>接下来，让我们开始吧！</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line"><span class="built_in">sudo</span> apt update &amp;&amp; <span class="built_in">sudo</span> apt install unzip socat</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line"><span class="built_in">sudo</span> apt update &amp;&amp; <span class="built_in">sudo</span> apt install unzip socat</span><br></pre></td></tr></table></figure></div>
 <p>然后你需要准备一个邮箱，并尝试运行下面的命令来下载acme.sh：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl https://get.acme.sh | sh -s email=my@example.com</span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl https://get.acme.sh | sh -s email=my@example.com</span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure></div>
 
 <h2 id="使用frp-1"><a href="#使用frp-1" class="headerlink" title="使用frp"></a>使用frp</h2><p>接下来你需要准备：</p>
 <ul>
 <li>申请证书的域名</li>
 <li>服务的根目录<br>并填入下面的命令，尝试执行它。</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --issue -d mydomain.com -d www.mydomain.com --webroot /home/wwwroot/mydomain.com/</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --issue -d mydomain.com -d www.mydomain.com --webroot /home/wwwroot/mydomain.com/</span><br></pre></td></tr></table></figure></div>
 <p>然后你需要选择两个路径位置，用于存档<code>cert</code>和<code>key</code>，你可以直接使用下面命令中的路径，否则你应该记住自己使用的路径，你应该修改下面的域名为你自己设置的域名</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /etc/nginx/ssl</span><br><span class="line">acme.sh --install-cert -d example.com \</span><br><span class="line">--key-file       /etc/nginx/ssl/key.pem  \</span><br><span class="line">--fullchain-file /etc/nginx/ssl/cert.pem \</span><br><span class="line">--reloadcmd     <span class="string">&quot;service nginx reload&quot;</span></span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /etc/nginx/ssl</span><br><span class="line">acme.sh --install-cert -d example.com \</span><br><span class="line">--key-file       /etc/nginx/ssl/key.pem  \</span><br><span class="line">--fullchain-file /etc/nginx/ssl/cert.pem \</span><br><span class="line">--reloadcmd     <span class="string">&quot;service nginx reload&quot;</span></span><br></pre></td></tr></table></figure></div>
 
 
 
 <h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>到这里你可以使用下面的命令来查看是否成功安装证书了！</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --info -d example.com</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --info -d example.com</span><br></pre></td></tr></table></figure></div>
 
 <p>并且你可以查看自己的定时任务：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -e</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -e</span><br></pre></td></tr></table></figure></div>
 
 <h1 id="上线网站"><a href="#上线网站" class="headerlink" title="上线网站"></a>上线网站</h1><p>对于不使用<code>frp</code>的用户，其实重启<code>nginx</code>就可以正常工作了，但是对于<code>frp</code>用户，还需要进行一些<code>frpc</code>的配置。</p>
-<p>打开你的<code>frpc.toml</code>，输入下面的配置：<br>你可以参考：<a target="_blank" rel="noopener" href="https://gofrp.org/zh-cn/docs/examples/https2http/">为本地 HTTP 服务启用 HTTPS | frp</a></p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">serverAddr</span> = <span class="string">&quot;x.x.x.x&quot;</span></span><br><span class="line"><span class="attr">serverPort</span> = <span class="number">7000</span></span><br><span class="line"></span><br><span class="line"><span class="section">[[proxies]]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;test_htts2http&quot;</span></span><br><span class="line"><span class="attr">type</span> = <span class="string">&quot;https&quot;</span></span><br><span class="line"><span class="attr">customDomains</span> = [<span class="string">&quot;domain&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="section">[proxies.plugin]</span></span><br><span class="line"><span class="attr">type</span> = <span class="string">&quot;https2http&quot;</span></span><br><span class="line"><span class="attr">localAddr</span> = <span class="string">&quot;127.0.0.1:80&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># HTTPS 证书相关的配置</span></span><br><span class="line"><span class="attr">crtPath</span> = <span class="string">&quot;./server.crt&quot;</span></span><br><span class="line"><span class="attr">keyPath</span> = <span class="string">&quot;./server.key&quot;</span></span><br><span class="line"><span class="attr">hostHeaderRewrite</span> = <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line"><span class="attr">requestHeaders.set.x-from-where</span> = <span class="string">&quot;frp&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>打开你的<code>frpc.toml</code>，输入下面的配置：<br>你可以参考：<a class="link"   target="_blank" rel="noopener" href="https://gofrp.org/zh-cn/docs/examples/https2http/" >为本地 HTTP 服务启用 HTTPS | frp<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<div class="code-container" data-rel="Toml"><figure class="iseeu highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">serverAddr</span> = <span class="string">&quot;x.x.x.x&quot;</span></span><br><span class="line"><span class="attr">serverPort</span> = <span class="number">7000</span></span><br><span class="line"></span><br><span class="line"><span class="section">[[proxies]]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;test_htts2http&quot;</span></span><br><span class="line"><span class="attr">type</span> = <span class="string">&quot;https&quot;</span></span><br><span class="line"><span class="attr">customDomains</span> = [<span class="string">&quot;domain&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="section">[proxies.plugin]</span></span><br><span class="line"><span class="attr">type</span> = <span class="string">&quot;https2http&quot;</span></span><br><span class="line"><span class="attr">localAddr</span> = <span class="string">&quot;127.0.0.1:80&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># HTTPS 证书相关的配置</span></span><br><span class="line"><span class="attr">crtPath</span> = <span class="string">&quot;./server.crt&quot;</span></span><br><span class="line"><span class="attr">keyPath</span> = <span class="string">&quot;./server.key&quot;</span></span><br><span class="line"><span class="attr">hostHeaderRewrite</span> = <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line"><span class="attr">requestHeaders.set.x-from-where</span> = <span class="string">&quot;frp&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
 
 <p>并额外添加一个<code>http</code>的服务：</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[[proxies]]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;httpname&quot;</span></span><br><span class="line"><span class="attr">type</span> = <span class="string">&quot;http&quot;</span></span><br><span class="line"><span class="attr">localIP</span> = <span class="string">&quot;localhost&quot;</span></span><br><span class="line"><span class="attr">localPort</span> = <span class="number">81</span></span><br><span class="line"><span class="attr">customDomains</span> = [<span class="string">&quot;domain&quot;</span>]</span><br></pre></td></tr></table></figure>
+<div class="code-container" data-rel="Toml"><figure class="iseeu highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[[proxies]]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;httpname&quot;</span></span><br><span class="line"><span class="attr">type</span> = <span class="string">&quot;http&quot;</span></span><br><span class="line"><span class="attr">localIP</span> = <span class="string">&quot;localhost&quot;</span></span><br><span class="line"><span class="attr">localPort</span> = <span class="number">81</span></span><br><span class="line"><span class="attr">customDomains</span> = [<span class="string">&quot;domain&quot;</span>]</span><br></pre></td></tr></table></figure></div>
 
 <p>最后重启<code>frpc</code>！大功告成！👋🛠️</p>
 <p>如果有任何问题，欢迎向我提问！</p>
 
-      
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 使用HTTPS</li>
+        <li><strong>作者:</strong> zhywyt</li>
+        <li><strong>创建于
+                :</strong> 2025-03-14 22:14:00</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2025-03-17 04:10:42
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://hexothemedemo.github.io/redefine/posts/usehttps/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="./redefine/posts/64880/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">anzhiyu主题搭建记录</span>
+						<span class="post-nav-item">上一篇</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="./redefine/posts/61408/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">实现自己的SHELL</span>
+						<span class="post-nav-item">下一篇</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+			<div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
     </div>
     
-  </div>
-  
-    
-    <div class="copyright">
-        <p><span>本文标题:</span><a href="/Yelee/posts/usehttps/">使用HTTPS</a></p>
-        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
-        <p><span>发布时间:</span>2025-03-14, 22:14:00</p>
-        <p><span>最后更新:</span>2025-03-17, 04:10:42</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/Yelee/posts/usehttps/" title="使用HTTPS">https://hexothemedemo.github.io/Yelee/posts/usehttps/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://hexothemedemo.github.io/Yelee/posts/usehttps/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
-            <script> var clipboard = new Clipboard('.copy-path'); </script>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
 
-
-
-    <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/Yelee/posts/64880/">
-                    anzhiyu主题搭建记录
-                </a>
-            </div>
-        
-        
-            <div id="article-nav-older" class="article-nav-title">
-                <a href="/Yelee/posts/61408/">
-                    实现自己的SHELL
-                </a>
-            </div>
-        
-    </nav>
+            
+    <div id="waline"></div>
+    <script type="module" data-swup-reload-script>
+      import { init } from './redefine/js/libs/waline.mjs';
 
-  
-</article>
+      function loadWaline() {
+        init({
+          el: '#waline',
+          serverURL: 'https://example.example.com',
+          lang: 'zh-CN',
+          dark: 'body[class~="dark-mode"]',
+          reaction: false,
+          requiredMeta: ['nick', 'mail'],
+          emoji: [],
+          
+          
+        });
+      }
 
-    <div id="toc" class="toc-article">
-        <strong class="toc-title">文章目录</strong>
-        
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#frps"><span class="toc-number">2.</span> <span class="toc-text">frps</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#nginx"><span class="toc-number">3.</span> <span class="toc-text">nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8frp"><span class="toc-number">3.1.</span> <span class="toc-text">使用frp</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#acme-sh"><span class="toc-number">4.</span> <span class="toc-text">acme.sh</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8frp-1"><span class="toc-number">4.1.</span> <span class="toc-text">使用frp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD"><span class="toc-number">4.2.</span> <span class="toc-text">后续</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8A%E7%BA%BF%E7%BD%91%E7%AB%99"><span class="toc-number">5.</span> <span class="toc-text">上线网站</span></a></li></ol>
-        
-    </div>
-    <style>
-        .left-col .switch-btn,
-        .left-col .switch-area {
-            display: none;
-        }
-        .toc-level-3 i,
-        .toc-level-3 ol {
-            display: none !important;
-        }
-    </style>
-
-    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
-
-    <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+      if (typeof swup !== 'undefined') {
+        loadWaline();
+      } else {
+        window.addEventListener('DOMContentLoaded', loadWaline);
+      }
     </script>
 
 
 
-    
-<div class="share">
-    
-        <div class="bdsharebuttonbox">
-            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
-            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
-            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
-            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
-            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
-            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
-        </div>
-        <script>
-            window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"使用HTTPS　| zhywyt's blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-        </script>
-    
-
+        
     
 </div>
 
+		</div>
+		
+	</div>
 
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">目录</div>
+		<div class="page-title">使用HTTPS</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#frps"><span class="nav-text">frps</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx"><span class="nav-text">nginx</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8frp"><span class="nav-text">使用frp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#acme-sh"><span class="nav-text">acme.sh</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8frp-1"><span class="nav-text">使用frp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD"><span class="nav-text">后续</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E7%BA%BF%E7%BD%91%E7%AB%99"><span class="nav-text">上线网站</span></a></li></ol>
 
-
-
-
-
-    
-
-
-
-
-    <div class="scroll" id="post-nav-button">
-        
-            <a href="/Yelee/posts/64880/" title="上一篇: anzhiyu主题搭建记录">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
-
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-
-        
-            <a href="/Yelee/posts/61408/" title="下一篇: 实现自己的SHELL">
-                <i class="fa fa-angle-right"></i>
-            </a>
-        
-    </div>
-
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10907/">在Unity2D中创建角色描边的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5993/">Listary——不仅仅是搜索器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51899/">我的编辑器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0/">游戏开发/Unity/shader/在Unity2D中创建屏幕扫描线的shader思路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/64880/">anzhiyu主题搭建记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/usehttps/">使用HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61408/">实现自己的SHELL</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/29b61e029340/">不适用docker的gitea runner配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/34e784d46b0a/">如何在Ubuntu上使用Cmake编译Glut</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7880d8f2f2e/">docker 设置代理与镜像站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/58283ae7cb2d/">什么是shader？什么是Material？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b0c241b3d4cf/">hexo设置加密文章(失败)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/da74aa8e9f3b/">搭建一个多线程的MineCraft服务器</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d863527924a0/">修复使用RigidBody2D实现击退效果时的叠加问题</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/247db5136c67/">解决Unity中的路径报错：DirectoryNotFoundException。</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/818482b58c2a/">如何创建一个朝向正确的飞行物？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/0e24283556b2/">UI的位置无法正确的移动</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d8eb45be176b/">Hexo+Github搭建静态网站</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/8fd9ab7c695f/">伤病遇体测有感</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4a74e5f5d3d6/">Unity2D场景交互设计</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e31df0f4a5f0/">Unity屏幕分辨率调整导致UI消失的原因</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/e3e3aee8476b/">2024浙江省青少年定向锦标赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d7ea97fbec36/">Unity如何设置鼠标图标？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2024g10/">2024第一届下沙十英里接力赛后记</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/f29c63b83721/">马原实践汇报</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6e1ed0060e67/">Unity如何控制场景切换后角色的位置？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/536c11d1caa5/">2024定向队新生选拔赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/337e148b3fb3/">远程连接与传输</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2c9570b00976/">NU-NeRF论文解读</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d586aba908b5/">如何绘制一张定向路线图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5790301d4de2/">2024全国乡村定向系列赛事活动（浙江海宁站）</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/96dff400cced/">waline评论系统搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bc16e0702e1d/">甲壳虫跑团“十英里接力赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c8b013b915a1/">甲壳虫跑团“耐力挑战赛”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/a5bf365fe3fe/">甲壳虫跑团“十英里接力赛分院杯”赛制章程</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/bd7f49a3fa80/">Unity 如何创建不带UI的截图？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/c6072bab6ff0/">Unity如何优雅地管理UI图层顺序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/59a4f8f59f45/">Unity如何在脚本中使用本地话字符？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/823c297f1d7f/">Unity如何保存存档？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1cc3941f1b85/">如何使用ffmpeg无损压缩视频？</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/54404/">Unity本地化字体选择</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d742d8349fff/">Unity瓦片地图碰撞体积与图片大小不一致</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/d9709c673656/">Linux基础操作</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5c54bd2bc06c/">frp配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/df4c31f7ba80/">PVE软路由配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/b4ca7a5fb5b2/">ChatGLM本地配置记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/24484/">pve 8.2.2 解决unsupported Ubuntu version '24.04'</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5953/">nerfstudio环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/5181/">zerotier单向不通解决办法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/1fd1cabe051b/">2024第一届甲壳虫跑团百公里接力赛</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49793/">KUbuntu安装CIscoPacketTracer</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/4182/">PVE学生自用记录</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/62236/">第？课——基于矩阵快速幂的递推解法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/7287/">ubuntu无法进入桌面的一种情况</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/61355/">第三课——最短路</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/14027/">第二课——线段树</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/53666/">第一课——树状数组</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/17428/">B-Spline</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/16515/">花期内的花的数目</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/11458/">简单的拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6679/">games101 HomeWork7</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15892/">多线程之OMP</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/3472/">Linux批量修改文件名字</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56022/">games101 HomeWork6</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/56214/">games101 HomeWork5</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6999/">games101 HomeWork4</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/55574/">games101 HomeWork3</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6886/">Ubuntu解决高分屏下Matlab工具栏字体过小</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6615/">games101 HomeWork2</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/44638/">games101 HomeWork 作业以及提高课详解</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/6295/">games101 HomeWork1</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/45431/">计算机图形学笔记三——橡皮筋技术和椭圆扫描算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/30828/">计算机图形学笔记一——绘制直线的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15450/">基于Glut的俄罗斯方块开发</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/10536/">Games101笔记 P11~?</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/49493/">快速读入模板</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/50901/">Git 教程转载</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/27853/">c语言文件读写</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/63067/">康托展开</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/32280/">P1088 [NOIP2004 普及组] 火星人</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/51449/">P2241 统计方形（数据加强版）(矩形中的正方,长方形统计)</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/2977/">P1177 【模板】快速排序</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/15959/">P1045 [NOIP2003 普及组] 麦森数——快速幂</a></li><li class="post-list-item"><a class="post-list-link" href="/Yelee/posts/47792/">P5461 赦免战俘</a></li></ul>
-
-
-
-
-    <script>
-        
-    </script>
+	</div>
 </div>
-      <footer id="footer">
-    <div class="outer">
-        <div id="footer-info">
-            <div class="footer-left">
-                <i class="fa fa-copyright"></i> 
-                2016-2025 zhywyt
-            </div>
-            <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
-            </div>
-        </div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
         
-            <div class="visit">
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="./redefine/">zhywyt</a>
+            
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
-                        </span>
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共撰写了 84 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
                     </span>
                 
                 
-                    <span>| </span>
-                
-                
-                    <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
-                        </span>
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
                     </span>
                 
             </div>
         
-    </div>
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
 </footer>
-    </div>
-    
-<script data-main="/Yelee/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+		</div>
+	</div>
 
-    <script>
-        $(document).ready(function() {
-            var iPad = window.navigator.userAgent.indexOf('iPad');
-            if (iPad > -1 || $(".left-col").css("display") === "none") {
-                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
-                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
-                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
-            }
-            else {
-                var backgroundnum = 5;
-                var backgroundimg = "url(/Yelee//background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
-                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
-            }
-        })
-    </script>
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
 
-
-
-
-
-<div class="scroll" id="scroll">
-    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+		<!-- go comment -->
+		
+		<li class="go-comment">
+			<i class="fa-regular fa-comments"></i>
+		</li>
+		
+	</ul>
 </div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+
+</main>
+
+
+
+<script src="./redefine/js/build/libs/Swup.min.js"></script>
+
+<script src="./redefine/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="./redefine/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="./redefine/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="./redefine/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="./redefine/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
 <script>
-    // Open in New Window
-    
-        var oOpenInNew = {
-            
-            
-            
-            
-            
-            
-             archives: ".archive-article-title", 
-             miniArchives: "a.post-list-link", 
-            
-             friends: "#js-friends a", 
-             socail: ".social a" 
-        }
-        for (var x in oOpenInNew) {
-            $(oOpenInNew[x]).attr("target", "_blank");
-        }
-    
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
 </script>
 
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
-  </div>
+
+
+
+	
+<script src="./redefine/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="./redefine/js/build/utils.js" type="module"></script>
+
+<script src="./redefine/js/build/main.js" type="module"></script>
+
+<script src="./redefine/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="./redefine/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="./redefine/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="./redefine/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="./redefine/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="./redefine/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="./redefine/js/build/tools/runtime.js"></script>
+
+    
+<script src="./redefine/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="./redefine/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="./redefine/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="./redefine/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="./redefine/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="./redefine/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="./redefine/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="./redefine/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="./redefine/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="./redefine/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
 </body>
+
 </html>
